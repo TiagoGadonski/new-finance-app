@@ -571,6 +571,9 @@ function showTab(tabName) {
         case 'debts':
             loadDebts();
             break;
+        case 'mei':
+            loadMeiDashboard();
+            break;
     }
 }
 
@@ -586,3 +589,127 @@ function getAccountTypeName(type) {
     };
     return types[type] || type;
 }
+
+// ===== MEI FUNCTIONS =====
+
+async function loadMeiDashboard() {
+    try {
+        const currentYear = document.getElementById('meiYear')?.value || new Date().getFullYear();
+        const response = await fetch(`${API_URL}/mei/dashboard/${currentYear}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Erro ao carregar dashboard MEI');
+
+        const data = await response.json();
+
+        // Atualizar cards
+        document.getElementById('meiCurrentRevenue').textContent = formatCurrency(data.currentRevenue);
+        document.getElementById('meiLimit').textContent = formatCurrency(data.proportionalLimit);
+        document.getElementById('meiRemaining').textContent = formatCurrency(data.remainingRevenue);
+        document.getElementById('meiPercentage').textContent = data.percentageUsed.toFixed(1) + '%';
+
+        // Atualizar barra de progresso
+        const progressBar = document.getElementById('meiProgress');
+        const percentage = Math.min(data.percentageUsed, 100);
+        progressBar.style.width = percentage + '%';
+        progressBar.textContent = percentage.toFixed(1) + '%';
+
+        // Definir cor da barra baseado no percentual
+        if (percentage >= 100) {
+            progressBar.className = 'progress-fill danger';
+        } else if (percentage >= 90) {
+            progressBar.className = 'progress-fill danger';
+        } else if (percentage >= 80) {
+            progressBar.className = 'progress-fill warning';
+        } else {
+            progressBar.className = 'progress-fill';
+        }
+
+        // Mostrar alerta se houver
+        const alertDiv = document.getElementById('meiAlert');
+        if (data.alertMessage) {
+            alertDiv.style.display = 'block';
+            let alertClass = 'info-box';
+            if (data.percentageUsed >= 100) alertClass = 'error';
+            else if (data.percentageUsed >= 90) alertClass = 'error';
+            else if (data.percentageUsed >= 80) alertClass = 'error';
+
+            alertDiv.innerHTML = `<div class="${alertClass}" style="margin-bottom: 20px;">${data.alertMessage}</div>`;
+        } else {
+            alertDiv.style.display = 'none';
+        }
+
+        // Projeção
+        const projectionText = document.getElementById('meiProjection');
+        if (data.projectedAnnualRevenue > data.proportionalLimit) {
+            const excess = data.projectedAnnualRevenue - data.proportionalLimit;
+            projectionText.innerHTML = `<strong style="color: var(--danger);">Projeção:</strong> Com a média atual, você pode exceder o limite em <strong>R$ ${formatNumber(excess)}</strong>`;
+        } else {
+            projectionText.innerHTML = `<strong style="color: var(--success);">Projeção:</strong> Você está no caminho certo para ficar dentro do limite MEI`;
+        }
+
+        // Breakdown mensal
+        const monthlyDiv = document.getElementById('meiMonthlyBreakdown');
+        monthlyDiv.innerHTML = data.monthlyBreakdown.map(month => `
+            <div class="transaction-item">
+                <div class="item-info">
+                    <div class="item-title">${month.monthName}</div>
+                    <div class="item-subtitle">Limite: ${formatCurrency(month.limit)}</div>
+                </div>
+                <div>
+                    <div class="item-value ${month.isOverLimit ? 'value-expense' : 'value-income'}">
+                        ${formatCurrency(month.revenue)}
+                    </div>
+                    <div style="font-size: 12px; color: ${month.isOverLimit ? 'var(--danger)' : '#666'};">
+                        ${month.percentageUsed.toFixed(0)}% ${month.isOverLimit ? '⚠️' : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Erro ao carregar MEI:', error);
+        alert('Erro ao carregar dados MEI');
+    }
+}
+
+async function configureMei(event) {
+    event.preventDefault();
+
+    const year = parseInt(document.getElementById('meiYear').value);
+    const limit = parseFloat(document.getElementById('meiLimitInput').value);
+    const startMonth = parseInt(document.getElementById('meiStartMonth').value);
+    const categorySelect = document.getElementById('meiCategory');
+    const categoryId = categorySelect.value || null;
+
+    try {
+        const response = await fetch(`${API_URL}/mei/configure`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                year,
+                annualRevenueLimit: limit,
+                startMonth,
+                mainCategoryId: categoryId,
+                alertThreshold1: 70,
+                alertThreshold2: 80,
+                alertThreshold3: 90
+            })
+        });
+
+        if (!response.ok) throw new Error('Erro ao configurar MEI');
+
+        alert('Configuração MEI salva com sucesso!');
+        await loadMeiDashboard();
+    } catch (error) {
+        console.error('Erro ao configurar MEI:', error);
+        alert('Erro ao salvar configuração MEI');
+    }
+}
+
+// Event Listeners para MEI
+document.getElementById('meiConfigForm')?.addEventListener('submit', configureMei);

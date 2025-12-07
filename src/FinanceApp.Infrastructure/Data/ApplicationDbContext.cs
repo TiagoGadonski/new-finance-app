@@ -17,6 +17,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Debt> Debts => Set<Debt>();
     public DbSet<RoundupRule> RoundupRules => Set<RoundupRule>();
     public DbSet<ClassificationRule> ClassificationRules => Set<ClassificationRule>();
+    public DbSet<MeiSettings> MeiSettings => Set<MeiSettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -167,6 +168,25 @@ public class ApplicationDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // MeiSettings
+        modelBuilder.Entity<MeiSettings>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.AnnualRevenueLimit).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.AlertThreshold1).HasColumnType("decimal(5,2)");
+            entity.Property(e => e.AlertThreshold2).HasColumnType("decimal(5,2)");
+            entity.Property(e => e.AlertThreshold3).HasColumnType("decimal(5,2)");
+            entity.HasIndex(e => new { e.UserId, e.Year }).IsUnique();
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.MainCategory)
+                .WithMany()
+                .HasForeignKey(e => e.MainCategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
     }
 }

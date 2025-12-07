@@ -52,6 +52,7 @@
             <button class="tab-button" onclick="showTab('subscriptions')">Assinaturas</button>
             <button class="tab-button" onclick="showTab('goals')">Metas</button>
             <button class="tab-button" onclick="showTab('debts')">Dívidas</button>
+            <button class="tab-button" onclick="showTab('mei')">MEI</button>
         </div>
 
         <!-- Dashboard Tab -->
@@ -313,6 +314,87 @@
                 </div>
                 <button onclick="simulateDebtPayment()" class="btn btn-primary">Simular</button>
                 <div id="simulationResult"></div>
+            </div>
+        </div>
+
+        <!-- MEI Tab -->
+        <div id="meiTab" class="tab-content">
+            <h2>Controle MEI - Limite de Faturamento</h2>
+
+            <div id="meiAlert" style="display:none;" class="card"></div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Faturamento Anual</div>
+                    <div class="stat-value" id="meiCurrentRevenue">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Limite MEI</div>
+                    <div class="stat-value" id="meiLimit">R$ 81.000,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Disponível</div>
+                    <div class="stat-value income" id="meiRemaining">R$ 81.000,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">% Utilizado</div>
+                    <div class="stat-value" id="meiPercentage">0%</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Configurar MEI</h3>
+                <form id="meiConfigForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Ano</label>
+                            <input type="number" id="meiYear" value="2024" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Limite Anual (R$)</label>
+                            <input type="number" id="meiLimitInput" step="0.01" value="81000" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mês de Início da Atividade</label>
+                            <select id="meiStartMonth">
+                                <option value="1">Janeiro</option>
+                                <option value="2">Fevereiro</option>
+                                <option value="3">Março</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Maio</option>
+                                <option value="6">Junho</option>
+                                <option value="7">Julho</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Setembro</option>
+                                <option value="10">Outubro</option>
+                                <option value="11">Novembro</option>
+                                <option value="12">Dezembro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoria Principal MEI (opcional)</label>
+                            <select id="meiCategory">
+                                <option value="">Todas as receitas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Salvar Configuração</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Progresso Anual</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="meiProgress" style="width: 0%">0%</div>
+                </div>
+                <p style="margin-top: 10px; text-align: center;" id="meiProjection"></p>
+            </div>
+
+            <div class="card">
+                <h3>Faturamento Mensal</h3>
+                <div id="meiMonthlyBreakdown"></div>
             </div>
         </div>
     </div>

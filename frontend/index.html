@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceApp - Gestão Financeira</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container" id="loginContainer">
+        <div class="card">
+            <h1>💰 FinanceApp</h1>
+            <p class="subtitle">Gestão Financeira Pessoal e MEI</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="demo@financeapp.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" value="Demo@123" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Entrar</button>
+
+                <div class="info-box">
+                    <strong>Credenciais Demo:</strong><br>
+                    Email: demo@financeapp.com<br>
+                    Senha: Demo@123
+                </div>
+            </form>
+
+            <div id="loginError" class="error" style="display: none;"></div>
+        </div>
+    </div>
+
+    <div class="container" id="dashboardContainer" style="display: none;">
+        <nav class="navbar">
+            <h1>💰 FinanceApp</h1>
+            <div class="nav-right">
+                <span id="userName"></span>
+                <button onclick="logout()" class="btn btn-secondary">Sair</button>
+            </div>
+        </nav>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('dashboard')">Dashboard</button>
+            <button class="tab-button" onclick="showTab('transactions')">Transações</button>
+            <button class="tab-button" onclick="showTab('budgets')">Orçamentos</button>
+            <button class="tab-button" onclick="showTab('subscriptions')">Assinaturas</button>
+            <button class="tab-button" onclick="showTab('goals')">Metas</button>
+            <button class="tab-button" onclick="showTab('debts')">Dívidas</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboardTab" class="tab-content active">
+            <h2>Dashboard Financeiro</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Total em Contas</div>
+                    <div class="stat-value" id="totalBalance">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Receitas do Mês</div>
+                    <div class="stat-value income" id="monthIncome">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Despesas do Mês</div>
+                    <div class="stat-value expense" id="monthExpense">R$ 0,00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Saldo do Mês</div>
+                    <div class="stat-value" id="monthBalance">R$ 0,00</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h3>📊 Minhas Contas</h3>
+                    <div id="accountsList"></div>
+                </div>
+
+                <div class="card">
+                    <h3>📝 Transações Recentes</h3>
+                    <div id="recentTransactions"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions Tab -->
+        <div id="transactionsTab" class="tab-content">
+            <h2>Transações</h2>
+
+            <div class="card">
+                <h3>➕ Nova Transação</h3>
+                <form id="transactionForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Conta</label>
+                            <select id="txAccountId" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select id="txCategoryId" required></select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select id="txType" required>
+                                <option value="Income">Receita</option>
+                                <option value="Expense">Despesa</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <input type="number" id="txAmount" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input type="text" id="txDescription" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Data</label>
+                        <input type="datetime-local" id="txDate" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Adicionar Transação</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>📋 Lista de Transações</h3>
+                <div id="transactionsList"></div>
+            </div>
+        </div>
+
+        <!-- Budgets Tab -->
+        <div id="budgetsTab" class="tab-content">
+            <h2>Orçamentos Mensais</h2>
+
+            <div class="card">
+                <h3>➕ Novo Orçamento</h3>
+                <form id="budgetForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select id="budgetCategoryId" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Limite (R$)</label>
+                            <input type="number" id="budgetLimit" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Mês</label>
+                            <input type="number" id="budgetMonth" min="1" max="12" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Ano</label>
+                            <input type="number" id="budgetYear" min="2024" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Criar Orçamento</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>📊 Orçamento Consolidado</h3>
+                <div id="budgetsList"></div>
+            </div>
+        </div>
+
+        <!-- Subscriptions Tab -->
+        <div id="subscriptionsTab" class="tab-content">
+            <h2>Assinaturas</h2>
+
+            <div class="card">
+                <h3>➕ Nova Assinatura</h3>
+                <form id="subscriptionForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nome</label>
+                            <input type="text" id="subName" placeholder="Netflix, Spotify..." required>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoria</label>
+                            <select id="subCategoryId" required></select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Valor (R$)</label>
+                            <input type="number" id="subAmount" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Dia de Cobrança</label>
+                            <input type="number" id="subBillingDay" min="1" max="31" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Adicionar Assinatura</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>📱 Minhas Assinaturas</h3>
+                <div id="subscriptionsList"></div>
+            </div>
+        </div>
+
+        <!-- Goals Tab -->
+        <div id="goalsTab" class="tab-content">
+            <h2>Metas Financeiras</h2>
+
+            <div class="card">
+                <h3>🎯 Nova Meta</h3>
+                <form id="goalForm">
+                    <div class="form-group">
+                        <label>Nome da Meta</label>
+                        <input type="text" id="goalName" placeholder="Viagem, Carro..." required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Valor Objetivo (R$)</label>
+                            <input type="number" id="goalTarget" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Data Objetivo</label>
+                            <input type="date" id="goalDate" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Criar Meta</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>🏆 Minhas Metas</h3>
+                <div id="goalsList"></div>
+            </div>
+        </div>
+
+        <!-- Debts Tab -->
+        <div id="debtsTab" class="tab-content">
+            <h2>Gestão de Dívidas</h2>
+
+            <div class="card">
+                <h3>➕ Nova Dívida</h3>
+                <form id="debtForm">
+                    <div class="form-group">
+                        <label>Nome</label>
+                        <input type="text" id="debtName" placeholder="Cartão, Empréstimo..." required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Valor Total (R$)</label>
+                            <input type="number" id="debtTotal" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Valor Restante (R$)</label>
+                            <input type="number" id="debtRemaining" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Taxa de Juros (% ao mês)</label>
+                            <input type="number" id="debtRate" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pagamento Mínimo (R$)</label>
+                            <input type="number" id="debtMinPayment" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Adicionar Dívida</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>💳 Minhas Dívidas</h3>
+                <div id="debtsList"></div>
+            </div>
+
+            <div class="card">
+                <h3>🧮 Simulador de Quitação</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Valor Mensal Disponível (R$)</label>
+                        <input type="number" id="simAmount" step="0.01" placeholder="1500.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Estratégia</label>
+                        <select id="simStrategy">
+                            <option value="Snowball">Bola de Neve (menor saldo)</option>
+                            <option value="Avalanche">Avalanche (maior juros)</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="simulateDebtPayment()" class="btn btn-primary">Simular</button>
+                <div id="simulationResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

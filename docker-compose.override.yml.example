@@ -1,0 +1,47 @@
+# Docker Compose Override Example
+# Copie este arquivo para docker-compose.override.yml e customize conforme necessário
+# O arquivo docker-compose.override.yml é automaticamente carregado pelo Docker Compose
+
+version: '3.8'
+
+services:
+  # Exemplo: Alterar porta da API
+  api:
+    ports:
+      - "8080:8080"  # Porta customizada
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - JwtSettings__SecretKey=your-production-secret-key-here
+    # Exemplo: Adicionar volume para logs persistentes
+    volumes:
+      - ./logs:/app/logs
+      - ./appsettings.Production.json:/app/appsettings.Production.json
+
+  # Exemplo: Customizar PostgreSQL
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: seu-password-seguro
+    # Exemplo: Backup automático
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backups:/backups
+
+  # Exemplo: Redis com persistência
+  redis:
+    command: redis-server --appendonly yes --requirepass seu-password-redis
+    volumes:
+      - redis-data:/data
+
+# Exemplo: Adicionar serviços adicionais
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: financeapp-pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@financeapp.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - "5050:80"
+  #   networks:
+  #     - financeapp-network
+  #   depends_on:
+  #     - postgres

@@ -1,0 +1,17 @@
+namespace FinanceApp.Domain.Entities;
+
+public class Debt : BaseEntity
+{
+    public Guid UserId { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public decimal TotalAmount { get; set; }
+    public decimal RemainingAmount { get; set; }
+    public decimal InterestRate { get; set; }
+    public decimal MinimumPayment { get; set; }
+    public DateTime? DueDate { get; set; }
+
+    // Navigation properties
+    public User User { get; set; } = null!;
+
+    public decimal TotalInterest => TotalAmount - RemainingAmount;
+}

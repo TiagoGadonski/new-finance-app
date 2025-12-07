@@ -1,0 +1,322 @@
+### FinanceApp API - REST Client Collection
+### Base URL
+@baseUrl = http://localhost:5000/api
+@accessToken =
+@refreshToken =
+
+###############################################
+# AUTH ENDPOINTS
+###############################################
+
+### 1. Sign Up
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Tiago Silva",
+  "email": "tiago@example.com",
+  "password": "Senha@123"
+}
+
+### 2. Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "demo@financeapp.com",
+  "password": "Demo@123"
+}
+
+### 3. Refresh Token
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+###############################################
+# USER ENDPOINTS
+###############################################
+
+### 4. Get Current User
+GET {{baseUrl}}/user/me
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# ACCOUNTS ENDPOINTS
+###############################################
+
+### 5. Create Account
+POST {{baseUrl}}/accounts
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Conta Corrente Nubank",
+  "type": "Checking",
+  "initialBalance": 5000.00,
+  "color": "#8A05BE"
+}
+
+### 6. Get All Accounts
+GET {{baseUrl}}/accounts
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# CATEGORIES ENDPOINTS
+###############################################
+
+### 7. Create Category
+POST {{baseUrl}}/categories
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Restaurantes",
+  "type": "Expense",
+  "icon": "🍽️",
+  "color": "#FF6B6B"
+}
+
+### 8. Get All Categories
+GET {{baseUrl}}/categories
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# TRANSACTIONS ENDPOINTS
+###############################################
+
+### 9. Create Transaction
+POST {{baseUrl}}/transactions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "accountId": "{{accountId}}",
+  "categoryId": "{{categoryId}}",
+  "amount": 45.90,
+  "type": "Expense",
+  "description": "Almoço no Restaurante",
+  "date": "2024-12-06T12:30:00Z",
+  "isRecurring": false,
+  "tags": "alimentação,trabalho"
+}
+
+### 10. Import Transactions from CSV
+POST {{baseUrl}}/transactions/import/csv
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "accountId": "{{accountId}}",
+  "csvContent": "Date,Description,Amount,Type\n2024-12-01,Salário,5000.00,Income\n2024-12-02,Supermercado,250.50,Expense\n2024-12-03,Uber,35.00,Expense"
+}
+
+### 11. Get All Transactions
+GET {{baseUrl}}/transactions
+Authorization: Bearer {{accessToken}}
+
+### 12. Get Transaction Summary
+GET {{baseUrl}}/transactions/summary?month=12&year=2024
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# BUDGETS ENDPOINTS
+###############################################
+
+### 13. Create Budget
+POST {{baseUrl}}/budgets
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "categoryId": "{{categoryId}}",
+  "limit": 1000.00,
+  "month": 12,
+  "year": 2024
+}
+
+### 14. Get Consolidated Budget
+GET {{baseUrl}}/budgets/consolidated?month=12&year=2024
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# SUBSCRIPTIONS ENDPOINTS
+###############################################
+
+### 15. Create Subscription
+POST {{baseUrl}}/subscriptions
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Netflix",
+  "categoryId": "{{categoryId}}",
+  "amount": 55.90,
+  "billingDay": 15
+}
+
+### 16. Get Subscription Forecast (30 days)
+POST {{baseUrl}}/subscriptions/forecast?days=30
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# GOALS ENDPOINTS
+###############################################
+
+### 17. Create Goal
+POST {{baseUrl}}/goals
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Viagem para Europa",
+  "targetAmount": 15000.00,
+  "targetDate": "2025-12-31T00:00:00Z"
+}
+
+### 18. Get All Goals
+GET {{baseUrl}}/goals
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# DEBTS ENDPOINTS
+###############################################
+
+### 19. Create Debt
+POST {{baseUrl}}/debts
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Cartão de Crédito - Nubank",
+  "totalAmount": 8000.00,
+  "remainingAmount": 6500.00,
+  "interestRate": 12.5,
+  "minimumPayment": 300.00,
+  "dueDate": "2025-01-15T00:00:00Z"
+}
+
+### 20. Get All Debts
+GET {{baseUrl}}/debts
+Authorization: Bearer {{accessToken}}
+
+### 21. Simulate Debt Payment - Snowball Strategy
+POST {{baseUrl}}/debts/simulate
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "monthlyPayment": 1500.00,
+  "strategy": "Snowball"
+}
+
+### 22. Simulate Debt Payment - Avalanche Strategy
+POST {{baseUrl}}/debts/simulate
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "monthlyPayment": 1500.00,
+  "strategy": "Avalanche"
+}
+
+###############################################
+# ROUNDUP RULES ENDPOINTS
+###############################################
+
+### 23. Create Roundup Rule
+POST {{baseUrl}}/roundups
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "sourceAccountId": "{{sourceAccountId}}",
+  "destinationAccountId": "{{destinationAccountId}}",
+  "multiplier": 1.0
+}
+
+### 24. Simulate Roundup for a Month
+POST {{baseUrl}}/roundups/simulate
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "month": 12,
+  "year": 2024
+}
+
+###############################################
+# EXAMPLE RESPONSES
+###############################################
+
+### Example: Login Response
+# {
+#   "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+#   "refreshToken": "base64EncodedRefreshToken",
+#   "expiresAt": "2024-12-06T14:30:00Z",
+#   "user": {
+#     "id": "guid-here",
+#     "name": "Demo User",
+#     "email": "demo@financeapp.com"
+#   }
+# }
+
+### Example: Transaction Summary Response
+# {
+#   "totalIncome": 5000.00,
+#   "totalExpense": 2500.00,
+#   "balance": 2500.00,
+#   "month": 12,
+#   "year": 2024,
+#   "categoryBreakdown": [
+#     {
+#       "categoryId": "guid-here",
+#       "categoryName": "Alimentação",
+#       "amount": 800.00,
+#       "transactionCount": 15
+#     }
+#   ]
+# }
+
+### Example: Budget Consolidated Response
+# {
+#   "month": 12,
+#   "year": 2024,
+#   "totalLimit": 5000.00,
+#   "totalSpent": 3200.00,
+#   "budgets": [
+#     {
+#       "id": "guid-here",
+#       "categoryId": "guid-here",
+#       "categoryName": "Alimentação",
+#       "limit": 1000.00,
+#       "spent": 850.00,
+#       "remaining": 150.00,
+#       "percentageUsed": 85.00,
+#       "month": 12,
+#       "year": 2024,
+#       "shouldAlert": true
+#     }
+#   ]
+# }
+
+### Example: Debt Simulation Response
+# {
+#   "strategy": "Snowball",
+#   "paymentPlan": [
+#     {
+#       "debtId": "guid-here",
+#       "debtName": "Cartão de Crédito",
+#       "paymentOrder": 1,
+#       "monthlyPayment": 500.00,
+#       "monthsToPayoff": 15,
+#       "totalInterest": 450.00
+#     }
+#   ],
+#   "totalInterestPaid": 1250.00,
+#   "monthsToPayoff": 24,
+#   "monthlySavings": 350.00
+# }

@@ -1,0 +1,28 @@
+using FinanceApp.Domain.Enums;
+
+namespace FinanceApp.Application.Common.DTOs;
+
+public record GoalDto(
+    Guid Id,
+    string Name,
+    decimal TargetAmount,
+    decimal CurrentAmount,
+    decimal RemainingAmount,
+    decimal PercentageAchieved,
+    DateTime TargetDate,
+    GoalStatus Status
+);
+
+public record CreateGoalRequest(
+    string Name,
+    decimal TargetAmount,
+    DateTime TargetDate
+);
+
+public record UpdateGoalRequest(
+    string Name,
+    decimal TargetAmount,
+    decimal CurrentAmount,
+    DateTime TargetDate,
+    GoalStatus Status
+);

@@ -1,0 +1,123 @@
+═══════════════════════════════════════════════════════════════
+  💰 FINANCEAPP - COMO RODAR TUDO (PASSO A PASSO SIMPLES)
+═══════════════════════════════════════════════════════════════
+
+🎯 OPÇÃO MAIS FÁCIL - DUPLO CLIQUE!
+───────────────────────────────────────────────────────────────
+
+1. Duplo clique em: RUN.bat
+2. Aguarde 1-2 minutos
+3. Navegador abre automaticamente!
+
+PRONTO! ✅
+
+
+🔧 OPÇÃO MANUAL (Se RUN.bat não funcionar)
+───────────────────────────────────────────────────────────────
+
+PASSO 1 - INICIAR BACKEND
+──────────────────────────
+Abra PowerShell COMO ADMINISTRADOR e rode:
+
+    cd T:\Tiago\FinanceApp
+    docker-compose up -d
+
+Aguarde aparecer: "✅ Container started"
+
+
+PASSO 2 - INICIAR FRONTEND
+───────────────────────────
+Abra OUTRO PowerShell (não precisa ser admin) e rode:
+
+    cd T:\Tiago\FinanceApp\frontend
+    python server.py
+
+Ou simplesmente abra o arquivo:
+    T:\Tiago\FinanceApp\frontend\index.html
+
+
+PASSO 3 - ACESSAR NO NAVEGADOR
+───────────────────────────────
+Abra: http://localhost:8080
+
+Credenciais (já preenchidas):
+    Email: demo@financeapp.com
+    Senha: Demo@123
+
+Clique em "Entrar" e pronto!
+
+
+═══════════════════════════════════════════════════════════════
+  📊 O QUE TESTAR
+═══════════════════════════════════════════════════════════════
+
+✅ DASHBOARD
+   → Ver saldo das contas
+   → Receitas e despesas do mês
+
+✅ TRANSAÇÕES
+   → Criar nova transação
+   → Ver lista completa
+   → Importar CSV
+
+✅ ORÇAMENTOS
+   → Definir limite por categoria
+   → Ver alertas quando atingir 80%
+
+✅ ASSINATURAS
+   → Cadastrar Netflix, Spotify
+   → Ver próximas cobranças
+
+✅ METAS
+   → Criar meta financeira
+   → Acompanhar progresso
+
+✅ DÍVIDAS (MELHOR PARTE!)
+   → Cadastrar dívidas
+   → SIMULAR quitação com 2 estratégias:
+      • Bola de Neve (menor saldo primeiro)
+      • Avalanche (maior juros primeiro)
+   → Comparar economia entre estratégias!
+
+
+═══════════════════════════════════════════════════════════════
+  🆘 PROBLEMAS?
+═══════════════════════════════════════════════════════════════
+
+❌ "Erro de conexão com servidor"
+   → Backend não está rodando
+   → Rode: docker-compose up -d
+
+❌ "Docker não encontrado"
+   → Instale: https://www.docker.com/products/docker-desktop/
+
+❌ "Python não encontrado"
+   → Simplesmente abra: frontend/index.html (duplo clique)
+
+❌ "Porta 5000 em uso"
+   → Mude em docker-compose.yml:
+     ports: - "8080:8080"
+
+
+═══════════════════════════════════════════════════════════════
+  📡 ACESSOS RÁPIDOS
+═══════════════════════════════════════════════════════════════
+
+Frontend:          http://localhost:8080
+Backend Swagger:   http://localhost:5000/swagger
+API Base:          http://localhost:5000/api
+
+
+═══════════════════════════════════════════════════════════════
+  🛑 PARAR TUDO
+═══════════════════════════════════════════════════════════════
+
+1. Frontend: Feche a janela do Python (Ctrl+C)
+2. Backend: docker-compose down
+
+
+═══════════════════════════════════════════════════════════════
+
+Desenvolvido com ❤️ usando .NET 8 + Clean Architecture
+
+═══════════════════════════════════════════════════════════════

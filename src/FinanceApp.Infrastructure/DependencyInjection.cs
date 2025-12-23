@@ -13,16 +13,37 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Database
+        // Database - Use SQLite for development
+        var connectionString = configuration.GetConnectionString("DefaultConnection") ?? "Data Source=financeapp.db";
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-
-        // Redis Cache
-        services.AddStackExchangeRedisCache(options =>
         {
-            options.Configuration = configuration.GetConnectionString("Redis");
-            options.InstanceName = "FinanceApp_";
+            if (connectionString.Contains(".db") || connectionString.StartsWith("Data Source="))
+            {
+                // SQLite for development
+                options.UseSqlite(connectionString);
+            }
+            else
+            {
+                // PostgreSQL for production
+                options.UseNpgsql(connectionString);
+            }
         });
+
+        // Redis Cache - Optional for development
+        var redisConnection = configuration.GetConnectionString("Redis");
+        if (!string.IsNullOrEmpty(redisConnection) && redisConnection != "disabled")
+        {
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnection;
+                options.InstanceName = "FinanceApp_";
+            });
+        }
+        else
+        {
+            // Use in-memory cache for development
+            services.AddDistributedMemoryCache();
+        }
 
         // Repositories
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

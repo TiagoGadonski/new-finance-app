@@ -25,6 +25,7 @@ public static class DataSeeder
             Name = "Demo User",
             Email = "demo@financeapp.com",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Demo@123"),
+            Role = Domain.Enums.UserRole.Admin,
             CreatedAt = DateTime.UtcNow
         };
 

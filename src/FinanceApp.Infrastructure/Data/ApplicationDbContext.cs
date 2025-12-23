@@ -18,6 +18,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<RoundupRule> RoundupRules => Set<RoundupRule>();
     public DbSet<ClassificationRule> ClassificationRules => Set<ClassificationRule>();
     public DbSet<MeiSettings> MeiSettings => Set<MeiSettings>();
+    public DbSet<ShoppingList> ShoppingLists => Set<ShoppingList>();
+    public DbSet<ShoppingItem> ShoppingItems => Set<ShoppingItem>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -31,6 +33,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Email).IsRequired().HasMaxLength(200);
             entity.Property(e => e.PasswordHash).IsRequired();
+            entity.Property(e => e.Role).IsRequired().HasDefaultValue(Domain.Enums.UserRole.User);
         });
 
         // Account
@@ -186,6 +189,37 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(e => e.MainCategory)
                 .WithMany()
                 .HasForeignKey(e => e.MainCategoryId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // ShoppingList
+        modelBuilder.Entity<ShoppingList>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => new { e.UserId, e.Status });
+        });
+
+        // ShoppingItem
+        modelBuilder.Entity<ShoppingItem>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Category).HasMaxLength(100);
+            entity.Property(e => e.EstimatedPrice).HasColumnType("decimal(10,2)");
+            entity.Property(e => e.ActualPrice).HasColumnType("decimal(10,2)");
+            entity.HasOne(e => e.ShoppingList)
+                .WithMany(sl => sl.Items)
+                .HasForeignKey(e => e.ShoppingListId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Transaction)
+                .WithMany()
+                .HasForeignKey(e => e.TransactionId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
     }

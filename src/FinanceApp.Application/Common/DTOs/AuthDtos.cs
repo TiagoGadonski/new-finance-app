@@ -1,3 +1,5 @@
+using FinanceApp.Domain.Enums;
+
 namespace FinanceApp.Application.Common.DTOs;
 
 public record SignUpRequest(string Name, string Email, string Password);
@@ -13,4 +15,4 @@ public record AuthResponse(
     UserDto User
 );
 
-public record UserDto(Guid Id, string Name, string Email);
+public record UserDto(Guid Id, string Name, string Email, UserRole Role);

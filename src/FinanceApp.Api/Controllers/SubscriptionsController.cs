@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using FinanceApp.Application.Common.DTOs;
 using FinanceApp.Application.Features.Subscriptions.Queries;
+using FinanceApp.Application.Features.Subscriptions.Commands;
 using FinanceApp.Domain.Interfaces;
 using FinanceApp.Domain.Entities;
 
@@ -47,6 +48,14 @@ public class SubscriptionsController : BaseAuthenticatedController
         var query = new GetSubscriptionForecastQuery(UserId, days);
         var result = await _mediator.Send(query);
         return Ok(result);
+    }
+
+    [HttpPost("process-billings")]
+    public async Task<ActionResult<object>> ProcessBillings()
+    {
+        var command = new ProcessSubscriptionBillingsCommand(UserId);
+        var processedCount = await _mediator.Send(command);
+        return Ok(new { processedCount, message = $"{processedCount} assinatura(s) processada(s) com sucesso" });
     }
 
     private DateTime CalculateNextBillingDate(int billingDay)

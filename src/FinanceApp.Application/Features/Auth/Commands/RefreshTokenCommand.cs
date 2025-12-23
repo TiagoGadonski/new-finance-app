@@ -37,7 +37,7 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, A
             accessToken,
             newRefreshToken,
             DateTime.UtcNow.AddHours(1),
-            new UserDto(user.Id, user.Name, user.Email)
+            new UserDto(user.Id, user.Name, user.Email, user.Role)
         );
     }
 }

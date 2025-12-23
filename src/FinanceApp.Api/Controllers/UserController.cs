@@ -22,6 +22,6 @@ public class UserController : BaseAuthenticatedController
         if (user == null)
             return NotFound();
 
-        return Ok(new UserDto(user.Id, user.Name, user.Email));
+        return Ok(new UserDto(user.Id, user.Name, user.Email, user.Role));
     }
 }

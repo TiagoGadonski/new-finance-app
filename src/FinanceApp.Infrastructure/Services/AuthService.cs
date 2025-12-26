@@ -31,7 +31,15 @@ public class AuthService : IAuthService
     public string GenerateJwtToken(User user)
     {
         var jwtSettings = _configuration.GetSection("JwtSettings");
-        var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not configured");
+        var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
+            ?? jwtSettings["SecretKey"]
+            ?? throw new InvalidOperationException("JWT Secret Key not configured. Set JWT_SECRET_KEY environment variable.");
+
+        if (string.IsNullOrEmpty(secretKey) || secretKey.Length < 32)
+        {
+            throw new InvalidOperationException("JWT Secret Key must be at least 32 characters long.");
+        }
+
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

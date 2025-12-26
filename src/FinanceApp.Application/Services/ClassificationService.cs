@@ -34,9 +34,10 @@ public class ClassificationService : IClassificationService
 
         foreach (var word in words)
         {
+            var wordLower = word.ToLower();
             var existingRule = (await _ruleRepository.FindAsync(r =>
                 r.UserId == userId &&
-                r.Keyword.Equals(word, StringComparison.OrdinalIgnoreCase)))
+                r.Keyword == wordLower))
                 .FirstOrDefault();
 
             if (existingRule != null)

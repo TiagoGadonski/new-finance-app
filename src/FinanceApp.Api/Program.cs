@@ -22,11 +22,7 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Add services
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-    });
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 // Swagger with JWT support
@@ -59,6 +55,15 @@ builder.Services.AddSwaggerGen(c =>
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")
+    ?? jwtSettings["SecretKey"]
+    ?? throw new InvalidOperationException("JWT Secret Key not configured. Set JWT_SECRET_KEY environment variable.");
+
+if (string.IsNullOrEmpty(secretKey) || secretKey.Length < 32)
+{
+    throw new InvalidOperationException("JWT Secret Key must be at least 32 characters long.");
+}
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -74,7 +79,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
     };
 });
 
@@ -93,13 +98,17 @@ builder.Services.AddRateLimiter(options =>
 });
 
 // CORS
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
+    ?? new[] { "http://localhost:3000", "https://localhost:3000" };
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(allowedOrigins)
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
@@ -108,6 +117,27 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+// Security Headers
+app.Use(async (context, next) =>
+{
+    // Prevent clickjacking
+    context.Response.Headers.Add("X-Frame-Options", "DENY");
+    // Prevent MIME type sniffing
+    context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+    // Enable XSS protection
+    context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
+    // Strict transport security
+    context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    // Content security policy
+    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; frame-ancestors 'none'");
+    // Referrer policy
+    context.Response.Headers.Add("Referrer-Policy", "strict-origin-when-cross-origin");
+    // Permissions policy
+    context.Response.Headers.Add("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+
+    await next();
+});
 
 // Middleware pipeline
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -133,8 +163,8 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    // Ensure database is created (for development)
-    await context.Database.EnsureCreatedAsync();
+    // Apply pending migrations
+    await context.Database.MigrateAsync();
 
     // Seed initial data
     await DataSeeder.SeedAsync(context);

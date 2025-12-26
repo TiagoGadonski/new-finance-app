@@ -184,56 +184,62 @@ export default function DebtsPage() {
         {/* Debts List */}
         <div className="space-y-4">
           {debts && debts.length > 0 ? (
-            debts.map((debt) => (
-              <Card key={debt.id} className="hover:shadow-lg transition-shadow">
-                <div className="space-y-4 p-6">
-                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-slate-900">{debt.name}</h3>
-                      <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-sm text-slate-600">
-                        <span>Taxa: {debt.interestRate}% a.m.</span>
-                        <span>• Parcela mínima: {formatCurrency(debt.minimumPayment)}</span>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteDebt(debt.id)}
-                      disabled={deleteMutation.isPending}
-                      className="self-end sm:self-auto"
-                    >
-                      <Trash2 className="w-4 h-4 text-rose-600" />
-                    </Button>
-                  </div>
+            debts.map((debt) => {
+              const percentagePaid = debt.totalAmount > 0
+                ? ((debt.totalAmount - debt.remainingAmount) / debt.totalAmount) * 100
+                : 0;
 
-                  <div>
-                    <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-slate-600">
-                        {formatCurrency(debt.totalAmount - debt.remainingAmount)} de {formatCurrency(debt.totalAmount)} pagos
-                      </span>
-                      <span className="font-semibold text-slate-900">
-                        {debt.percentagePaid.toFixed(1)}%
-                      </span>
+              return (
+                <Card key={debt.id} className="hover:shadow-lg transition-shadow">
+                  <div className="space-y-4 p-6">
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-lg font-semibold text-slate-900">{debt.name}</h3>
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-sm text-slate-600">
+                          <span>Taxa: {debt.interestRate}% a.m.</span>
+                          <span>• Parcela mínima: {formatCurrency(debt.minimumPayment)}</span>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteDebt(debt.id)}
+                        disabled={deleteMutation.isPending}
+                        className="self-end sm:self-auto"
+                      >
+                        <Trash2 className="w-4 h-4 text-rose-600" />
+                      </Button>
                     </div>
-                    <div className="w-full bg-slate-200 rounded-full h-3">
-                      <div
-                        className={`h-3 rounded-full transition-all ${
-                          debt.percentagePaid >= 75
-                            ? 'bg-emerald-600'
-                            : debt.percentagePaid >= 50
-                            ? 'bg-yellow-500'
-                            : 'bg-rose-600'
-                        }`}
-                        style={{ width: `${Math.min(debt.percentagePaid, 100)}%` }}
-                      />
+
+                    <div>
+                      <div className="flex items-center justify-between text-sm mb-2">
+                        <span className="text-slate-600">
+                          {formatCurrency(debt.totalAmount - debt.remainingAmount)} de {formatCurrency(debt.totalAmount)} pagos
+                        </span>
+                        <span className="font-semibold text-slate-900">
+                          {percentagePaid.toFixed(1)}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-slate-200 rounded-full h-3">
+                        <div
+                          className={`h-3 rounded-full transition-all ${
+                            percentagePaid >= 75
+                              ? 'bg-emerald-600'
+                              : percentagePaid >= 50
+                              ? 'bg-yellow-500'
+                              : 'bg-rose-600'
+                          }`}
+                          style={{ width: `${Math.min(percentagePaid, 100)}%` }}
+                        />
+                      </div>
+                      <p className="text-sm text-slate-600 mt-2">
+                        Restante: <span className="font-semibold text-rose-600">{formatCurrency(debt.remainingAmount)}</span>
+                      </p>
                     </div>
-                    <p className="text-sm text-slate-600 mt-2">
-                      Restante: <span className="font-semibold text-rose-600">{formatCurrency(debt.remainingAmount)}</span>
-                    </p>
                   </div>
-                </div>
-              </Card>
-            ))
+                </Card>
+              );
+            })
           ) : (
             <EmptyState
               icon={CreditCard}

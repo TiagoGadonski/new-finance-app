@@ -16,7 +16,7 @@ export default function BudgetsPage() {
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
   const queryClient = useQueryClient();
 
-  const { data: budgets, isLoading: budgetsLoading } = useQuery({
+  const { data: budgetData, isLoading: budgetsLoading } = useQuery({
     queryKey: ['budgets', selectedMonth, selectedYear],
     queryFn: () => budgetsApi.getConsolidated(selectedMonth, selectedYear),
   });
@@ -84,9 +84,10 @@ export default function BudgetsPage() {
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
   ];
 
-  // Calculate totals
-  const totalLimit = budgets?.reduce((sum, b) => sum + b.limit, 0) || 0;
-  const totalSpent = budgets?.reduce((sum, b) => sum + b.spent, 0) || 0;
+  // Extract data from consolidated response
+  const budgets = budgetData?.budgets || [];
+  const totalLimit = budgetData?.totalLimit || 0;
+  const totalSpent = budgetData?.totalSpent || 0;
   const totalRemaining = totalLimit - totalSpent;
   const totalPercentage = totalLimit > 0 ? (totalSpent / totalLimit) * 100 : 0;
 

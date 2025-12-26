@@ -13,8 +13,8 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors } } = useForm<LoginRequest>({
     defaultValues: {
-      email: 'demo@financeapp.com',
-      password: 'Demo@123',
+      email: 'demo@example.com',
+      password: 'Demo1234',
     },
   });
 
@@ -120,26 +120,30 @@ export default function LoginPage() {
               />
             </div>
 
-            <div
-              className="border rounded-xl p-4 transition-colors"
-              style={{
-                backgroundColor: 'var(--info-light)',
-                borderColor: 'var(--border-color)'
-              }}
-            >
-              <p
-                className="text-sm font-medium mb-2"
-                style={{ color: 'var(--foreground)' }}
-              >
-                Usuário de Demonstração:
-              </p>
-              <div className="space-y-1">
-                <p className="text-xs opacity-80" style={{ color: 'var(--foreground)' }}>
-                  <span className="font-medium">Email:</span> demo@financeapp.com
-                </p>
-                <p className="text-xs opacity-80" style={{ color: 'var(--foreground)' }}>
-                  <span className="font-medium">Senha:</span> Demo@123
-                </p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <label
+                  htmlFor="remember-me"
+                  className="ml-2 block text-sm"
+                  style={{ color: 'var(--foreground)' }}
+                >
+                  Lembrar-me
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <a
+                  href="#"
+                  className="font-medium text-blue-600 hover:text-blue-500"
+                >
+                  Esqueceu a senha?
+                </a>
               </div>
             </div>
 

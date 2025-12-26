@@ -40,7 +40,24 @@
       "Bash(npm run generate:icons:*)",
       "Bash(ls:*)",
       "Bash(timeout /t 8)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(dotnet list:*)",
+      "Bash(dotnet add package:*)",
+      "Bash(del financeapp.db)",
+      "Bash(JWT_SECRET_KEY=\"development-secret-key-minimum-32-characters-for-local-dev-only\" dotnet run:*)",
+      "Bash(cat:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjE1NjU4MzI4LTQyODktNGRiMy04ZWNkLTU4ODk3ZTY2NDdmOSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImRlbW9AZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtbyBVc2VyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc2NjU0MDgzOSwiaXNzIjoiRmluYW5jZUFwcCIsImF1ZCI6IkZpbmFuY2VBcHBVc2VycyJ9.TlSSCOuq00ncU76qLepMnz4M3pAM69RTFj3Uu1hbbOM\")",
+      "Bash(cmd.exe //c \"taskkill /F /PID 17592\")",
+      "Bash(timeout 5 bash -c \"while [ ! -s ''C:\\\\Users\\\\CWBCOR~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-cwbcordeti-source-FinanceApp\\\\tasks\\\\b9b254d.output'' ]; do sleep 0.5; done; tail -50 ''C:\\\\Users\\\\CWBCOR~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-cwbcordeti-source-FinanceApp\\\\tasks\\\\b9b254d.output''\")",
+      "Bash(sqlite3:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImFjNzliM2EwLTg1MmUtNGIxZi1iNDI3LWI4NTk4NDMyYTA0OCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImRlbW9AZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtbyBVc2VyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc2NjYxMDgyOCwiaXNzIjoiRmluYW5jZUFwcCIsImF1ZCI6IkZpbmFuY2VBcHBVc2VycyJ9.OHiRPFoKrCJ6yHLwwyuKanw7NB3sXrVAnmSBxCrWIvo\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjYxZmI1MTU1LTZhZjUtNDQyMC1hOTgwLTQ2MDQyZTNkNjNmYSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImRlbW9AZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtbyBVc2VyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc2NjYxMTUyMSwiaXNzIjoiRmluYW5jZUFwcCIsImF1ZCI6IkZpbmFuY2VBcHBVc2VycyJ9.-oSGtD0iJR3jX0aNTf2Vu-C7FGsJT59AsNileYmwTUU\")",
+      "Bash(timeout /t 2)",
+      "Bash(cmd.exe //c \"taskkill /F /PID 25212\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjYxZmI1MTU1LTZhZjUtNDQyMC1hOTgwLTQ2MDQyZTNkNjNmYSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImRlbW9AZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtbyBVc2VyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc2NjcyMTA4NCwiaXNzIjoiRmluYW5jZUFwcCIsImF1ZCI6IkZpbmFuY2VBcHBVc2VycyJ9.9PLRHg7A5FET8I3g-iMhdMyy-i1vYWg4DGfpcoBG6Yk\")",
+      "Bash(cmd.exe //c \"taskkill /F /PID 22700\")"
     ]
   }
 }

@@ -8,5 +8,23 @@ namespace FinanceApp.Api.Controllers;
 [ApiController]
 public abstract class BaseAuthenticatedController : ControllerBase
 {
-    protected Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    protected Guid UserId
+    {
+        get
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                throw new UnauthorizedAccessException("User ID claim not found in token.");
+            }
+
+            if (!Guid.TryParse(userIdClaim, out var userId))
+            {
+                throw new UnauthorizedAccessException("Invalid User ID format in token.");
+            }
+
+            return userId;
+        }
+    }
 }

@@ -241,3 +241,228 @@ html {
   background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
   background-size: 2000px 100%;
 }
+
+/* Theme-aware text utilities */
+.text-primary {
+  color: var(--foreground);
+}
+
+.text-secondary {
+  color: #64748b;
+}
+
+[data-theme="dark"] .text-secondary {
+  color: #94a3b8;
+}
+
+.text-muted {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .text-muted {
+  color: #64748b;
+}
+
+/* Override Tailwind colors to be theme-aware */
+.text-slate-900 {
+  color: #0f172a;
+}
+
+[data-theme="dark"] .text-slate-900 {
+  color: #f8fafc;
+}
+
+.text-slate-800 {
+  color: #1e293b;
+}
+
+[data-theme="dark"] .text-slate-800 {
+  color: #f1f5f9;
+}
+
+.text-slate-600 {
+  color: #475569;
+}
+
+[data-theme="dark"] .text-slate-600 {
+  color: #cbd5e1;
+}
+
+.text-slate-500 {
+  color: #64748b;
+}
+
+[data-theme="dark"] .text-slate-500 {
+  color: #94a3b8;
+}
+
+.bg-slate-100 {
+  background-color: #f1f5f9;
+}
+
+[data-theme="dark"] .bg-slate-100 {
+  background-color: #1e293b;
+}
+
+.bg-slate-50 {
+  background-color: #f8fafc;
+}
+
+[data-theme="dark"] .bg-slate-50 {
+  background-color: #0f172a;
+}
+
+.bg-slate-200 {
+  background-color: #e2e8f0;
+}
+
+[data-theme="dark"] .bg-slate-200 {
+  background-color: #334155;
+}
+
+.bg-slate-700 {
+  background-color: #334155;
+}
+
+[data-theme="dark"] .bg-slate-700 {
+  background-color: #475569;
+}
+
+.bg-white {
+  background-color: #ffffff;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: #1a1f2e;
+}
+
+/* Gray colors (same as slate) */
+.text-gray-900 {
+  color: #0f172a;
+}
+
+[data-theme="dark"] .text-gray-900 {
+  color: #f8fafc;
+}
+
+.text-gray-600 {
+  color: #475569;
+}
+
+[data-theme="dark"] .text-gray-600 {
+  color: #cbd5e1;
+}
+
+.bg-gray-50 {
+  background-color: #f8fafc;
+}
+
+[data-theme="dark"] .bg-gray-50 {
+  background-color: #0f172a;
+}
+
+.bg-gray-100 {
+  background-color: #f1f5f9;
+}
+
+[data-theme="dark"] .bg-gray-100 {
+  background-color: #1e293b;
+}
+
+.bg-gray-200 {
+  background-color: #e2e8f0;
+}
+
+[data-theme="dark"] .bg-gray-200 {
+  background-color: #334155;
+}
+
+.border-gray-200 {
+  border-color: #e2e8f0;
+}
+
+[data-theme="dark"] .border-gray-200 {
+  border-color: #334155;
+}
+
+/* Colored backgrounds for badges, alerts, etc */
+.bg-blue-50 {
+  background-color: #eff6ff;
+}
+
+[data-theme="dark"] .bg-blue-50 {
+  background-color: #1e3a8a;
+}
+
+.bg-blue-100 {
+  background-color: #dbeafe;
+}
+
+[data-theme="dark"] .bg-blue-100 {
+  background-color: #1e40af;
+}
+
+.bg-emerald-50 {
+  background-color: #ecfdf5;
+}
+
+[data-theme="dark"] .bg-emerald-50 {
+  background-color: #065f46;
+}
+
+.bg-rose-50 {
+  background-color: #fff1f2;
+}
+
+[data-theme="dark"] .bg-rose-50 {
+  background-color: #9f1239;
+}
+
+.bg-red-50 {
+  background-color: #fef2f2;
+}
+
+[data-theme="dark"] .bg-red-50 {
+  background-color: #991b1b;
+}
+
+.hover\:bg-blue-50:hover {
+  background-color: #eff6ff;
+}
+
+[data-theme="dark"] .hover\:bg-blue-50:hover {
+  background-color: #1e3a8a;
+}
+
+.hover\:bg-red-50:hover {
+  background-color: #fef2f2;
+}
+
+[data-theme="dark"] .hover\:bg-red-50:hover {
+  background-color: #991b1b;
+}
+
+/* Hover text states */
+.hover\:text-slate-900:hover {
+  color: #0f172a;
+}
+
+[data-theme="dark"] .hover\:text-slate-900:hover {
+  color: #f8fafc;
+}
+
+.hover\:bg-slate-100:hover {
+  background-color: #f1f5f9;
+}
+
+[data-theme="dark"] .hover\:bg-slate-100:hover {
+  background-color: #1e293b;
+}
+
+.hover\:bg-slate-700:hover {
+  background-color: #334155;
+}
+
+[data-theme="dark"] .hover\:bg-slate-700:hover {
+  background-color: #475569;
+}

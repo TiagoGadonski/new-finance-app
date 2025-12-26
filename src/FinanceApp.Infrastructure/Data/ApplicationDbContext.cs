@@ -56,7 +56,29 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(e => e.User)
                 .WithMany(u => u.Categories)
                 .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(false);
+
+            // Seed default categories
+            entity.HasData(
+                // Income categories
+                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), UserId = null, Name = "Salário", Type = Domain.Enums.TransactionType.Income, Icon = "💰", Color = "#10b981", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111112"), UserId = null, Name = "Freelance", Type = Domain.Enums.TransactionType.Income, Icon = "💼", Color = "#3b82f6", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111113"), UserId = null, Name = "Investimentos", Type = Domain.Enums.TransactionType.Income, Icon = "📈", Color = "#8b5cf6", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111114"), UserId = null, Name = "Outros Rendimentos", Type = Domain.Enums.TransactionType.Income, Icon = "💵", Color = "#06b6d4", IsDefault = true, CreatedAt = DateTime.UtcNow },
+
+                // Expense categories
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222221"), UserId = null, Name = "Alimentação", Type = Domain.Enums.TransactionType.Expense, Icon = "🍔", Color = "#f97316", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), UserId = null, Name = "Transporte", Type = Domain.Enums.TransactionType.Expense, Icon = "🚗", Color = "#eab308", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222223"), UserId = null, Name = "Moradia", Type = Domain.Enums.TransactionType.Expense, Icon = "🏠", Color = "#a855f7", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222224"), UserId = null, Name = "Saúde", Type = Domain.Enums.TransactionType.Expense, Icon = "🏥", Color = "#ec4899", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222225"), UserId = null, Name = "Educação", Type = Domain.Enums.TransactionType.Expense, Icon = "📚", Color = "#6366f1", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222226"), UserId = null, Name = "Lazer", Type = Domain.Enums.TransactionType.Expense, Icon = "🎮", Color = "#14b8a6", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222227"), UserId = null, Name = "Compras", Type = Domain.Enums.TransactionType.Expense, Icon = "🛍️", Color = "#f43f5e", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222228"), UserId = null, Name = "Contas", Type = Domain.Enums.TransactionType.Expense, Icon = "📄", Color = "#ef4444", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222229"), UserId = null, Name = "Assinaturas", Type = Domain.Enums.TransactionType.Expense, Icon = "📱", Color = "#84cc16", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222230"), UserId = null, Name = "Outros Gastos", Type = Domain.Enums.TransactionType.Expense, Icon = "💸", Color = "#64748b", IsDefault = true, CreatedAt = DateTime.UtcNow }
+            );
         });
 
         // Transaction

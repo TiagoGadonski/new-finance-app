@@ -12,6 +12,11 @@ export const authApi = {
     return response.data;
   },
 
+  refresh: async (refreshToken: string): Promise<AuthResponse> => {
+    const response = await apiClient.post<AuthResponse>('/Auth/refresh', { refreshToken });
+    return response.data;
+  },
+
   logout: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('token');

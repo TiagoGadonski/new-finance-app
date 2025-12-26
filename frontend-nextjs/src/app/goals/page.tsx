@@ -166,7 +166,6 @@ export default function GoalsPage() {
             <h2 className="text-xl font-semibold text-slate-900 mb-4">Metas em Progresso</h2>
             <div className="space-y-4">
               {activeGoals.map((goal) => {
-                const remaining = goal.targetAmount - goal.currentAmount;
                 const daysUntilTarget = Math.ceil(
                   (new Date(goal.targetDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
                 );
@@ -211,17 +210,17 @@ export default function GoalsPage() {
                             {formatCurrency(goal.currentAmount)} de {formatCurrency(goal.targetAmount)}
                           </span>
                           <span className="font-semibold text-slate-900">
-                            {goal.percentageComplete.toFixed(1)}%
+                            {goal.percentageAchieved.toFixed(1)}%
                           </span>
                         </div>
                         <div className="w-full bg-slate-200 rounded-full h-3">
                           <div
                             className="h-3 rounded-full bg-blue-600 transition-all"
-                            style={{ width: `${Math.min(goal.percentageComplete, 100)}%` }}
+                            style={{ width: `${Math.min(goal.percentageAchieved, 100)}%` }}
                           />
                         </div>
                         <p className="text-sm text-slate-600 mt-2">
-                          Faltam: <span className="font-semibold text-slate-900">{formatCurrency(remaining)}</span>
+                          Faltam: <span className="font-semibold text-slate-900">{formatCurrency(goal.remainingAmount)}</span>
                         </p>
                       </div>
                     </div>

@@ -12,11 +12,16 @@ public class TransactionsController : BaseAuthenticatedController
 {
     private readonly IMediator _mediator;
     private readonly IRepository<Transaction> _transactionRepository;
+    private readonly IRepository<Account> _accountRepository;
 
-    public TransactionsController(IMediator mediator, IRepository<Transaction> transactionRepository)
+    public TransactionsController(
+        IMediator mediator,
+        IRepository<Transaction> transactionRepository,
+        IRepository<Account> accountRepository)
     {
         _mediator = mediator;
         _transactionRepository = transactionRepository;
+        _accountRepository = accountRepository;
     }
 
     [HttpPost]
@@ -38,18 +43,50 @@ public class TransactionsController : BaseAuthenticatedController
     [HttpGet("{id}")]
     public async Task<ActionResult<TransactionDto>> GetById(Guid id)
     {
-        var transaction = await _transactionRepository.GetByIdAsync(id);
+        var transaction = await _transactionRepository.GetByIdAsync(id, t => t.Account, t => t.Category);
         if (transaction == null || transaction.UserId != UserId)
             return NotFound();
 
-        return Ok(transaction);
+        var dto = new TransactionDto(
+            transaction.Id,
+            transaction.AccountId,
+            transaction.CategoryId,
+            transaction.Amount,
+            transaction.Type,
+            transaction.Description,
+            transaction.Date,
+            transaction.IsRecurring,
+            transaction.Tags,
+            transaction.Account?.Name ?? "N/A",
+            transaction.Category?.Name ?? "N/A"
+        );
+
+        return Ok(dto);
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Transaction>>> GetAll()
+    public async Task<ActionResult<IEnumerable<TransactionDto>>> GetAll()
     {
-        var transactions = await _transactionRepository.FindAsync(t => t.UserId == UserId);
-        return Ok(transactions);
+        var transactions = await _transactionRepository.FindAsync(
+            t => t.UserId == UserId,
+            t => t.Account,
+            t => t.Category);
+
+        var dtos = transactions.Select(t => new TransactionDto(
+            t.Id,
+            t.AccountId,
+            t.CategoryId,
+            t.Amount,
+            t.Type,
+            t.Description,
+            t.Date,
+            t.IsRecurring,
+            t.Tags,
+            t.Account?.Name ?? "N/A",
+            t.Category?.Name ?? "N/A"
+        )).ToList();
+
+        return Ok(dtos);
     }
 
     [HttpGet("summary")]
@@ -81,5 +118,34 @@ public class TransactionsController : BaseAuthenticatedController
             year,
             categoryBreakdown
         ));
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(Guid id)
+    {
+        var transaction = await _transactionRepository.GetByIdAsync(id);
+
+        if (transaction == null)
+            return NotFound();
+
+        if (transaction.UserId != UserId)
+            return Forbid();
+
+        // Reverse the account balance change
+        var account = await _accountRepository.GetByIdAsync(transaction.AccountId);
+        if (account != null)
+        {
+            if (transaction.Type == Domain.Enums.TransactionType.Income)
+                account.Balance -= transaction.Amount;
+            else
+                account.Balance += transaction.Amount;
+
+            await _accountRepository.UpdateAsync(account);
+        }
+
+        await _transactionRepository.DeleteAsync(transaction);
+        await _transactionRepository.SaveChangesAsync();
+
+        return NoContent();
     }
 }

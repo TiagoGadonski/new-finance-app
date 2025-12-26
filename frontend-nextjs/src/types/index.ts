@@ -19,10 +19,13 @@ export enum TransactionType {
 }
 
 export enum AccountType {
-  BankAccount = 0,
-  CreditCard = 1,
-  Wallet = 2,
-  Investment = 3
+  Checking = 0,
+  Savings = 1,
+  CreditCard = 2,
+  Investment = 3,
+  Wallet = 4,
+  Business = 5,
+  Cash = 4 // Alias for Wallet
 }
 
 export enum GoalStatus {
@@ -172,6 +175,13 @@ export interface AccountDto {
   isActive: boolean;
 }
 
+export interface CreateAccountRequest {
+  name: string;
+  type: AccountType;
+  initialBalance: number;
+  color?: string;
+}
+
 // Categories
 export interface CategoryDto {
   id: string;
@@ -179,6 +189,14 @@ export interface CategoryDto {
   type: TransactionType;
   icon: string;
   color: string;
+  isDefault: boolean;
+}
+
+export interface CreateCategoryRequest {
+  name: string;
+  type: TransactionType;
+  icon?: string;
+  color?: string;
 }
 
 // Transactions
@@ -190,6 +208,8 @@ export interface TransactionDto {
   description: string;
   type: TransactionType;
   date: string;
+  isRecurring: boolean;
+  tags?: string | null;
   accountName?: string;
   categoryName?: string;
 }
@@ -201,20 +221,30 @@ export interface CreateTransactionRequest {
   description: string;
   type: TransactionType;
   date: string;
+  isRecurring?: boolean;
+  tags?: string | null;
 }
 
 // Budgets
 export interface BudgetDto {
   id: string;
   categoryId: string;
+  categoryName: string;
   limit: number;
   spent: number;
   remaining: number;
   percentageUsed: number;
   month: number;
   year: number;
-  categoryName?: string;
-  categoryIcon?: string;
+  shouldAlert: boolean;
+}
+
+export interface BudgetConsolidatedDto {
+  month: number;
+  year: number;
+  totalLimit: number;
+  totalSpent: number;
+  budgets: BudgetDto[];
 }
 
 export interface CreateBudgetRequest {
@@ -249,9 +279,10 @@ export interface GoalDto {
   name: string;
   targetAmount: number;
   currentAmount: number;
+  remainingAmount: number;
+  percentageAchieved: number;
   targetDate: string;
   status: GoalStatus;
-  percentageComplete: number;
 }
 
 export interface CreateGoalRequest {
@@ -272,8 +303,7 @@ export interface DebtDto {
   remainingAmount: number;
   interestRate: number;
   minimumPayment: number;
-  status: string;
-  percentagePaid: number;
+  dueDate: string | null;
 }
 
 export interface CreateDebtRequest {
@@ -282,6 +312,7 @@ export interface CreateDebtRequest {
   remainingAmount: number;
   interestRate: number;
   minimumPayment: number;
+  dueDate?: string | null;
 }
 
 export interface DebtSimulationRequest {

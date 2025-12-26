@@ -20,6 +20,9 @@ obj/
 *.db
 *.db-shm
 *.db-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
 
 # Logs
 logs/
@@ -28,6 +31,10 @@ logs/
 # Environment
 .env
 .env.local
+appsettings.Production.json
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
 
 # OS
 .DS_Store

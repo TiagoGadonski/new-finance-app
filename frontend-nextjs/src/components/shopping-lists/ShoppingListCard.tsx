@@ -30,7 +30,7 @@ export function ShoppingListCard({ list, onDelete }: ShoppingListCardProps) {
       <CardContent className="pt-6">
         <div className="flex items-start justify-between mb-4">
           <Link href={`/shopping-lists/${list.id}`} className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">
+            <h3 className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors">
               {list.name}
             </h3>
           </Link>
@@ -38,13 +38,13 @@ export function ShoppingListCard({ list, onDelete }: ShoppingListCardProps) {
         </div>
 
         {list.description && (
-          <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          <p className="text-sm text-slate-600 mb-4 line-clamp-2">
             {list.description}
           </p>
         )}
 
         <div className="space-y-3 mb-4">
-          <div className="flex items-center text-sm text-gray-600">
+          <div className="flex items-center text-sm text-slate-600">
             <ShoppingCart className="w-4 h-4 mr-2" />
             <span>
               {list.purchasedItems} de {list.totalItems} itens comprados
@@ -52,41 +52,41 @@ export function ShoppingListCard({ list, onDelete }: ShoppingListCardProps) {
           </div>
 
           {list.targetDate && (
-            <div className="flex items-center text-sm text-gray-600">
+            <div className="flex items-center text-sm text-slate-600">
               <Calendar className="w-4 h-4 mr-2" />
               <span>Data alvo: {formatDate(list.targetDate)}</span>
             </div>
           )}
 
-          <div className="flex items-center text-sm text-gray-600">
+          <div className="flex items-center text-sm text-slate-600">
             <CheckCircle className="w-4 h-4 mr-2" />
             <span>{list.completionPercentage.toFixed(0)}% completo</span>
           </div>
         </div>
 
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+        <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-4">
           <div
             className="bg-blue-600 h-2 rounded-full transition-all"
             style={{ width: `${list.completionPercentage}%` }}
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-2 mb-4 p-3 bg-gray-50 rounded-lg">
+        <div className="grid grid-cols-2 gap-2 mb-4 p-3 bg-slate-50 rounded-lg">
           <div>
-            <p className="text-xs text-gray-600">Estimado</p>
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-xs text-slate-600">Estimado</p>
+            <p className="text-sm font-semibold text-slate-900">
               {formatCurrency(list.totalEstimatedCost)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-600">Gasto</p>
-            <p className="text-sm font-semibold text-gray-900">
+            <p className="text-xs text-slate-600">Gasto</p>
+            <p className="text-sm font-semibold text-slate-900">
               {formatCurrency(list.totalSpent)}
             </p>
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+        <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: 'var(--border-color)' }}>
           <Link href={`/shopping-lists/${list.id}`}>
             <Button variant="primary" size="sm">
               Ver Detalhes

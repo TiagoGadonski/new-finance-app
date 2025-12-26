@@ -4,10 +4,11 @@ import { clsx } from 'clsx';
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  helperText?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, className, ...props }, ref) => {
+  ({ label, error, helperText, className, ...props }, ref) => {
     return (
       <div className="w-full">
         {label && (
@@ -39,6 +40,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           } : undefined}
           {...props}
         />
+        {helperText && !error && (
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{helperText}</p>
+        )}
         {error && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>}
       </div>
     );

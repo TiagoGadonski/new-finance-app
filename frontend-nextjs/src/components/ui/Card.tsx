@@ -7,7 +7,7 @@ interface CardProps {
   padding?: 'none' | 'sm' | 'md' | 'lg';
 }
 
-export const Card = memo(function Card({ children, className, padding = 'none' }: CardProps) {
+export const Card = memo(function Card({ children, className, padding = 'md' }: CardProps) {
   const paddings = {
     none: 'p-0',
     sm: 'p-4',

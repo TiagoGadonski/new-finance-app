@@ -29,21 +29,11 @@ public static class DependencyInjection
             }
         });
 
-        // Redis Cache - Optional for development
-        var redisConnection = configuration.GetConnectionString("Redis");
-        if (!string.IsNullOrEmpty(redisConnection) && redisConnection != "disabled")
-        {
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConnection;
-                options.InstanceName = "FinanceApp_";
-            });
-        }
-        else
-        {
-            // Use in-memory cache for development
-            services.AddDistributedMemoryCache();
-        }
+        // Distributed Cache - Using in-memory for simplicity
+        services.AddDistributedMemoryCache();
+
+        // Unit of Work
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         // Repositories
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

@@ -4,7 +4,10 @@ import {
   CategoryDto,
   TransactionDto,
   CreateTransactionRequest,
+  CreateAccountRequest,
+  CreateCategoryRequest,
   BudgetDto,
+  BudgetConsolidatedDto,
   CreateBudgetRequest,
   SubscriptionDto,
   CreateSubscriptionRequest,
@@ -23,6 +26,15 @@ export const accountsApi = {
     const response = await apiClient.get<AccountDto[]>('/Accounts');
     return response.data;
   },
+
+  create: async (data: CreateAccountRequest): Promise<AccountDto> => {
+    const response = await apiClient.post<AccountDto>('/Accounts', data);
+    return response.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/Accounts/${id}`);
+  },
 };
 
 // Categories
@@ -30,6 +42,15 @@ export const categoriesApi = {
   getAll: async (): Promise<CategoryDto[]> => {
     const response = await apiClient.get<CategoryDto[]>('/Categories');
     return response.data;
+  },
+
+  create: async (data: CreateCategoryRequest): Promise<CategoryDto> => {
+    const response = await apiClient.post<CategoryDto>('/Categories', data);
+    return response.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await apiClient.delete(`/Categories/${id}`);
   },
 };
 
@@ -52,8 +73,8 @@ export const transactionsApi = {
 
 // Budgets
 export const budgetsApi = {
-  getConsolidated: async (month: number, year: number): Promise<BudgetDto[]> => {
-    const response = await apiClient.get<BudgetDto[]>(`/Budgets/consolidated/${year}/${month}`);
+  getConsolidated: async (month: number, year: number): Promise<BudgetConsolidatedDto> => {
+    const response = await apiClient.get<BudgetConsolidatedDto>(`/Budgets/consolidated/${year}/${month}`);
     return response.data;
   },
 

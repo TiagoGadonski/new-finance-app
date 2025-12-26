@@ -40,8 +40,8 @@ public class BudgetsController : BaseAuthenticatedController
         return Ok(budget);
     }
 
-    [HttpGet("consolidated")]
-    public async Task<ActionResult<BudgetConsolidatedDto>> GetConsolidated([FromQuery] int month, [FromQuery] int year)
+    [HttpGet("consolidated/{year}/{month}")]
+    public async Task<ActionResult<BudgetConsolidatedDto>> GetConsolidated(int year, int month)
     {
         var query = new GetBudgetConsolidatedQuery(UserId, month, year);
         var result = await _mediator.Send(query);

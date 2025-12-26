@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { useMutation, useQueryClient } from '@tantml:react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Modal, Button, Input, Select } from '@/components/ui';
 import { shoppingListsApi } from '@/lib/api';
 import { UpdateShoppingItemRequest, ItemPriority, ShoppingItemDto } from '@/types';

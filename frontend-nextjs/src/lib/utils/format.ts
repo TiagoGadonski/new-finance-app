@@ -1,3 +1,6 @@
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
@@ -11,5 +14,5 @@ export function formatPercentage(value: number): string {
 
 export function formatDate(date: string | Date): string {
   const d = typeof date === 'string' ? new Date(date) : date;
-  return new Intl.DateFormat('pt-BR').format(d);
+  return format(d, 'dd/MM/yyyy', { locale: ptBR });
 }

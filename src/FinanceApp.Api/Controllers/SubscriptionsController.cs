@@ -20,6 +20,13 @@ public class SubscriptionsController : BaseAuthenticatedController
         _subscriptionRepository = subscriptionRepository;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Subscription>>> GetAll()
+    {
+        var subscriptions = await _subscriptionRepository.FindAsync(s => s.UserId == UserId);
+        return Ok(subscriptions);
+    }
+
     [HttpPost]
     public async Task<ActionResult<Subscription>> Create([FromBody] CreateSubscriptionRequest request)
     {

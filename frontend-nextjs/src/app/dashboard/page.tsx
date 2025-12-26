@@ -88,8 +88,8 @@ export default function DashboardPage() {
               <div className="relative">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-medium opacity-70" style={{ color: 'var(--foreground)' }}>Saldo Total</p>
-                  <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all">
-                    <Wallet className="w-5 h-5 text-white" />
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all">
+                    <Wallet className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                 </div>
                 <p className="text-3xl font-bold animate-scaleIn" style={{ color: 'var(--foreground)' }}>
@@ -105,8 +105,8 @@ export default function DashboardPage() {
               <div className="relative">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-medium opacity-70" style={{ color: 'var(--foreground)' }}>Receitas do Mês</p>
-                  <div className="p-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all">
-                    <TrendingUp className="w-5 h-5 text-white" />
+                  <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all">
+                    <TrendingUp className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
                 </div>
                 <p className="text-3xl font-bold text-emerald-600 animate-scaleIn">
@@ -122,8 +122,8 @@ export default function DashboardPage() {
               <div className="relative">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-medium opacity-70" style={{ color: 'var(--foreground)' }}>Despesas do Mês</p>
-                  <div className="p-2 bg-gradient-to-br from-rose-500 to-red-600 rounded-lg shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all">
-                    <TrendingDown className="w-5 h-5 text-white" />
+                  <div className="p-2 bg-rose-50 dark:bg-rose-900/30 rounded-lg shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all">
+                    <TrendingDown className="w-5 h-5 text-rose-600 dark:text-rose-400" />
                   </div>
                 </div>
                 <p className="text-3xl font-bold text-rose-600 animate-scaleIn">
@@ -140,17 +140,16 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-medium opacity-70" style={{ color: 'var(--foreground)' }}>Economia</p>
                   <div
-                    className="p-2 rounded-lg shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all"
-                    style={{
-                      background: monthlyIncome - monthlyExpense >= 0
-                        ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-                        : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
-                    }}
+                    className={`p-2 rounded-lg shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all ${
+                      monthlyIncome - monthlyExpense >= 0
+                        ? 'bg-emerald-50 dark:bg-emerald-900/30'
+                        : 'bg-rose-50 dark:bg-rose-900/30'
+                    }`}
                   >
                     {monthlyIncome - monthlyExpense >= 0 ? (
-                      <TrendingUp className="w-5 h-5 text-white" />
+                      <TrendingUp className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                     ) : (
-                      <TrendingDown className="w-5 h-5 text-white" />
+                      <TrendingDown className="w-5 h-5 text-rose-600 dark:text-rose-400" />
                     )}
                   </div>
                 </div>

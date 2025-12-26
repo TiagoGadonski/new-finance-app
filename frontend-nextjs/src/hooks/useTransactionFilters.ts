@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Transaction, TransactionType } from '@/types';
+import { TransactionDto, TransactionType } from '@/types';
 
 export interface TransactionFilters {
   search: string;
@@ -12,7 +12,7 @@ export interface TransactionFilters {
   maxAmount: number;
 }
 
-export function useTransactionFilters(transactions: Transaction[] = []) {
+export function useTransactionFilters(transactions: TransactionDto[] = []) {
   const [filters, setFilters] = useState<TransactionFilters>({
     search: '',
     type: 'all',

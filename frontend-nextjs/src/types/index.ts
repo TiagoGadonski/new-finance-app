@@ -212,6 +212,9 @@ export interface TransactionDto {
   tags?: string | null;
   accountName?: string;
   categoryName?: string;
+  installmentCount?: number | null;
+  currentInstallment?: number | null;
+  parentTransactionId?: string | null;
 }
 
 export interface CreateTransactionRequest {
@@ -223,6 +226,7 @@ export interface CreateTransactionRequest {
   date: string;
   isRecurring?: boolean;
   tags?: string | null;
+  installmentCount?: number | null;
 }
 
 // Budgets
@@ -269,6 +273,7 @@ export interface SubscriptionDto {
 export interface CreateSubscriptionRequest {
   name: string;
   categoryId: string;
+  accountId: string;
   amount: number;
   billingDay: number;
 }

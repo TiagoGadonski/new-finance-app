@@ -30,6 +30,11 @@ export default function SettingsPage() {
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
       setIsAccountModalOpen(false);
     },
+    onError: (error: any) => {
+      console.error('Error creating account:', error);
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erro ao criar conta';
+      alert(errorMessage);
+    },
   });
 
   const deleteAccountMutation = useMutation({
@@ -44,6 +49,11 @@ export default function SettingsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       setIsCategoryModalOpen(false);
+    },
+    onError: (error: any) => {
+      console.error('Error creating category:', error);
+      const errorMessage = error?.response?.data?.message || error?.message || 'Erro ao criar categoria';
+      alert(errorMessage);
     },
   });
 
@@ -60,8 +70,8 @@ export default function SettingsPage() {
 
     const data: CreateAccountRequest = {
       name: formData.get('name') as string,
-      type: formData.get('type') as AccountType,
-      initialBalance: parseFloat(formData.get('initialBalance') as string),
+      type: parseInt(formData.get('type') as string) as AccountType,
+      initialBalance: parseFloat(formData.get('initialBalance') as string) || 0,
       color: formData.get('color') as string || undefined,
     };
 
@@ -74,7 +84,7 @@ export default function SettingsPage() {
 
     const data: CreateCategoryRequest = {
       name: formData.get('name') as string,
-      type: formData.get('type') as TransactionType,
+      type: parseInt(formData.get('type') as string) as TransactionType,
       icon: formData.get('icon') as string || undefined,
       color: formData.get('color') as string || undefined,
     };
@@ -98,13 +108,15 @@ export default function SettingsPage() {
     }
   };
 
-  const accountTypeLabels: Record<AccountType, string> = {
+  const accountTypeLabels: Partial<Record<AccountType, string>> = {
     [AccountType.Checking]: 'Conta Corrente',
     [AccountType.Savings]: 'Poupança',
     [AccountType.CreditCard]: 'Cartão de Crédito',
     [AccountType.Investment]: 'Investimentos',
-    [AccountType.Cash]: 'Dinheiro',
+    [AccountType.Wallet]: 'Dinheiro',
+    [AccountType.Business]: 'Negócio',
   };
+  // Cash is an alias for Wallet (both have value 4)
 
   const customCategories = categories?.filter(c => !c.isDefault) || [];
   const defaultCategories = categories?.filter(c => c.isDefault) || [];
@@ -343,7 +355,7 @@ export default function SettingsPage() {
           <div className="flex gap-2 pt-4">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               className="flex-1"
               onClick={() => setIsAccountModalOpen(false)}
             >
@@ -396,7 +408,7 @@ export default function SettingsPage() {
           <div className="flex gap-2 pt-4">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               className="flex-1"
               onClick={() => setIsCategoryModalOpen(false)}
             >

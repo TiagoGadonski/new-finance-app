@@ -13,8 +13,8 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors } } = useForm<LoginRequest>({
     defaultValues: {
-      email: 'demo@example.com',
-      password: 'Demo1234',
+      email: 'demo@financeapp.com',
+      password: 'Demo@123',
     },
   });
 

@@ -58,7 +58,10 @@ public class TransactionsController : BaseAuthenticatedController
             transaction.IsRecurring,
             transaction.Tags,
             transaction.Account?.Name ?? "N/A",
-            transaction.Category?.Name ?? "N/A"
+            transaction.Category?.Name ?? "N/A",
+            transaction.InstallmentCount,
+            transaction.CurrentInstallment,
+            transaction.ParentTransactionId
         );
 
         return Ok(dto);
@@ -83,7 +86,10 @@ public class TransactionsController : BaseAuthenticatedController
             t.IsRecurring,
             t.Tags,
             t.Account?.Name ?? "N/A",
-            t.Category?.Name ?? "N/A"
+            t.Category?.Name ?? "N/A",
+            t.InstallmentCount,
+            t.CurrentInstallment,
+            t.ParentTransactionId
         )).ToList();
 
         return Ok(dtos);

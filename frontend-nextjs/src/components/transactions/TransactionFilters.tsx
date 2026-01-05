@@ -2,14 +2,14 @@ import { memo } from 'react';
 import { Input, Select, Button } from '@/components/ui';
 import { Search, X, Filter } from 'lucide-react';
 import { TransactionFilters as Filters } from '@/hooks/useTransactionFilters';
-import { Account, Category } from '@/types';
+import { AccountDto, CategoryDto } from '@/types';
 
 interface TransactionFiltersProps {
   filters: Filters;
   onFilterChange: <K extends keyof Filters>(key: K, value: Filters[K]) => void;
   onReset: () => void;
-  accounts?: Account[];
-  categories?: Category[];
+  accounts?: AccountDto[];
+  categories?: CategoryDto[];
   hasActiveFilters: boolean;
 }
 

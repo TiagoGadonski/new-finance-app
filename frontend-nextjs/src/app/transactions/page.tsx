@@ -74,6 +74,11 @@ export default function TransactionsPage() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
+    const installmentCountStr = formData.get('installmentCount') as string;
+    const installmentCount = installmentCountStr && parseInt(installmentCountStr) > 1
+      ? parseInt(installmentCountStr)
+      : null;
+
     const data: CreateTransactionRequest = {
       accountId: formData.get('accountId') as string,
       categoryId: formData.get('categoryId') as string,
@@ -81,6 +86,7 @@ export default function TransactionsPage() {
       description: formData.get('description') as string,
       type: parseInt(formData.get('type') as string) as TransactionType,
       date: formData.get('date') as string,
+      installmentCount,
     };
 
     createMutation.mutate(data);
@@ -288,6 +294,11 @@ export default function TransactionsPage() {
                         <span>{format(new Date(transaction.date), "dd/MM/yyyy", { locale: ptBR })}</span>
                         {transaction.categoryName && <span>• {transaction.categoryName}</span>}
                         {transaction.accountName && <span>• {transaction.accountName}</span>}
+                        {transaction.installmentCount && transaction.currentInstallment && (
+                          <span className="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium">
+                            Parcela {transaction.currentInstallment}/{transaction.installmentCount}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-3 ml-4">
@@ -354,6 +365,16 @@ export default function TransactionsPage() {
               label="Valor"
               placeholder="0.00"
               required
+            />
+
+            <Input
+              name="installmentCount"
+              type="number"
+              min="1"
+              max="60"
+              label="Número de Parcelas (opcional)"
+              placeholder="1 = à vista"
+              helperText="Deixe vazio ou 1 para compra à vista. Para parcelado, informe o número de parcelas (ex: 12)"
             />
 
             <Input

@@ -57,7 +57,16 @@
       "Bash(timeout /t 2)",
       "Bash(cmd.exe //c \"taskkill /F /PID 25212\")",
       "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjYxZmI1MTU1LTZhZjUtNDQyMC1hOTgwLTQ2MDQyZTNkNjNmYSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImRlbW9AZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtbyBVc2VyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc2NjcyMTA4NCwiaXNzIjoiRmluYW5jZUFwcCIsImF1ZCI6IkZpbmFuY2VBcHBVc2VycyJ9.9PLRHg7A5FET8I3g-iMhdMyy-i1vYWg4DGfpcoBG6Yk\")",
-      "Bash(cmd.exe //c \"taskkill /F /PID 22700\")"
+      "Bash(cmd.exe //c \"taskkill /F /PID 22700\")",
+      "Bash(dotnet:*)",
+      "Bash(npm run build:*)",
+      "Bash(del srcFinanceApp.Apifinanceapp.db)",
+      "Bash(cmd.exe //c \"taskkill /F /PID 28980\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImRlZTc4MmM2LWMwOGQtNDQ5NS05Mjg3LWY1YzY2YjM0MDEwMCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImRlbW9AZmluYW5jZWFwcC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiRGVtbyBVc2VyIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc2NzAyMDcxMiwiaXNzIjoiRmluYW5jZUFwcCIsImF1ZCI6IkZpbmFuY2VBcHBVc2VycyJ9.mg5ML_YI5CVjRTHevW0DLVOOTAq8q5uUHnObhCeTGf4\")",
+      "Bash(cmd.exe //c \"taskkill /F /PID 29320\")",
+      "Bash(tasklist:*)",
+      "Bash(sc query:*)",
+      "Bash(dir /s /b financeapp.db)"
     ]
   }
 }

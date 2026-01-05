@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { budgetsApi, categoriesApi } from '@/lib/api';
-import { Card, Button, Modal, Input, Select, EmptyState, ListSkeleton } from '@/components/ui';
+import { Card, Button, Modal, Input, Select, EmptyState, ListSkeleton, Alert } from '@/components/ui';
 import { Plus, Trash2, TrendingDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { CreateBudgetRequest, TransactionType } from '@/types';
@@ -125,13 +125,13 @@ export default function BudgetsPage() {
         {/* Month Selector */}
         <Card className="hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between p-4">
-            <Button variant="outline" size="sm" onClick={handlePreviousMonth}>
+            <Button variant="secondary" size="sm" onClick={handlePreviousMonth}>
               <ChevronLeft className="w-4 h-4" />
             </Button>
             <h2 className="text-xl font-semibold text-slate-900">
               {monthNames[selectedMonth - 1]} de {selectedYear}
             </h2>
-            <Button variant="outline" size="sm" onClick={handleNextMonth}>
+            <Button variant="secondary" size="sm" onClick={handleNextMonth}>
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
@@ -190,9 +190,6 @@ export default function BudgetsPage() {
                 <div className="space-y-3 p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      {budget.categoryIcon && (
-                        <span className="text-2xl">{budget.categoryIcon}</span>
-                      )}
                       <div>
                         <h3 className="font-semibold text-slate-900">
                           {budget.categoryName || 'Categoria'}
@@ -287,7 +284,7 @@ export default function BudgetsPage() {
           <div className="flex gap-2 pt-4">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               className="flex-1"
               onClick={() => setIsCreateModalOpen(false)}
             >

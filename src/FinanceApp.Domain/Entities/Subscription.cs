@@ -6,6 +6,7 @@ public class Subscription : BaseEntity
 {
     public Guid UserId { get; set; }
     public Guid CategoryId { get; set; }
+    public Guid AccountId { get; set; }
     public string Name { get; set; } = string.Empty;
     public decimal Amount { get; set; }
     public int BillingDay { get; set; }
@@ -17,6 +18,7 @@ public class Subscription : BaseEntity
     // Navigation properties
     public User User { get; set; } = null!;
     public Category Category { get; set; } = null!;
+    public Account Account { get; set; } = null!;
 
     public bool IsLowUsage => UsageCount < 2; // Menos de 2 usos no mês
     public bool ShouldNotifyRenewal(DateTime currentDate)

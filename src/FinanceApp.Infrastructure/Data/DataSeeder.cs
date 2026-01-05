@@ -10,8 +10,10 @@ public static class DataSeeder
     {
         try
         {
-            if (await context.Categories.AnyAsync())
-                return; // Dados já existem
+            // Check if user already exists instead of categories
+            // (categories are seeded via ApplicationDbContext.OnModelCreating)
+            if (await context.Users.AnyAsync())
+                return; // User already exists
         }
         catch
         {

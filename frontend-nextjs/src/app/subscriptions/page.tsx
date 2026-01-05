@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PageContainer } from '@/components/layout/PageContainer';
-import { subscriptionsApi, categoriesApi } from '@/lib/api';
+import { subscriptionsApi, categoriesApi, accountsApi } from '@/lib/api';
 import { Card, Button, Modal, Input, Select, EmptyState, ListSkeleton, Badge, ConfirmDialog } from '@/components/ui';
 import { Plus, Trash2, ToggleLeft, ToggleRight, Bell, Calendar, RefreshCw } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
@@ -26,6 +26,11 @@ export default function SubscriptionsPage() {
   const { data: categories } = useQuery({
     queryKey: ['categories'],
     queryFn: categoriesApi.getAll,
+  });
+
+  const { data: accounts } = useQuery({
+    queryKey: ['accounts'],
+    queryFn: accountsApi.getAll,
   });
 
   const createMutation = useMutation({
@@ -69,6 +74,7 @@ export default function SubscriptionsPage() {
     const data: CreateSubscriptionRequest = {
       name: formData.get('name') as string,
       categoryId: formData.get('categoryId') as string,
+      accountId: formData.get('accountId') as string,
       amount: parseFloat(formData.get('amount') as string),
       billingDay: parseInt(formData.get('billingDay') as string),
     };
@@ -147,7 +153,7 @@ export default function SubscriptionsPage() {
       <div className="space-y-6">
         {/* Action Buttons */}
         <div className="flex justify-end gap-3">
-          <Button variant="outline" onClick={processBillings}>
+          <Button variant="secondary" onClick={processBillings}>
             <RefreshCw className="w-4 h-4 mr-2" />
             Processar Cobranças
           </Button>
@@ -221,7 +227,7 @@ export default function SubscriptionsPage() {
                         <h3 className="text-lg font-semibold text-slate-900 truncate">
                           {subscription.name}
                         </h3>
-                        <Badge variant={subscription.isActive ? 'success' : 'secondary'}>
+                        <Badge variant={subscription.isActive ? 'success' : 'default'}>
                           {subscription.isActive ? 'Ativa' : 'Inativa'}
                         </Badge>
                       </div>
@@ -247,7 +253,7 @@ export default function SubscriptionsPage() {
                       </div>
                       <div className="flex flex-col gap-2">
                         <Button
-                          variant="outline"
+                          variant="secondary"
                           size="sm"
                           onClick={() => handleToggleActive(subscription.id)}
                           disabled={toggleActiveMutation.isPending}
@@ -318,6 +324,15 @@ export default function SubscriptionsPage() {
             helperText="Dia do mês em que a cobrança ocorre (1-28)"
           />
 
+          <Select name="accountId" label="Conta" required>
+            <option value="">Selecione a conta</option>
+            {accounts?.map((account) => (
+              <option key={account.id} value={account.id}>
+                {account.name}
+              </option>
+            ))}
+          </Select>
+
           <Select name="categoryId" label="Categoria" required>
             <option value="">Selecione a categoria</option>
             {expenseCategories.map((category) => (
@@ -330,7 +345,7 @@ export default function SubscriptionsPage() {
           <div className="flex gap-2 pt-4">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               className="flex-1"
               onClick={() => setIsCreateModalOpen(false)}
             >

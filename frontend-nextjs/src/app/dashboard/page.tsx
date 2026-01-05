@@ -2,9 +2,9 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { accountsApi, transactionsApi, subscriptionsApi } from '@/lib/api';
+import { accountsApi, transactionsApi, subscriptionsApi, goalsApi, debtsApi } from '@/lib/api';
 import { Card, LoadingSpinner, EmptyState } from '@/components/ui';
-import { TrendingUp, TrendingDown, Wallet, ArrowRight } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet, ArrowRight, CreditCard, Target, Receipt, AlertCircle } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -34,8 +34,27 @@ export default function DashboardPage() {
     queryFn: subscriptionsApi.getAll,
   });
 
+  const { data: goals } = useQuery({
+    queryKey: ['goals'],
+    queryFn: goalsApi.getAll,
+  });
+
+  const { data: debts } = useQuery({
+    queryKey: ['debts'],
+    queryFn: debtsApi.getAll,
+  });
+
   // Memoize calculations
-  const { totalBalance, monthlyIncome, monthlyExpense, recentTransactions } = useMemo(() => {
+  const {
+    totalBalance,
+    monthlyIncome,
+    monthlyExpense,
+    recentTransactions,
+    monthlySubscriptions,
+    totalDebts,
+    activeGoals,
+    totalMonthlyCommitments
+  } = useMemo(() => {
     const totalBalance = accounts?.reduce((sum, acc) => sum + acc.balance, 0) || 0;
 
     // Get current month transactions
@@ -61,8 +80,32 @@ export default function DashboardPage() {
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 5);
 
-    return { totalBalance, monthlyIncome, monthlyExpense, recentTransactions };
-  }, [accounts, transactions]);
+    // Calculate monthly subscriptions (active only)
+    const monthlySubscriptions = subscriptions
+      ?.filter(s => s.isActive)
+      .reduce((sum, s) => sum + s.amount, 0) || 0;
+
+    // Calculate total debts
+    const totalDebts = debts
+      ?.reduce((sum, d) => sum + d.remainingAmount, 0) || 0;
+
+    // Get active goals
+    const activeGoals = goals?.filter(g => g.status === 0) || []; // InProgress = 0
+
+    // Total monthly commitments (subscriptions + average expense)
+    const totalMonthlyCommitments = monthlySubscriptions + monthlyExpense;
+
+    return {
+      totalBalance,
+      monthlyIncome,
+      monthlyExpense,
+      recentTransactions,
+      monthlySubscriptions,
+      totalDebts,
+      activeGoals,
+      totalMonthlyCommitments
+    };
+  }, [accounts, transactions, subscriptions, debts, goals]);
 
   if (accountsLoading || transactionsLoading) {
     return (
@@ -163,6 +206,111 @@ export default function DashboardPage() {
             </div>
           </Card>
         </div>
+
+        {/* Financial Overview - Consolidated Summary */}
+        <Card className="card-hover animate-slideIn">
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-6" style={{ color: 'var(--foreground)' }}>
+              Resumo Financeiro Consolidado
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Monthly Subscriptions */}
+              <Link href="/subscriptions" className="block">
+                <div className="p-4 rounded-lg border-2 border-transparent hover:border-purple-200 dark:hover:border-purple-800 transition-all cursor-pointer group"
+                     style={{ backgroundColor: 'var(--background-secondary)' }}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg group-hover:scale-110 transition-transform">
+                      <Receipt className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--foreground)' }} />
+                  </div>
+                  <p className="text-sm opacity-70 mb-1" style={{ color: 'var(--foreground)' }}>Despesas Fixas</p>
+                  <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                    {formatCurrency(monthlySubscriptions)}
+                  </p>
+                  <p className="text-xs opacity-60 mt-1" style={{ color: 'var(--foreground)' }}>
+                    {subscriptions?.filter(s => s.isActive).length || 0} assinaturas ativas
+                  </p>
+                </div>
+              </Link>
+
+              {/* Total Debts */}
+              <Link href="/debts" className="block">
+                <div className="p-4 rounded-lg border-2 border-transparent hover:border-orange-200 dark:hover:border-orange-800 transition-all cursor-pointer group"
+                     style={{ backgroundColor: 'var(--background-secondary)' }}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg group-hover:scale-110 transition-transform">
+                      <CreditCard className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--foreground)' }} />
+                  </div>
+                  <p className="text-sm opacity-70 mb-1" style={{ color: 'var(--foreground)' }}>Dívidas Totais</p>
+                  <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                    {formatCurrency(totalDebts)}
+                  </p>
+                  <p className="text-xs opacity-60 mt-1" style={{ color: 'var(--foreground)' }}>
+                    {debts?.length || 0} dívida(s) ativa(s)
+                  </p>
+                </div>
+              </Link>
+
+              {/* Active Goals */}
+              <Link href="/goals" className="block">
+                <div className="p-4 rounded-lg border-2 border-transparent hover:border-cyan-200 dark:hover:border-cyan-800 transition-all cursor-pointer group"
+                     style={{ backgroundColor: 'var(--background-secondary)' }}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="p-2 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg group-hover:scale-110 transition-transform">
+                      <Target className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                    </div>
+                    <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--foreground)' }} />
+                  </div>
+                  <p className="text-sm opacity-70 mb-1" style={{ color: 'var(--foreground)' }}>Metas Ativas</p>
+                  <p className="text-2xl font-bold text-cyan-600 dark:text-cyan-400">
+                    {activeGoals.length}
+                  </p>
+                  <p className="text-xs opacity-60 mt-1" style={{ color: 'var(--foreground)' }}>
+                    {activeGoals.length > 0
+                      ? `${((activeGoals.reduce((sum, g) => sum + g.currentAmount, 0) / activeGoals.reduce((sum, g) => sum + g.targetAmount, 0)) * 100).toFixed(0)}% concluído`
+                      : 'Nenhuma meta'
+                    }
+                  </p>
+                </div>
+              </Link>
+
+              {/* Monthly Commitment */}
+              <div className="p-4 rounded-lg border-2 border-transparent transition-all"
+                   style={{ backgroundColor: 'var(--background-secondary)' }}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className={`p-2 rounded-lg ${
+                    monthlyIncome > 0 && (totalMonthlyCommitments / monthlyIncome) > 0.7
+                      ? 'bg-red-100 dark:bg-red-900/30'
+                      : 'bg-blue-100 dark:bg-blue-900/30'
+                  }`}>
+                    <AlertCircle className={`w-5 h-5 ${
+                      monthlyIncome > 0 && (totalMonthlyCommitments / monthlyIncome) > 0.7
+                        ? 'text-red-600 dark:text-red-400'
+                        : 'text-blue-600 dark:text-blue-400'
+                    }`} />
+                  </div>
+                </div>
+                <p className="text-sm opacity-70 mb-1" style={{ color: 'var(--foreground)' }}>Comprometimento</p>
+                <p className={`text-2xl font-bold ${
+                  monthlyIncome > 0 && (totalMonthlyCommitments / monthlyIncome) > 0.7
+                    ? 'text-red-600 dark:text-red-400'
+                    : 'text-blue-600 dark:text-blue-400'
+                }`}>
+                  {monthlyIncome > 0
+                    ? `${((totalMonthlyCommitments / monthlyIncome) * 100).toFixed(0)}%`
+                    : '0%'
+                  }
+                </p>
+                <p className="text-xs opacity-60 mt-1" style={{ color: 'var(--foreground)' }}>
+                  da renda mensal
+                </p>
+              </div>
+            </div>
+          </div>
+        </Card>
 
         {/* Upcoming Bills */}
         {subscriptions && subscriptions.length > 0 && (

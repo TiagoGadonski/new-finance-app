@@ -5,52 +5,57 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace FinanceApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251224043506_InitialCreate")]
+    [Migration("20251229121023_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+            modelBuilder
+                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Account", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Color")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -63,34 +68,34 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("AlertSent")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<Guid>("CategoryId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("Limit")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Month")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("Spent")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Year")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -105,33 +110,33 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Color")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -144,7 +149,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             Color = "#10b981",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9913),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6207),
                             Icon = "💰",
                             IsDefault = true,
                             Name = "Salário",
@@ -154,7 +159,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111112"),
                             Color = "#3b82f6",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9921),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6211),
                             Icon = "💼",
                             IsDefault = true,
                             Name = "Freelance",
@@ -164,7 +169,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111113"),
                             Color = "#8b5cf6",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9924),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6213),
                             Icon = "📈",
                             IsDefault = true,
                             Name = "Investimentos",
@@ -174,7 +179,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111114"),
                             Color = "#06b6d4",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9926),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6216),
                             Icon = "💵",
                             IsDefault = true,
                             Name = "Outros Rendimentos",
@@ -184,7 +189,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222221"),
                             Color = "#f97316",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9929),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6218),
                             Icon = "🍔",
                             IsDefault = true,
                             Name = "Alimentação",
@@ -194,7 +199,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             Color = "#eab308",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9933),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6221),
                             Icon = "🚗",
                             IsDefault = true,
                             Name = "Transporte",
@@ -204,7 +209,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222223"),
                             Color = "#a855f7",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9935),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6223),
                             Icon = "🏠",
                             IsDefault = true,
                             Name = "Moradia",
@@ -214,7 +219,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222224"),
                             Color = "#ec4899",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9938),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6226),
                             Icon = "🏥",
                             IsDefault = true,
                             Name = "Saúde",
@@ -224,7 +229,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222225"),
                             Color = "#6366f1",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9941),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6228),
                             Icon = "📚",
                             IsDefault = true,
                             Name = "Educação",
@@ -234,7 +239,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222226"),
                             Color = "#14b8a6",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9943),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6230),
                             Icon = "🎮",
                             IsDefault = true,
                             Name = "Lazer",
@@ -244,7 +249,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222227"),
                             Color = "#f43f5e",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9946),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6232),
                             Icon = "🛍️",
                             IsDefault = true,
                             Name = "Compras",
@@ -254,7 +259,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222228"),
                             Color = "#ef4444",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9949),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6235),
                             Icon = "📄",
                             IsDefault = true,
                             Name = "Contas",
@@ -264,7 +269,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222229"),
                             Color = "#84cc16",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9951),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6237),
                             Icon = "📱",
                             IsDefault = true,
                             Name = "Assinaturas",
@@ -274,7 +279,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222230"),
                             Color = "#64748b",
-                            CreatedAt = new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9954),
+                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6240),
                             Icon = "💸",
                             IsDefault = true,
                             Name = "Outros Gastos",
@@ -286,30 +291,30 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("CategoryId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsLearned")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Keyword")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("Priority")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -324,13 +329,13 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DueDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("InterestRate")
                         .HasColumnType("decimal(5,2)");
@@ -341,7 +346,7 @@ namespace FinanceApp.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<decimal>("RemainingAmount")
                         .HasColumnType("decimal(18,2)");
@@ -350,10 +355,10 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -366,10 +371,10 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("CurrentAmount")
                         .HasColumnType("decimal(18,2)");
@@ -377,22 +382,22 @@ namespace FinanceApp.Infrastructure.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("TargetAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("TargetDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -405,16 +410,16 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Alert1Sent")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("Alert2Sent")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("Alert3Sent")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<decimal>("AlertThreshold1")
                         .HasColumnType("decimal(5,2)");
@@ -429,22 +434,22 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("MainCategoryId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("StartMonth")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Year")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -460,28 +465,28 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("DestinationAccountId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<decimal>("Multiplier")
                         .HasColumnType("decimal(3,1)");
 
                     b.Property<Guid>("SourceAccountId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -498,46 +503,46 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<decimal?>("ActualPrice")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<string>("Category")
                         .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<decimal>("EstimatedPrice")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<bool>("IsPurchased")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<int>("Priority")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("PurchasedDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("ShoppingListId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("TransactionId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -552,31 +557,31 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("TargetDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -589,42 +594,42 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("BillingDay")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("CategoryId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("LastUsedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime?>("NextBillingDate")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("UsageCount")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -639,42 +644,42 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("AccountId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("CategoryId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<bool>("IsRecurring")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Tags")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -691,38 +696,38 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("TEXT");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("RefreshToken")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("RefreshTokenExpiry")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Role")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
+                        .HasColumnType("integer")
                         .HasDefaultValue(0);
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 

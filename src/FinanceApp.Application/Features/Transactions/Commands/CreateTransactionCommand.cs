@@ -47,52 +47,129 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
             if (category == null || (category.UserId != request.UserId && !category.IsDefault))
                 throw new NotFoundException("Category", request.Request.CategoryId);
 
-            var transaction = new Transaction
+            // Se for compra parcelada, criar múltiplas transações
+            if (request.Request.InstallmentCount.HasValue && request.Request.InstallmentCount.Value > 1)
             {
-                Id = Guid.NewGuid(),
-                UserId = request.UserId,
-                AccountId = request.Request.AccountId,
-                CategoryId = request.Request.CategoryId,
-                Amount = request.Request.Amount,
-                Type = request.Request.Type,
-                Description = request.Request.Description,
-                Date = request.Request.Date,
-                IsRecurring = request.Request.IsRecurring,
-                Tags = request.Request.Tags,
-                CreatedAt = DateTime.UtcNow
-            };
+                var parentId = Guid.NewGuid();
+                var installmentAmount = request.Request.Amount / request.Request.InstallmentCount.Value;
 
-            // Atualizar saldo da conta
-            if (request.Request.Type == Domain.Enums.TransactionType.Income)
-                account.Balance += request.Request.Amount;
+                for (int i = 1; i <= request.Request.InstallmentCount.Value; i++)
+                {
+                    var installmentDate = request.Request.Date.AddMonths(i - 1);
+                    var installment = new Transaction
+                    {
+                        Id = Guid.NewGuid(),
+                        UserId = request.UserId,
+                        AccountId = request.Request.AccountId,
+                        CategoryId = request.Request.CategoryId,
+                        Amount = installmentAmount,
+                        Type = request.Request.Type,
+                        Description = $"{request.Request.Description} ({i}/{request.Request.InstallmentCount.Value})",
+                        Date = installmentDate,
+                        IsRecurring = false,
+                        Tags = request.Request.Tags,
+                        InstallmentCount = request.Request.InstallmentCount.Value,
+                        CurrentInstallment = i,
+                        ParentTransactionId = parentId,
+                        CreatedAt = DateTime.UtcNow
+                    };
+
+                    // Atualizar saldo apenas para a primeira parcela (total)
+                    if (i == 1)
+                    {
+                        if (request.Request.Type == Domain.Enums.TransactionType.Income)
+                            account.Balance += request.Request.Amount;
+                        else
+                            account.Balance -= request.Request.Amount;
+                    }
+
+                    await _transactionRepository.AddAsync(installment);
+                }
+
+                await _accountRepository.UpdateAsync(account);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                await _unitOfWork.CommitTransactionAsync(cancellationToken);
+
+                // Aprender com a escolha do usuário
+                await _classificationService.LearnFromUserChoiceAsync(
+                    request.UserId,
+                    request.Request.Description,
+                    request.Request.CategoryId);
+
+                // Retornar a primeira parcela
+                return new TransactionDto(
+                    parentId,
+                    request.Request.AccountId,
+                    request.Request.CategoryId,
+                    request.Request.Amount,
+                    request.Request.Type,
+                    request.Request.Description,
+                    request.Request.Date,
+                    false,
+                    request.Request.Tags,
+                    account.Name,
+                    category.Name,
+                    request.Request.InstallmentCount.Value,
+                    1,
+                    parentId
+                );
+            }
             else
-                account.Balance -= request.Request.Amount;
+            {
+                // Transação normal (não parcelada)
+                var transaction = new Transaction
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = request.UserId,
+                    AccountId = request.Request.AccountId,
+                    CategoryId = request.Request.CategoryId,
+                    Amount = request.Request.Amount,
+                    Type = request.Request.Type,
+                    Description = request.Request.Description,
+                    Date = request.Request.Date,
+                    IsRecurring = request.Request.IsRecurring,
+                    Tags = request.Request.Tags,
+                    InstallmentCount = null,
+                    CurrentInstallment = null,
+                    ParentTransactionId = null,
+                    CreatedAt = DateTime.UtcNow
+                };
 
-            await _accountRepository.UpdateAsync(account);
-            await _transactionRepository.AddAsync(transaction);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+                // Atualizar saldo da conta
+                if (request.Request.Type == Domain.Enums.TransactionType.Income)
+                    account.Balance += request.Request.Amount;
+                else
+                    account.Balance -= request.Request.Amount;
 
-            await _unitOfWork.CommitTransactionAsync(cancellationToken);
+                await _accountRepository.UpdateAsync(account);
+                await _transactionRepository.AddAsync(transaction);
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            // Aprender com a escolha do usuário (fora da transação)
-            await _classificationService.LearnFromUserChoiceAsync(
-                request.UserId,
-                request.Request.Description,
-                request.Request.CategoryId);
+                await _unitOfWork.CommitTransactionAsync(cancellationToken);
 
-            return new TransactionDto(
-                transaction.Id,
-                transaction.AccountId,
-                transaction.CategoryId,
-                transaction.Amount,
-                transaction.Type,
-                transaction.Description,
-                transaction.Date,
-                transaction.IsRecurring,
-                transaction.Tags,
-                account.Name,
-                category.Name
-            );
+                // Aprender com a escolha do usuário (fora da transação)
+                await _classificationService.LearnFromUserChoiceAsync(
+                    request.UserId,
+                    request.Request.Description,
+                    request.Request.CategoryId);
+
+                return new TransactionDto(
+                    transaction.Id,
+                    transaction.AccountId,
+                    transaction.CategoryId,
+                    transaction.Amount,
+                    transaction.Type,
+                    transaction.Description,
+                    transaction.Date,
+                    transaction.IsRecurring,
+                    transaction.Tags,
+                    account.Name,
+                    category.Name,
+                    transaction.InstallmentCount,
+                    transaction.CurrentInstallment,
+                    transaction.ParentTransactionId
+                );
+            }
         }
         catch
         {

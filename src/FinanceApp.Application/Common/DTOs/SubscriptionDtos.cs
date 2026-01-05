@@ -12,12 +12,14 @@ public record SubscriptionDto(
     SubscriptionStatus Status,
     DateTime? NextBillingDate,
     int UsageCount,
-    bool IsLowUsage
+    bool IsLowUsage,
+    bool IsActive
 );
 
 public record CreateSubscriptionRequest(
     string Name,
     Guid CategoryId,
+    Guid AccountId,
     decimal Amount,
     int BillingDay
 );

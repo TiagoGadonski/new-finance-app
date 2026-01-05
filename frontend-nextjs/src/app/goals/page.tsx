@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { goalsApi } from '@/lib/api';
-import { Card, Button, Modal, Input, EmptyState, ListSkeleton, Badge } from '@/components/ui';
+import { Card, Button, Modal, Input, EmptyState, ListSkeleton, Badge, Alert } from '@/components/ui';
 import { Plus, Trash2, Target, TrendingUp, CheckCircle } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { format } from 'date-fns';
@@ -311,7 +311,7 @@ export default function GoalsPage() {
           <div className="flex gap-2 pt-4">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               className="flex-1"
               onClick={() => setIsCreateModalOpen(false)}
             >
@@ -371,7 +371,7 @@ export default function GoalsPage() {
           <div className="flex gap-2 pt-4">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               className="flex-1"
               onClick={() => setContributeModalGoalId(null)}
             >

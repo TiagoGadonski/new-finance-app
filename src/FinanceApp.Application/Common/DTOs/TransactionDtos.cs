@@ -13,7 +13,10 @@ public record TransactionDto(
     bool IsRecurring,
     string? Tags,
     string AccountName,
-    string CategoryName
+    string CategoryName,
+    int? InstallmentCount,
+    int? CurrentInstallment,
+    Guid? ParentTransactionId
 );
 
 public record CreateTransactionRequest(
@@ -24,7 +27,8 @@ public record CreateTransactionRequest(
     string Description,
     DateTime Date,
     bool IsRecurring = false,
-    string? Tags = null
+    string? Tags = null,
+    int? InstallmentCount = null
 );
 
 public record UpdateTransactionRequest(

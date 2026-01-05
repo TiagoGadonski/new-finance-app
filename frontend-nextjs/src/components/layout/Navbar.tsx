@@ -3,13 +3,14 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, ShoppingCart, TrendingUp, LogOut, User, ArrowLeftRight, PiggyBank, Bell, Target, CreditCard, Shield, Moon, Sun, Settings } from 'lucide-react';
+import { Home, ShoppingCart, TrendingUp, LogOut, User, ArrowLeftRight, PiggyBank, Bell, Target, CreditCard, Shield, Moon, Sun, Settings, FileText } from 'lucide-react';
 import { clsx } from 'clsx';
 import { authApi } from '@/lib/api';
 import { Button } from '@/components/ui';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
+  { href: '/statement', label: 'Extrato Completo', icon: FileText },
   { href: '/transactions', label: 'Transações', icon: ArrowLeftRight },
   { href: '/budgets', label: 'Orçamentos', icon: PiggyBank },
   { href: '/subscriptions', label: 'Assinaturas', icon: Bell },

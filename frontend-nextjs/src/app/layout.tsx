@@ -17,6 +17,16 @@ export const metadata: Metadata = {
   title: "FinanceApp - Gestão Financeira",
   description: "Sistema de gestão financeira com MEI tracking e listas de compras",
   manifest: "/manifest.json",
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

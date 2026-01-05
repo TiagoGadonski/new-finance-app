@@ -5,7 +5,11 @@ namespace FinanceApp.Infrastructure.Data;
 
 public class ApplicationDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+    {
+        // Configure PostgreSQL to use UTC timestamps
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+    }
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Account> Accounts => Set<Account>();
@@ -130,6 +134,10 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(e => e.Category)
                 .WithMany()
                 .HasForeignKey(e => e.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Account)
+                .WithMany()
+                .HasForeignKey(e => e.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 

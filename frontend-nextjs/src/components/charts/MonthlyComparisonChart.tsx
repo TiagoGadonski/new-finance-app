@@ -123,7 +123,7 @@ export function MonthlyComparisonChart({ transactions }: Props) {
             borderRadius: '8px',
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
           }}
-          formatter={(value: number) => formatCurrency(value)}
+          formatter={(value: number | undefined) => value !== undefined ? formatCurrency(value) : ''}
           labelStyle={{ color: 'var(--foreground)', fontWeight: 600 }}
         />
         <Legend

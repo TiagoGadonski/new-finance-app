@@ -97,9 +97,16 @@ builder.Services.AddRateLimiter(options =>
             }));
 });
 
-// CORS
+// CORS - Support Azure Static Web Apps
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
     ?? new[] { "http://localhost:3000", "https://localhost:3000" };
+
+// Add environment variable for Azure deployment
+var azureStaticWebAppUrl = Environment.GetEnvironmentVariable("AZURE_STATIC_WEB_APP_URL");
+if (!string.IsNullOrEmpty(azureStaticWebAppUrl))
+{
+    allowedOrigins = allowedOrigins.Append(azureStaticWebAppUrl).ToArray();
+}
 
 builder.Services.AddCors(options =>
 {
@@ -169,5 +176,12 @@ using (var scope = app.Services.CreateScope())
     // Seed initial data
     await DataSeeder.SeedAsync(context);
 }
+
+// Health check endpoint for Azure
+app.MapGet("/health", () => Results.Ok(new {
+    status = "healthy",
+    timestamp = DateTime.UtcNow
+}))
+.AllowAnonymous();
 
 app.Run();

@@ -17,15 +17,15 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
-                    Role = table.Column<int>(type: "INTEGER", nullable: false, defaultValue: 0),
-                    RefreshToken = table.Column<string>(type: "TEXT", nullable: true),
-                    RefreshTokenExpiry = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    Role = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    RefreshToken = table.Column<string>(type: "text", nullable: true),
+                    RefreshTokenExpiry = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -36,15 +36,15 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "Accounts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Type = table.Column<int>(type: "INTEGER", nullable: false),
-                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Color = table.Column<string>(type: "TEXT", nullable: true),
-                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Balance = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    Color = table.Column<string>(type: "text", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -61,15 +61,15 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Type = table.Column<int>(type: "INTEGER", nullable: false),
-                    Icon = table.Column<string>(type: "TEXT", nullable: true),
-                    Color = table.Column<string>(type: "TEXT", nullable: true),
-                    IsDefault = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Icon = table.Column<string>(type: "text", nullable: true),
+                    Color = table.Column<string>(type: "text", nullable: true),
+                    IsDefault = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -86,16 +86,16 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "Debts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    RemainingAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    InterestRate = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    MinimumPayment = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    DueDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    RemainingAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    InterestRate = table.Column<decimal>(type: "numeric(5,2)", nullable: false),
+                    MinimumPayment = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    DueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -112,15 +112,15 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "Goals",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    TargetAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CurrentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TargetDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    TargetAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    CurrentAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    TargetDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -137,14 +137,14 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "ShoppingLists",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
-                    TargetDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    TargetDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -161,14 +161,14 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "RoundupRules",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    SourceAccountId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    DestinationAccountId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Multiplier = table.Column<decimal>(type: "decimal(3,1)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SourceAccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DestinationAccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    Multiplier = table.Column<decimal>(type: "numeric(3,1)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -197,16 +197,16 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "Budgets",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Limit = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Month = table.Column<int>(type: "INTEGER", nullable: false),
-                    Year = table.Column<int>(type: "INTEGER", nullable: false),
-                    Spent = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    AlertSent = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Limit = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    Month = table.Column<int>(type: "integer", nullable: false),
+                    Year = table.Column<int>(type: "integer", nullable: false),
+                    Spent = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    AlertSent = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -229,14 +229,14 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "ClassificationRules",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Keyword = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Priority = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsLearned = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Keyword = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    IsLearned = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -259,20 +259,20 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "MeiSettings",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    AnnualRevenueLimit = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Year = table.Column<int>(type: "INTEGER", nullable: false),
-                    StartMonth = table.Column<int>(type: "INTEGER", nullable: false),
-                    MainCategoryId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    AlertThreshold1 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    AlertThreshold2 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    AlertThreshold3 = table.Column<decimal>(type: "decimal(5,2)", nullable: false),
-                    Alert1Sent = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Alert2Sent = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Alert3Sent = table.Column<bool>(type: "INTEGER", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AnnualRevenueLimit = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    Year = table.Column<int>(type: "integer", nullable: false),
+                    StartMonth = table.Column<int>(type: "integer", nullable: false),
+                    MainCategoryId = table.Column<Guid>(type: "uuid", nullable: true),
+                    AlertThreshold1 = table.Column<decimal>(type: "numeric(5,2)", nullable: false),
+                    AlertThreshold2 = table.Column<decimal>(type: "numeric(5,2)", nullable: false),
+                    AlertThreshold3 = table.Column<decimal>(type: "numeric(5,2)", nullable: false),
+                    Alert1Sent = table.Column<bool>(type: "boolean", nullable: false),
+                    Alert2Sent = table.Column<bool>(type: "boolean", nullable: false),
+                    Alert3Sent = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -295,18 +295,18 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "Subscriptions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    BillingDay = table.Column<int>(type: "INTEGER", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    NextBillingDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    UsageCount = table.Column<int>(type: "INTEGER", nullable: false),
-                    LastUsedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    BillingDay = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    NextBillingDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UsageCount = table.Column<int>(type: "integer", nullable: false),
+                    LastUsedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -329,18 +329,18 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "Transactions",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    AccountId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Type = table.Column<int>(type: "INTEGER", nullable: false),
-                    Description = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
-                    Date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    IsRecurring = table.Column<bool>(type: "INTEGER", nullable: false),
-                    Tags = table.Column<string>(type: "TEXT", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsRecurring = table.Column<bool>(type: "boolean", nullable: false),
+                    Tags = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -369,19 +369,19 @@ namespace FinanceApp.Infrastructure.Migrations
                 name: "ShoppingItems",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ShoppingListId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    EstimatedPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    ActualPrice = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
-                    Category = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
-                    Priority = table.Column<int>(type: "INTEGER", nullable: false),
-                    IsPurchased = table.Column<bool>(type: "INTEGER", nullable: false),
-                    TransactionId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    PurchasedDate = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ShoppingListId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    EstimatedPrice = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
+                    ActualPrice = table.Column<decimal>(type: "numeric(10,2)", nullable: true),
+                    Category = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    IsPurchased = table.Column<bool>(type: "boolean", nullable: false),
+                    TransactionId = table.Column<Guid>(type: "uuid", nullable: true),
+                    PurchasedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -405,20 +405,20 @@ namespace FinanceApp.Infrastructure.Migrations
                 columns: new[] { "Id", "Color", "CreatedAt", "Icon", "IsDefault", "Name", "Type", "UpdatedAt", "UserId" },
                 values: new object[,]
                 {
-                    { new Guid("11111111-1111-1111-1111-111111111111"), "#10b981", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9913), "💰", true, "Salário", 0, null, null },
-                    { new Guid("11111111-1111-1111-1111-111111111112"), "#3b82f6", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9921), "💼", true, "Freelance", 0, null, null },
-                    { new Guid("11111111-1111-1111-1111-111111111113"), "#8b5cf6", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9924), "📈", true, "Investimentos", 0, null, null },
-                    { new Guid("11111111-1111-1111-1111-111111111114"), "#06b6d4", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9926), "💵", true, "Outros Rendimentos", 0, null, null },
-                    { new Guid("22222222-2222-2222-2222-222222222221"), "#f97316", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9929), "🍔", true, "Alimentação", 1, null, null },
-                    { new Guid("22222222-2222-2222-2222-222222222222"), "#eab308", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9933), "🚗", true, "Transporte", 1, null, null },
-                    { new Guid("22222222-2222-2222-2222-222222222223"), "#a855f7", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9935), "🏠", true, "Moradia", 1, null, null },
-                    { new Guid("22222222-2222-2222-2222-222222222224"), "#ec4899", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9938), "🏥", true, "Saúde", 1, null, null },
-                    { new Guid("22222222-2222-2222-2222-222222222225"), "#6366f1", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9941), "📚", true, "Educação", 1, null, null },
-                    { new Guid("22222222-2222-2222-2222-222222222226"), "#14b8a6", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9943), "🎮", true, "Lazer", 1, null, null },
-                    { new Guid("22222222-2222-2222-2222-222222222227"), "#f43f5e", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9946), "🛍️", true, "Compras", 1, null, null },
-                    { new Guid("22222222-2222-2222-2222-222222222228"), "#ef4444", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9949), "📄", true, "Contas", 1, null, null },
-                    { new Guid("22222222-2222-2222-2222-222222222229"), "#84cc16", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9951), "📱", true, "Assinaturas", 1, null, null },
-                    { new Guid("22222222-2222-2222-2222-222222222230"), "#64748b", new DateTime(2025, 12, 24, 4, 35, 6, 155, DateTimeKind.Utc).AddTicks(9954), "💸", true, "Outros Gastos", 1, null, null }
+                    { new Guid("11111111-1111-1111-1111-111111111111"), "#10b981", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6207), "💰", true, "Salário", 0, null, null },
+                    { new Guid("11111111-1111-1111-1111-111111111112"), "#3b82f6", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6211), "💼", true, "Freelance", 0, null, null },
+                    { new Guid("11111111-1111-1111-1111-111111111113"), "#8b5cf6", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6213), "📈", true, "Investimentos", 0, null, null },
+                    { new Guid("11111111-1111-1111-1111-111111111114"), "#06b6d4", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6216), "💵", true, "Outros Rendimentos", 0, null, null },
+                    { new Guid("22222222-2222-2222-2222-222222222221"), "#f97316", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6218), "🍔", true, "Alimentação", 1, null, null },
+                    { new Guid("22222222-2222-2222-2222-222222222222"), "#eab308", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6221), "🚗", true, "Transporte", 1, null, null },
+                    { new Guid("22222222-2222-2222-2222-222222222223"), "#a855f7", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6223), "🏠", true, "Moradia", 1, null, null },
+                    { new Guid("22222222-2222-2222-2222-222222222224"), "#ec4899", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6226), "🏥", true, "Saúde", 1, null, null },
+                    { new Guid("22222222-2222-2222-2222-222222222225"), "#6366f1", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6228), "📚", true, "Educação", 1, null, null },
+                    { new Guid("22222222-2222-2222-2222-222222222226"), "#14b8a6", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6230), "🎮", true, "Lazer", 1, null, null },
+                    { new Guid("22222222-2222-2222-2222-222222222227"), "#f43f5e", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6232), "🛍️", true, "Compras", 1, null, null },
+                    { new Guid("22222222-2222-2222-2222-222222222228"), "#ef4444", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6235), "📄", true, "Contas", 1, null, null },
+                    { new Guid("22222222-2222-2222-2222-222222222229"), "#84cc16", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6237), "📱", true, "Assinaturas", 1, null, null },
+                    { new Guid("22222222-2222-2222-2222-222222222230"), "#64748b", new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6240), "💸", true, "Outros Gastos", 1, null, null }
                 });
 
             migrationBuilder.CreateIndex(

@@ -123,7 +123,10 @@ public class ImportCsvCommandHandler : IRequestHandler<ImportCsvCommand, List<Tr
                 transaction.IsRecurring,
                 transaction.Tags,
                 account.Name,
-                category?.Name ?? "Unknown"
+                category?.Name ?? "Unknown",
+                null,
+                null,
+                null
             ));
         }
 

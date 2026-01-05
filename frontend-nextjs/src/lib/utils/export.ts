@@ -1,8 +1,8 @@
-import { Transaction } from '@/types';
+import { TransactionDto } from '@/types';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
-export function exportToCSV(transactions: Transaction[], filename = 'transacoes') {
+export function exportToCSV(transactions: TransactionDto[], filename = 'transacoes') {
   if (!transactions || transactions.length === 0) {
     alert('Nenhuma transação para exportar');
     return;
@@ -51,7 +51,7 @@ export function exportToCSV(transactions: Transaction[], filename = 'transacoes'
   document.body.removeChild(link);
 }
 
-export function exportToExcel(transactions: Transaction[], filename = 'transacoes') {
+export function exportToExcel(transactions: TransactionDto[], filename = 'transacoes') {
   if (!transactions || transactions.length === 0) {
     alert('Nenhuma transação para exportar');
     return;
@@ -140,7 +140,7 @@ export function exportToExcel(transactions: Transaction[], filename = 'transacoe
   document.body.removeChild(link);
 }
 
-export function printTransactions(transactions: Transaction[]) {
+export function printTransactions(transactions: TransactionDto[]) {
   if (!transactions || transactions.length === 0) {
     alert('Nenhuma transação para imprimir');
     return;

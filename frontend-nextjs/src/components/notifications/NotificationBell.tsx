@@ -63,8 +63,8 @@ export function NotificationBell() {
     }
 
     // Check budgets exceeded
-    if (budgets) {
-      budgets.forEach(budget => {
+    if (budgets?.budgets) {
+      budgets.budgets.forEach(budget => {
         const percentUsed = (budget.spent / budget.limit) * 100;
         if (percentUsed >= 80) {
           newNotifications.push({
@@ -77,22 +77,22 @@ export function NotificationBell() {
       });
     }
 
-    // Check debts with installments due
+    // Check debts with due dates
     if (debts) {
-      const today = new Date();
-      const fiveDaysFromNow = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000);
-
       debts.forEach(debt => {
-        if (debt.nextPaymentDate) {
-          const paymentDate = new Date(debt.nextPaymentDate);
-          if (paymentDate >= today && paymentDate <= fiveDaysFromNow) {
-            const daysUntil = Math.ceil((paymentDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+        if (debt.dueDate) {
+          const today = new Date();
+          const dueDate = new Date(debt.dueDate);
+          const fiveDaysFromNow = new Date(today.getTime() + 5 * 24 * 60 * 60 * 1000);
+
+          if (dueDate >= today && dueDate <= fiveDaysFromNow) {
+            const daysUntil = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
             newNotifications.push({
               id: `debt-${debt.id}`,
               type: 'debt',
               severity: daysUntil <= 1 ? 'danger' : 'warning',
-              message: `Parcela de ${debt.description} vence ${daysUntil === 0 ? 'hoje' : `em ${daysUntil} dia(s)`} - ${formatCurrency(debt.installmentAmount)}`,
-              date: paymentDate,
+              message: `Dívida "${debt.name}" vence ${daysUntil === 0 ? 'hoje' : `em ${daysUntil} dia(s)`} - ${formatCurrency(debt.minimumPayment)} (pagamento mínimo)`,
+              date: dueDate,
             });
           }
         }

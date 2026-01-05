@@ -111,7 +111,7 @@ export default function DebtsPage() {
         {/* Action Buttons */}
         <div className="flex flex-wrap justify-end gap-2">
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={() => setIsSimulatorOpen(true)}
             disabled={!debts || debts.length === 0}
           >
@@ -306,7 +306,7 @@ export default function DebtsPage() {
           <div className="flex gap-2 pt-4">
             <Button
               type="button"
-              variant="outline"
+              variant="secondary"
               className="flex-1"
               onClick={() => setIsCreateModalOpen(false)}
             >

@@ -1,13 +1,14 @@
-import { ReactNode, memo } from 'react';
+import { ReactNode, memo, CSSProperties } from 'react';
 import { clsx } from 'clsx';
 
 interface CardProps {
   children: ReactNode;
   className?: string;
   padding?: 'none' | 'sm' | 'md' | 'lg';
+  style?: CSSProperties;
 }
 
-export const Card = memo(function Card({ children, className, padding = 'md' }: CardProps) {
+export const Card = memo(function Card({ children, className, padding = 'md', style: customStyle }: CardProps) {
   const paddings = {
     none: 'p-0',
     sm: 'p-4',
@@ -27,6 +28,7 @@ export const Card = memo(function Card({ children, className, padding = 'md' }: 
         backgroundColor: 'var(--card-bg)',
         borderColor: 'var(--border-color)',
         boxShadow: 'var(--shadow-sm)',
+        ...customStyle,
       }}
     >
       {children}

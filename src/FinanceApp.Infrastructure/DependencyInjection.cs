@@ -13,20 +13,12 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Database - Use SQLite for development
-        var connectionString = configuration.GetConnectionString("DefaultConnection") ?? "Data Source=financeapp.db";
+        // Database - PostgreSQL
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Database connection string is required");
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            if (connectionString.Contains(".db") || connectionString.StartsWith("Data Source="))
-            {
-                // SQLite for development
-                options.UseSqlite(connectionString);
-            }
-            else
-            {
-                // PostgreSQL for production
-                options.UseNpgsql(connectionString);
-            }
+            options.UseNpgsql(connectionString);
         });
 
         // Distributed Cache - Using in-memory for simplicity

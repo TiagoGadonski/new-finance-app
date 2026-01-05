@@ -3,6 +3,7 @@ using System;
 using FinanceApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinanceApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251229171045_AddInstallmentSupportToTransactions")]
+    partial class AddInstallmentSupportToTransactions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,7 +149,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             Color = "#10b981",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4757),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(515),
                             Icon = "💰",
                             IsDefault = true,
                             Name = "Salário",
@@ -156,7 +159,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111112"),
                             Color = "#3b82f6",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4762),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(522),
                             Icon = "💼",
                             IsDefault = true,
                             Name = "Freelance",
@@ -166,7 +169,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111113"),
                             Color = "#8b5cf6",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4765),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(526),
                             Icon = "📈",
                             IsDefault = true,
                             Name = "Investimentos",
@@ -176,7 +179,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111114"),
                             Color = "#06b6d4",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4768),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(529),
                             Icon = "💵",
                             IsDefault = true,
                             Name = "Outros Rendimentos",
@@ -186,7 +189,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222221"),
                             Color = "#f97316",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4771),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(533),
                             Icon = "🍔",
                             IsDefault = true,
                             Name = "Alimentação",
@@ -196,7 +199,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             Color = "#eab308",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4775),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(536),
                             Icon = "🚗",
                             IsDefault = true,
                             Name = "Transporte",
@@ -206,7 +209,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222223"),
                             Color = "#a855f7",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4778),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(539),
                             Icon = "🏠",
                             IsDefault = true,
                             Name = "Moradia",
@@ -216,7 +219,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222224"),
                             Color = "#ec4899",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4781),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(542),
                             Icon = "🏥",
                             IsDefault = true,
                             Name = "Saúde",
@@ -226,7 +229,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222225"),
                             Color = "#6366f1",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4784),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(545),
                             Icon = "📚",
                             IsDefault = true,
                             Name = "Educação",
@@ -236,7 +239,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222226"),
                             Color = "#14b8a6",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4788),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(549),
                             Icon = "🎮",
                             IsDefault = true,
                             Name = "Lazer",
@@ -246,7 +249,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222227"),
                             Color = "#f43f5e",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4791),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(552),
                             Icon = "🛍️",
                             IsDefault = true,
                             Name = "Compras",
@@ -256,7 +259,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222228"),
                             Color = "#ef4444",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4793),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(555),
                             Icon = "📄",
                             IsDefault = true,
                             Name = "Contas",
@@ -266,7 +269,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222229"),
                             Color = "#84cc16",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4796),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(557),
                             Icon = "📱",
                             IsDefault = true,
                             Name = "Assinaturas",
@@ -276,7 +279,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222230"),
                             Color = "#64748b",
-                            CreatedAt = new DateTime(2025, 12, 29, 17, 39, 35, 784, DateTimeKind.Utc).AddTicks(4799),
+                            CreatedAt = new DateTime(2025, 12, 29, 17, 10, 45, 224, DateTimeKind.Utc).AddTicks(561),
                             Icon = "💸",
                             IsDefault = true,
                             Name = "Outros Gastos",
@@ -593,9 +596,6 @@ namespace FinanceApp.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("uuid");
-
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
@@ -632,8 +632,6 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
 
                     b.HasIndex("CategoryId");
 
@@ -905,12 +903,6 @@ namespace FinanceApp.Infrastructure.Migrations
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Subscription", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Entities.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FinanceApp.Domain.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
@@ -922,8 +914,6 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Account");
 
                     b.Navigation("Category");
 

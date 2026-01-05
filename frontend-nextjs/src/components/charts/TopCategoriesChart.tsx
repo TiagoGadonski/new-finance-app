@@ -99,7 +99,7 @@ export function TopCategoriesChart({ transactions, limit = 5 }: Props) {
             borderRadius: '8px',
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
           }}
-          formatter={(value: number) => [formatCurrency(value), 'Total']}
+          formatter={(value: number | undefined) => value !== undefined ? [formatCurrency(value), 'Total'] : ['', 'Total']}
           labelStyle={{ color: 'var(--foreground)', fontWeight: 600 }}
           cursor={{ fill: 'rgba(148, 163, 184, 0.1)' }}
         />

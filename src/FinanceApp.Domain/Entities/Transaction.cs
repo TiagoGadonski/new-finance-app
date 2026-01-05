@@ -2,9 +2,9 @@ using FinanceApp.Domain.Enums;
 
 namespace FinanceApp.Domain.Entities;
 
-public class Transaction : BaseEntity
+public class Transaction : AuditableEntity
 {
-    public Guid UserId { get; set; }
+    public Guid FamilyId { get; set; }
     public Guid AccountId { get; set; }
     public Guid CategoryId { get; set; }
     public decimal Amount { get; set; }
@@ -20,7 +20,7 @@ public class Transaction : BaseEntity
     public Guid? ParentTransactionId { get; set; } // ID da transação original (para parcelas relacionadas)
 
     // Navigation properties
-    public User User { get; set; } = null!;
+    public Family Family { get; set; } = null!;
     public Account Account { get; set; } = null!;
     public Category Category { get; set; } = null!;
 }

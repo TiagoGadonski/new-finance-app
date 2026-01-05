@@ -1,14 +1,14 @@
 namespace FinanceApp.Domain.Entities;
 
-public class ShoppingList : BaseEntity
+public class ShoppingList : AuditableEntity
 {
-    public Guid UserId { get; set; }
+    public Guid FamilyId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
     public DateTime? TargetDate { get; set; }
     public Enums.ShoppingListStatus Status { get; set; }
 
-    public User User { get; set; } = null!;
+    public Family Family { get; set; } = null!;
     public ICollection<ShoppingItem> Items { get; set; } = new List<ShoppingItem>();
 
     // Propriedades calculadas

@@ -2,10 +2,10 @@ using FinanceApp.Domain.Enums;
 
 namespace FinanceApp.Domain.Entities;
 
-public class MeiSettings : BaseEntity
+public class MeiSettings : AuditableEntity
 {
-    public Guid UserId { get; set; }
-    public User User { get; set; } = null!;
+    public Guid FamilyId { get; set; }
+    public Family Family { get; set; } = null!;
 
     /// <summary>
     /// Limite anual de faturamento MEI (R$ 81.000 em 2024)

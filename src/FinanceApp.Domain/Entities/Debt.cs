@@ -1,8 +1,8 @@
 namespace FinanceApp.Domain.Entities;
 
-public class Debt : BaseEntity
+public class Debt : AuditableEntity
 {
-    public Guid UserId { get; set; }
+    public Guid FamilyId { get; set; }
     public string Name { get; set; } = string.Empty;
     public decimal TotalAmount { get; set; }
     public decimal RemainingAmount { get; set; }
@@ -11,7 +11,7 @@ public class Debt : BaseEntity
     public DateTime? DueDate { get; set; }
 
     // Navigation properties
-    public User User { get; set; } = null!;
+    public Family Family { get; set; } = null!;
 
     public decimal TotalInterest => TotalAmount - RemainingAmount;
 }

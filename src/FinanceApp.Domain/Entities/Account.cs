@@ -2,9 +2,9 @@ using FinanceApp.Domain.Enums;
 
 namespace FinanceApp.Domain.Entities;
 
-public class Account : BaseEntity
+public class Account : AuditableEntity
 {
-    public Guid UserId { get; set; }
+    public Guid FamilyId { get; set; }
     public string Name { get; set; } = string.Empty;
     public AccountType Type { get; set; }
     public decimal Balance { get; set; }
@@ -12,6 +12,6 @@ public class Account : BaseEntity
     public bool IsActive { get; set; } = true;
 
     // Navigation properties
-    public User User { get; set; } = null!;
+    public Family Family { get; set; } = null!;
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }

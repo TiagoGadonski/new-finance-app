@@ -2,9 +2,9 @@ using FinanceApp.Domain.Enums;
 
 namespace FinanceApp.Domain.Entities;
 
-public class Subscription : BaseEntity
+public class Subscription : AuditableEntity
 {
-    public Guid UserId { get; set; }
+    public Guid FamilyId { get; set; }
     public Guid CategoryId { get; set; }
     public Guid AccountId { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -16,7 +16,7 @@ public class Subscription : BaseEntity
     public DateTime? LastUsedAt { get; set; }
 
     // Navigation properties
-    public User User { get; set; } = null!;
+    public Family Family { get; set; } = null!;
     public Category Category { get; set; } = null!;
     public Account Account { get; set; } = null!;
 

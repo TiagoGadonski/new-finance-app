@@ -22,7 +22,7 @@ public class GoalsController : BaseAuthenticatedController
         var goal = new Goal
         {
             Id = Guid.NewGuid(),
-            UserId = UserId,
+            FamilyId = FamilyId,
             Name = request.Name,
             TargetAmount = request.TargetAmount,
             CurrentAmount = 0,
@@ -40,7 +40,7 @@ public class GoalsController : BaseAuthenticatedController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<GoalDto>>> GetAll()
     {
-        var goals = await _goalRepository.FindAsync(g => g.UserId == UserId);
+        var goals = await _goalRepository.FindAsync(g => g.FamilyId == FamilyId);
         return Ok(goals.Select(MapToDto));
     }
 
@@ -48,7 +48,7 @@ public class GoalsController : BaseAuthenticatedController
     public async Task<ActionResult<GoalDto>> GetById(Guid id)
     {
         var goal = await _goalRepository.GetByIdAsync(id);
-        if (goal == null || goal.UserId != UserId)
+        if (goal == null || goal.FamilyId != FamilyId)
             return NotFound();
 
         return Ok(MapToDto(goal));
@@ -58,7 +58,7 @@ public class GoalsController : BaseAuthenticatedController
     public async Task<ActionResult<GoalDto>> Update(Guid id, [FromBody] UpdateGoalRequest request)
     {
         var goal = await _goalRepository.GetByIdAsync(id);
-        if (goal == null || goal.UserId != UserId)
+        if (goal == null || goal.FamilyId != FamilyId)
             return NotFound();
 
         goal.Name = request.Name;
@@ -84,7 +84,7 @@ public class GoalsController : BaseAuthenticatedController
     public async Task<ActionResult> Delete(Guid id)
     {
         var goal = await _goalRepository.GetByIdAsync(id);
-        if (goal == null || goal.UserId != UserId)
+        if (goal == null || goal.FamilyId != FamilyId)
             return NotFound();
 
         await _goalRepository.DeleteAsync(goal);
@@ -97,7 +97,7 @@ public class GoalsController : BaseAuthenticatedController
     public async Task<ActionResult<GoalDto>> Contribute(Guid id, [FromBody] decimal amount)
     {
         var goal = await _goalRepository.GetByIdAsync(id);
-        if (goal == null || goal.UserId != UserId)
+        if (goal == null || goal.FamilyId != FamilyId)
             return NotFound();
 
         goal.CurrentAmount += amount;

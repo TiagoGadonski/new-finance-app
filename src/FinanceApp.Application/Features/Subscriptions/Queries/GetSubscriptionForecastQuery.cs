@@ -6,7 +6,7 @@ using FinanceApp.Domain.Enums;
 
 namespace FinanceApp.Application.Features.Subscriptions.Queries;
 
-public record GetSubscriptionForecastQuery(Guid UserId, int Days = 30) : IRequest<SubscriptionForecastDto>;
+public record GetSubscriptionForecastQuery(Guid FamilyId, int Days = 30) : IRequest<SubscriptionForecastDto>;
 
 public class GetSubscriptionForecastQueryHandler : IRequestHandler<GetSubscriptionForecastQuery, SubscriptionForecastDto>
 {
@@ -20,7 +20,7 @@ public class GetSubscriptionForecastQueryHandler : IRequestHandler<GetSubscripti
     public async Task<SubscriptionForecastDto> Handle(GetSubscriptionForecastQuery request, CancellationToken cancellationToken)
     {
         var subscriptions = await _subscriptionRepository.FindAsync(s =>
-            s.UserId == request.UserId &&
+            s.FamilyId == request.FamilyId &&
             s.Status == SubscriptionStatus.Active);
 
         var currentDate = DateTime.UtcNow;

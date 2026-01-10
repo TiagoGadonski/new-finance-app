@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace FinanceApp.Application.Features.Mei.Queries;
 
-public record GetMeiDashboardQuery(Guid UserId, int Year) : IRequest<MeiDashboardDto>;
+public record GetMeiDashboardQuery(Guid FamilyId, int Year) : IRequest<MeiDashboardDto>;
 
 public class GetMeiDashboardQueryHandler : IRequestHandler<GetMeiDashboardQuery, MeiDashboardDto>
 {
@@ -29,7 +29,7 @@ public class GetMeiDashboardQueryHandler : IRequestHandler<GetMeiDashboardQuery,
     {
         // Buscar configurações MEI do usuário
         var meiSettings = (await _meiRepository.FindAsync(m =>
-            m.UserId == request.UserId && m.Year == request.Year))
+            m.FamilyId == request.FamilyId && m.Year == request.Year))
             .FirstOrDefault();
 
         if (meiSettings == null)
@@ -56,7 +56,7 @@ public class GetMeiDashboardQueryHandler : IRequestHandler<GetMeiDashboardQuery,
         var yearEnd = new DateTime(request.Year, 12, 31, 23, 59, 59);
 
         var incomeTransactions = await _transactionRepository.FindAsync(t =>
-            t.UserId == request.UserId &&
+            t.FamilyId == request.FamilyId &&
             t.Type == TransactionType.Income &&
             t.Date >= yearStart &&
             t.Date <= yearEnd);

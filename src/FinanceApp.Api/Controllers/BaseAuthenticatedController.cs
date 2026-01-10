@@ -27,4 +27,8 @@ public abstract class BaseAuthenticatedController : ControllerBase
             return userId;
         }
     }
+
+    protected Guid FamilyId => Guid.Parse(User.FindFirstValue("FamilyId")!);
+    protected string Username => User.FindFirstValue("Username") ?? "";
+    protected bool IsAdmin => User.IsInRole("Admin");
 }

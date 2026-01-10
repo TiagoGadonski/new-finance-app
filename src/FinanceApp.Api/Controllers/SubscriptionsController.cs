@@ -32,7 +32,7 @@ public class SubscriptionsController : BaseAuthenticatedController
     public async Task<ActionResult<IEnumerable<SubscriptionDto>>> GetAll()
     {
         var subscriptions = await _subscriptionRepository.FindAsync(
-            s => s.UserId == UserId,
+            s => s.FamilyId == FamilyId,
             s => s.Category);
 
         var dtos = subscriptions.Select(s => new SubscriptionDto(
@@ -55,15 +55,15 @@ public class SubscriptionsController : BaseAuthenticatedController
     [HttpPost]
     public async Task<ActionResult<SubscriptionDto>> Create([FromBody] CreateSubscriptionRequest request)
     {
-        // Verificar se a conta existe e pertence ao usuário
+        // Verificar se a conta existe e pertence à família
         var account = await _accountRepository.GetByIdAsync(request.AccountId);
-        if (account == null || account.UserId != UserId)
+        if (account == null || account.FamilyId != FamilyId)
             return BadRequest("Conta inválida");
 
         var subscription = new Subscription
         {
             Id = Guid.NewGuid(),
-            UserId = UserId,
+            FamilyId = FamilyId,
             Name = request.Name,
             CategoryId = request.CategoryId,
             AccountId = request.AccountId,
@@ -81,7 +81,7 @@ public class SubscriptionsController : BaseAuthenticatedController
         var transaction = new Transaction
         {
             Id = Guid.NewGuid(),
-            UserId = UserId,
+            FamilyId = FamilyId,
             AccountId = request.AccountId,
             CategoryId = request.CategoryId,
             Amount = request.Amount,
@@ -89,7 +89,8 @@ public class SubscriptionsController : BaseAuthenticatedController
             Description = $"{request.Name} (Assinatura - 1ª cobrança)",
             Date = DateTime.UtcNow,
             IsRecurring = true,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            CreatedByUsername = Username
         };
 
         // Atualizar saldo da conta
@@ -122,7 +123,7 @@ public class SubscriptionsController : BaseAuthenticatedController
     [HttpPost("forecast")]
     public async Task<ActionResult<SubscriptionForecastDto>> Forecast([FromQuery] int days = 30)
     {
-        var query = new GetSubscriptionForecastQuery(UserId, days);
+        var query = new GetSubscriptionForecastQuery(FamilyId, days);
         var result = await _mediator.Send(query);
         return Ok(result);
     }
@@ -132,7 +133,7 @@ public class SubscriptionsController : BaseAuthenticatedController
     {
         var subscription = await _subscriptionRepository.GetByIdAsync(id, s => s.Category);
 
-        if (subscription == null || subscription.UserId != UserId)
+        if (subscription == null || subscription.FamilyId != FamilyId)
             return NotFound();
 
         // Toggle status
@@ -163,7 +164,7 @@ public class SubscriptionsController : BaseAuthenticatedController
     [HttpPost("process-billings")]
     public async Task<ActionResult<object>> ProcessBillings()
     {
-        var command = new ProcessSubscriptionBillingsCommand(UserId);
+        var command = new ProcessSubscriptionBillingsCommand(FamilyId, Username);
         var processedCount = await _mediator.Send(command);
         return Ok(new { processedCount, message = $"{processedCount} assinatura(s) processada(s) com sucesso" });
     }

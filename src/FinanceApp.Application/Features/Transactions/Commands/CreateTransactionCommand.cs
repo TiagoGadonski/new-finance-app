@@ -7,7 +7,8 @@ using FinanceApp.Domain.Exceptions;
 namespace FinanceApp.Application.Features.Transactions.Commands;
 
 public record CreateTransactionCommand(
-    Guid UserId,
+    Guid FamilyId,
+    string Username,
     CreateTransactionRequest Request
 ) : IRequest<TransactionDto>;
 
@@ -40,11 +41,11 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         try
         {
             var account = await _accountRepository.GetByIdAsync(request.Request.AccountId);
-            if (account == null || account.UserId != request.UserId)
+            if (account == null || account.FamilyId != request.FamilyId)
                 throw new NotFoundException("Account", request.Request.AccountId);
 
             var category = await _categoryRepository.GetByIdAsync(request.Request.CategoryId);
-            if (category == null || (category.UserId != request.UserId && !category.IsDefault))
+            if (category == null || (category.FamilyId != request.FamilyId && !category.IsDefault))
                 throw new NotFoundException("Category", request.Request.CategoryId);
 
             // Se for compra parcelada, criar múltiplas transações
@@ -59,7 +60,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
                     var installment = new Transaction
                     {
                         Id = Guid.NewGuid(),
-                        UserId = request.UserId,
+                        FamilyId = request.FamilyId,
                         AccountId = request.Request.AccountId,
                         CategoryId = request.Request.CategoryId,
                         Amount = installmentAmount,
@@ -71,7 +72,8 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
                         InstallmentCount = request.Request.InstallmentCount.Value,
                         CurrentInstallment = i,
                         ParentTransactionId = parentId,
-                        CreatedAt = DateTime.UtcNow
+                        CreatedAt = DateTime.UtcNow,
+                        CreatedByUsername = request.Username
                     };
 
                     // Atualizar saldo apenas para a primeira parcela (total)
@@ -92,7 +94,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
 
                 // Aprender com a escolha do usuário
                 await _classificationService.LearnFromUserChoiceAsync(
-                    request.UserId,
+                    request.FamilyId,
                     request.Request.Description,
                     request.Request.CategoryId);
 
@@ -120,7 +122,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
                 var transaction = new Transaction
                 {
                     Id = Guid.NewGuid(),
-                    UserId = request.UserId,
+                    FamilyId = request.FamilyId,
                     AccountId = request.Request.AccountId,
                     CategoryId = request.Request.CategoryId,
                     Amount = request.Request.Amount,
@@ -132,7 +134,8 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
                     InstallmentCount = null,
                     CurrentInstallment = null,
                     ParentTransactionId = null,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
+                    CreatedByUsername = request.Username
                 };
 
                 // Atualizar saldo da conta
@@ -149,7 +152,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
 
                 // Aprender com a escolha do usuário (fora da transação)
                 await _classificationService.LearnFromUserChoiceAsync(
-                    request.UserId,
+                    request.FamilyId,
                     request.Request.Description,
                     request.Request.CategoryId);
 

@@ -12,9 +12,9 @@ public class ClassificationService : IClassificationService
         _ruleRepository = ruleRepository;
     }
 
-    public async Task<Guid?> SuggestCategoryAsync(Guid userId, string description)
+    public async Task<Guid?> SuggestCategoryAsync(Guid familyId, string description)
     {
-        var rules = await _ruleRepository.FindAsync(r => r.UserId == userId);
+        var rules = await _ruleRepository.FindAsync(r => r.FamilyId == familyId);
 
         var matchedRule = rules
             .Where(r => description.Contains(r.Keyword, StringComparison.OrdinalIgnoreCase))
@@ -25,7 +25,7 @@ public class ClassificationService : IClassificationService
         return matchedRule?.CategoryId;
     }
 
-    public async Task LearnFromUserChoiceAsync(Guid userId, string description, Guid categoryId)
+    public async Task LearnFromUserChoiceAsync(Guid familyId, string description, Guid categoryId)
     {
         // Extrai palavras-chave relevantes da descrição (palavras com 4+ caracteres)
         var words = description.Split(' ', StringSplitOptions.RemoveEmptyEntries)
@@ -36,7 +36,7 @@ public class ClassificationService : IClassificationService
         {
             var wordLower = word.ToLower();
             var existingRule = (await _ruleRepository.FindAsync(r =>
-                r.UserId == userId &&
+                r.FamilyId == familyId &&
                 r.Keyword == wordLower))
                 .FirstOrDefault();
 
@@ -56,7 +56,7 @@ public class ClassificationService : IClassificationService
                 var newRule = new ClassificationRule
                 {
                     Id = Guid.NewGuid(),
-                    UserId = userId,
+                    FamilyId = familyId,
                     Keyword = word.ToLower(),
                     CategoryId = categoryId,
                     Priority = 1,

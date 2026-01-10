@@ -11,6 +11,7 @@ public class ApplicationDbContext : DbContext
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
 
+    public DbSet<Family> Families => Set<Family>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Account> Accounts => Set<Account>();
     public DbSet<Category> Categories => Set<Category>();
@@ -29,15 +30,34 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // Family
+        modelBuilder.Entity<Family>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.IsActive).HasDefaultValue(true);
+        });
+
         // User
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.HasIndex(e => e.Email).IsUnique();
+
+            // Unique index em Username (case-insensitive)
+            entity.HasIndex(e => e.Username).IsUnique();
+            entity.Property(e => e.Username)
+                .IsRequired()
+                .HasMaxLength(20);
+
             entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
-            entity.Property(e => e.Email).IsRequired().HasMaxLength(200);
             entity.Property(e => e.PasswordHash).IsRequired();
             entity.Property(e => e.Role).IsRequired().HasDefaultValue(Domain.Enums.UserRole.User);
+
+            // FK para Family
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Users)
+                .HasForeignKey(e => e.FamilyId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Account
@@ -46,10 +66,15 @@ public class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Balance).HasColumnType("decimal(18,2)");
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.Accounts)
-                .HasForeignKey(e => e.UserId)
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Accounts)
+                .HasForeignKey(e => e.FamilyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
         });
 
         // Category
@@ -57,31 +82,36 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.Categories)
-                .HasForeignKey(e => e.UserId)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired(false);
 
-            // Seed default categories
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Categories)
+                .HasForeignKey(e => e.FamilyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired(false); // Nullable FK
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
+
+            // Seed default categories (FamilyId = null)
             entity.HasData(
                 // Income categories
-                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), UserId = null, Name = "Salário", Type = Domain.Enums.TransactionType.Income, Icon = "💰", Color = "#10b981", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111112"), UserId = null, Name = "Freelance", Type = Domain.Enums.TransactionType.Income, Icon = "💼", Color = "#3b82f6", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111113"), UserId = null, Name = "Investimentos", Type = Domain.Enums.TransactionType.Income, Icon = "📈", Color = "#8b5cf6", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111114"), UserId = null, Name = "Outros Rendimentos", Type = Domain.Enums.TransactionType.Income, Icon = "💵", Color = "#06b6d4", IsDefault = true, CreatedAt = DateTime.UtcNow },
+                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111111"), FamilyId = null, Name = "Salário", Type = Domain.Enums.TransactionType.Income, Icon = "💰", Color = "#10b981", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111112"), FamilyId = null, Name = "Freelance", Type = Domain.Enums.TransactionType.Income, Icon = "💼", Color = "#3b82f6", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111113"), FamilyId = null, Name = "Investimentos", Type = Domain.Enums.TransactionType.Income, Icon = "📈", Color = "#8b5cf6", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("11111111-1111-1111-1111-111111111114"), FamilyId = null, Name = "Outros Rendimentos", Type = Domain.Enums.TransactionType.Income, Icon = "💵", Color = "#06b6d4", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
 
                 // Expense categories
-                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222221"), UserId = null, Name = "Alimentação", Type = Domain.Enums.TransactionType.Expense, Icon = "🍔", Color = "#f97316", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), UserId = null, Name = "Transporte", Type = Domain.Enums.TransactionType.Expense, Icon = "🚗", Color = "#eab308", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222223"), UserId = null, Name = "Moradia", Type = Domain.Enums.TransactionType.Expense, Icon = "🏠", Color = "#a855f7", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222224"), UserId = null, Name = "Saúde", Type = Domain.Enums.TransactionType.Expense, Icon = "🏥", Color = "#ec4899", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222225"), UserId = null, Name = "Educação", Type = Domain.Enums.TransactionType.Expense, Icon = "📚", Color = "#6366f1", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222226"), UserId = null, Name = "Lazer", Type = Domain.Enums.TransactionType.Expense, Icon = "🎮", Color = "#14b8a6", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222227"), UserId = null, Name = "Compras", Type = Domain.Enums.TransactionType.Expense, Icon = "🛍️", Color = "#f43f5e", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222228"), UserId = null, Name = "Contas", Type = Domain.Enums.TransactionType.Expense, Icon = "📄", Color = "#ef4444", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222229"), UserId = null, Name = "Assinaturas", Type = Domain.Enums.TransactionType.Expense, Icon = "📱", Color = "#84cc16", IsDefault = true, CreatedAt = DateTime.UtcNow },
-                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222230"), UserId = null, Name = "Outros Gastos", Type = Domain.Enums.TransactionType.Expense, Icon = "💸", Color = "#64748b", IsDefault = true, CreatedAt = DateTime.UtcNow }
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222221"), FamilyId = null, Name = "Alimentação", Type = Domain.Enums.TransactionType.Expense, Icon = "🍔", Color = "#f97316", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222222"), FamilyId = null, Name = "Transporte", Type = Domain.Enums.TransactionType.Expense, Icon = "🚗", Color = "#eab308", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222223"), FamilyId = null, Name = "Moradia", Type = Domain.Enums.TransactionType.Expense, Icon = "🏠", Color = "#a855f7", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222224"), FamilyId = null, Name = "Saúde", Type = Domain.Enums.TransactionType.Expense, Icon = "🏥", Color = "#ec4899", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222225"), FamilyId = null, Name = "Educação", Type = Domain.Enums.TransactionType.Expense, Icon = "📚", Color = "#6366f1", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222226"), FamilyId = null, Name = "Lazer", Type = Domain.Enums.TransactionType.Expense, Icon = "🎮", Color = "#14b8a6", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222227"), FamilyId = null, Name = "Compras", Type = Domain.Enums.TransactionType.Expense, Icon = "🛍️", Color = "#f43f5e", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222228"), FamilyId = null, Name = "Contas", Type = Domain.Enums.TransactionType.Expense, Icon = "📄", Color = "#ef4444", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222229"), FamilyId = null, Name = "Assinaturas", Type = Domain.Enums.TransactionType.Expense, Icon = "📱", Color = "#84cc16", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" },
+                new Category { Id = Guid.Parse("22222222-2222-2222-2222-222222222230"), FamilyId = null, Name = "Outros Gastos", Type = Domain.Enums.TransactionType.Expense, Icon = "💸", Color = "#64748b", IsDefault = true, CreatedAt = DateTime.UtcNow, CreatedByUsername = "system" }
             );
         });
 
@@ -91,18 +121,25 @@ public class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Amount).HasColumnType("decimal(18,2)");
             entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.Transactions)
-                .HasForeignKey(e => e.UserId)
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Transactions)
+                .HasForeignKey(e => e.FamilyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasOne(e => e.Account)
                 .WithMany(a => a.Transactions)
                 .HasForeignKey(e => e.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             entity.HasOne(e => e.Category)
                 .WithMany(c => c.Transactions)
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
         });
 
         // Budget
@@ -111,14 +148,20 @@ public class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Limit).HasColumnType("decimal(18,2)");
             entity.Property(e => e.Spent).HasColumnType("decimal(18,2)");
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.Budgets)
-                .HasForeignKey(e => e.UserId)
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Budgets)
+                .HasForeignKey(e => e.FamilyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasOne(e => e.Category)
                 .WithMany(c => c.Budgets)
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
         });
 
         // Subscription
@@ -127,18 +170,25 @@ public class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Amount).HasColumnType("decimal(18,2)");
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.Subscriptions)
-                .HasForeignKey(e => e.UserId)
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Subscriptions)
+                .HasForeignKey(e => e.FamilyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasOne(e => e.Category)
                 .WithMany()
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             entity.HasOne(e => e.Account)
                 .WithMany()
                 .HasForeignKey(e => e.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
         });
 
         // Goal
@@ -148,10 +198,15 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
             entity.Property(e => e.TargetAmount).HasColumnType("decimal(18,2)");
             entity.Property(e => e.CurrentAmount).HasColumnType("decimal(18,2)");
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.Goals)
-                .HasForeignKey(e => e.UserId)
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Goals)
+                .HasForeignKey(e => e.FamilyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
         });
 
         // Debt
@@ -163,10 +218,15 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.RemainingAmount).HasColumnType("decimal(18,2)");
             entity.Property(e => e.InterestRate).HasColumnType("decimal(5,2)");
             entity.Property(e => e.MinimumPayment).HasColumnType("decimal(18,2)");
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.Debts)
-                .HasForeignKey(e => e.UserId)
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Debts)
+                .HasForeignKey(e => e.FamilyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
         });
 
         // RoundupRule
@@ -174,18 +234,25 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Multiplier).HasColumnType("decimal(3,1)");
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.RoundupRules)
-                .HasForeignKey(e => e.UserId)
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.RoundupRules)
+                .HasForeignKey(e => e.FamilyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasOne(e => e.SourceAccount)
                 .WithMany()
                 .HasForeignKey(e => e.SourceAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             entity.HasOne(e => e.DestinationAccount)
                 .WithMany()
                 .HasForeignKey(e => e.DestinationAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
         });
 
         // ClassificationRule
@@ -193,14 +260,20 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Keyword).IsRequired().HasMaxLength(100);
-            entity.HasOne(e => e.User)
-                .WithMany(u => u.ClassificationRules)
-                .HasForeignKey(e => e.UserId)
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.ClassificationRules)
+                .HasForeignKey(e => e.FamilyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasOne(e => e.Category)
                 .WithMany()
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
         });
 
         // MeiSettings
@@ -211,15 +284,22 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.AlertThreshold1).HasColumnType("decimal(5,2)");
             entity.Property(e => e.AlertThreshold2).HasColumnType("decimal(5,2)");
             entity.Property(e => e.AlertThreshold3).HasColumnType("decimal(5,2)");
-            entity.HasIndex(e => new { e.UserId, e.Year }).IsUnique();
-            entity.HasOne(e => e.User)
-                .WithMany()
-                .HasForeignKey(e => e.UserId)
+
+            entity.HasIndex(e => new { e.FamilyId, e.Year }).IsUnique();
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.MeiSettings)
+                .HasForeignKey(e => e.FamilyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasOne(e => e.MainCategory)
                 .WithMany()
                 .HasForeignKey(e => e.MainCategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
         });
 
         // ShoppingList
@@ -228,11 +308,17 @@ public class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Description).HasMaxLength(500);
-            entity.HasOne(e => e.User)
-                .WithMany()
-                .HasForeignKey(e => e.UserId)
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.ShoppingLists)
+                .HasForeignKey(e => e.FamilyId)
                 .OnDelete(DeleteBehavior.Cascade);
-            entity.HasIndex(e => new { e.UserId, e.Status });
+
+            entity.HasIndex(e => new { e.FamilyId, e.Status });
+
+            // Campos de audit
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
         });
 
         // ShoppingItem
@@ -243,10 +329,12 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Category).HasMaxLength(100);
             entity.Property(e => e.EstimatedPrice).HasColumnType("decimal(10,2)");
             entity.Property(e => e.ActualPrice).HasColumnType("decimal(10,2)");
+
             entity.HasOne(e => e.ShoppingList)
                 .WithMany(sl => sl.Items)
                 .HasForeignKey(e => e.ShoppingListId)
                 .OnDelete(DeleteBehavior.Cascade);
+
             entity.HasOne(e => e.Transaction)
                 .WithMany()
                 .HasForeignKey(e => e.TransactionId)

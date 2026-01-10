@@ -25,7 +25,7 @@ public class DebtsController : BaseAuthenticatedController
         var debt = new Debt
         {
             Id = Guid.NewGuid(),
-            UserId = UserId,
+            FamilyId = FamilyId,
             Name = request.Name,
             TotalAmount = request.TotalAmount,
             RemainingAmount = request.RemainingAmount,
@@ -43,7 +43,7 @@ public class DebtsController : BaseAuthenticatedController
     [HttpPost("simulate")]
     public async Task<ActionResult<DebtSimulationDto>> Simulate([FromBody] DebtSimulationRequest request)
     {
-        var command = new SimulateDebtPaymentCommand(UserId, request);
+        var command = new SimulateDebtPaymentCommand(FamilyId, request);
         var result = await _mediator.Send(command);
         return Ok(result);
     }
@@ -51,7 +51,7 @@ public class DebtsController : BaseAuthenticatedController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Debt>>> GetAll()
     {
-        var debts = await _debtRepository.FindAsync(d => d.UserId == UserId);
+        var debts = await _debtRepository.FindAsync(d => d.FamilyId == FamilyId);
         return Ok(debts);
     }
 }

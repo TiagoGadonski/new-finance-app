@@ -12,10 +12,11 @@ public class SignUpRequestValidator : AbstractValidator<SignUpRequest>
             .MinimumLength(2).WithMessage("Nome deve ter pelo menos 2 caracteres")
             .MaximumLength(100).WithMessage("Nome deve ter no máximo 100 caracteres");
 
-        RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Email é obrigatório")
-            .EmailAddress().WithMessage("Email inválido")
-            .MaximumLength(255).WithMessage("Email deve ter no máximo 255 caracteres");
+        RuleFor(x => x.Username)
+            .NotEmpty().WithMessage("Username é obrigatório")
+            .MinimumLength(3).WithMessage("Username deve ter pelo menos 3 caracteres")
+            .MaximumLength(20).WithMessage("Username deve ter no máximo 20 caracteres")
+            .Matches(@"^[a-zA-Z0-9_-]+$").WithMessage("Username pode conter apenas letras, números, underscores e hífens");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Senha é obrigatória")
@@ -28,9 +29,8 @@ public class LoginRequestValidator : AbstractValidator<LoginRequest>
 {
     public LoginRequestValidator()
     {
-        RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Email é obrigatório")
-            .EmailAddress().WithMessage("Email inválido");
+        RuleFor(x => x.Username)
+            .NotEmpty().WithMessage("Username é obrigatório");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Senha é obrigatória");

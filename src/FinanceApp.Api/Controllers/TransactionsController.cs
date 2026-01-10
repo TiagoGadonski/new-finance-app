@@ -27,7 +27,7 @@ public class TransactionsController : BaseAuthenticatedController
     [HttpPost]
     public async Task<ActionResult<TransactionDto>> Create([FromBody] CreateTransactionRequest request)
     {
-        var command = new CreateTransactionCommand(UserId, request);
+        var command = new CreateTransactionCommand(FamilyId, Username, request);
         var result = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
@@ -35,7 +35,7 @@ public class TransactionsController : BaseAuthenticatedController
     [HttpPost("import/csv")]
     public async Task<ActionResult<List<TransactionDto>>> ImportCsv([FromBody] ImportCsvRequest request)
     {
-        var command = new ImportCsvCommand(UserId, request);
+        var command = new ImportCsvCommand(FamilyId, Username, request);
         var result = await _mediator.Send(command);
         return Ok(result);
     }
@@ -44,7 +44,7 @@ public class TransactionsController : BaseAuthenticatedController
     public async Task<ActionResult<TransactionDto>> GetById(Guid id)
     {
         var transaction = await _transactionRepository.GetByIdAsync(id, t => t.Account, t => t.Category);
-        if (transaction == null || transaction.UserId != UserId)
+        if (transaction == null || transaction.FamilyId != FamilyId)
             return NotFound();
 
         var dto = new TransactionDto(
@@ -71,7 +71,7 @@ public class TransactionsController : BaseAuthenticatedController
     public async Task<ActionResult<IEnumerable<TransactionDto>>> GetAll()
     {
         var transactions = await _transactionRepository.FindAsync(
-            t => t.UserId == UserId,
+            t => t.FamilyId == FamilyId,
             t => t.Account,
             t => t.Category);
 
@@ -99,7 +99,7 @@ public class TransactionsController : BaseAuthenticatedController
     public async Task<ActionResult<TransactionSummaryDto>> GetSummary([FromQuery] int month, [FromQuery] int year)
     {
         var transactions = await _transactionRepository.FindAsync(t =>
-            t.UserId == UserId &&
+            t.FamilyId == FamilyId &&
             t.Date.Month == month &&
             t.Date.Year == year);
 
@@ -134,7 +134,7 @@ public class TransactionsController : BaseAuthenticatedController
         if (transaction == null)
             return NotFound();
 
-        if (transaction.UserId != UserId)
+        if (transaction.FamilyId != FamilyId)
             return Forbid();
 
         // Reverse the account balance change

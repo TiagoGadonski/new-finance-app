@@ -6,7 +6,8 @@ using MediatR;
 namespace FinanceApp.Application.Features.Mei.Commands;
 
 public record ConfigureMeiSettingsCommand(
-    Guid UserId,
+    Guid FamilyId,
+    string Username,
     CreateMeiSettingsRequest Request
 ) : IRequest<MeiSettingsDto>;
 
@@ -23,7 +24,7 @@ public class ConfigureMeiSettingsCommandHandler : IRequestHandler<ConfigureMeiSe
     {
         // Verificar se já existe configuração para este ano
         var existing = (await _repository.FindAsync(m =>
-            m.UserId == command.UserId && m.Year == command.Request.Year))
+            m.FamilyId == command.FamilyId && m.Year == command.Request.Year))
             .FirstOrDefault();
 
         if (existing != null)
@@ -36,6 +37,7 @@ public class ConfigureMeiSettingsCommandHandler : IRequestHandler<ConfigureMeiSe
             existing.AlertThreshold2 = command.Request.AlertThreshold2;
             existing.AlertThreshold3 = command.Request.AlertThreshold3;
             existing.UpdatedAt = DateTime.UtcNow;
+            existing.UpdatedByUsername = command.Username;
 
             await _repository.UpdateAsync(existing);
 
@@ -57,7 +59,7 @@ public class ConfigureMeiSettingsCommandHandler : IRequestHandler<ConfigureMeiSe
         var meiSettings = new MeiSettings
         {
             Id = Guid.NewGuid(),
-            UserId = command.UserId,
+            FamilyId = command.FamilyId,
             Year = command.Request.Year,
             AnnualRevenueLimit = command.Request.AnnualRevenueLimit,
             StartMonth = command.Request.StartMonth,
@@ -65,7 +67,8 @@ public class ConfigureMeiSettingsCommandHandler : IRequestHandler<ConfigureMeiSe
             AlertThreshold1 = command.Request.AlertThreshold1,
             AlertThreshold2 = command.Request.AlertThreshold2,
             AlertThreshold3 = command.Request.AlertThreshold3,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            CreatedByUsername = command.Username
         };
 
         await _repository.AddAsync(meiSettings);

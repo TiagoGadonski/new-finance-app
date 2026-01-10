@@ -7,7 +7,7 @@ using FinanceApp.Domain.Enums;
 namespace FinanceApp.Application.Features.Debts.Commands;
 
 public record SimulateDebtPaymentCommand(
-    Guid UserId,
+    Guid FamilyId,
     DebtSimulationRequest Request
 ) : IRequest<DebtSimulationDto>;
 
@@ -22,7 +22,7 @@ public class SimulateDebtPaymentCommandHandler : IRequestHandler<SimulateDebtPay
 
     public async Task<DebtSimulationDto> Handle(SimulateDebtPaymentCommand request, CancellationToken cancellationToken)
     {
-        var debts = (await _debtRepository.FindAsync(d => d.UserId == request.UserId))
+        var debts = (await _debtRepository.FindAsync(d => d.FamilyId == request.FamilyId))
             .Where(d => d.RemainingAmount > 0)
             .ToList();
 

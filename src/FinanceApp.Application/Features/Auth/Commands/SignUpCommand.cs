@@ -6,32 +6,62 @@ using FinanceApp.Domain.Exceptions;
 
 namespace FinanceApp.Application.Features.Auth.Commands;
 
-public record SignUpCommand(string Name, string Email, string Password) : IRequest<AuthResponse>;
+public record SignUpCommand(string Name, string Username, string Password, Guid? FamilyId = null) : IRequest<AuthResponse>;
 
 public class SignUpCommandHandler : IRequestHandler<SignUpCommand, AuthResponse>
 {
     private readonly IUserRepository _userRepository;
+    private readonly IFamilyRepository _familyRepository;
     private readonly IAuthService _authService;
 
-    public SignUpCommandHandler(IUserRepository userRepository, IAuthService authService)
+    public SignUpCommandHandler(IUserRepository userRepository, IFamilyRepository familyRepository, IAuthService authService)
     {
         _userRepository = userRepository;
+        _familyRepository = familyRepository;
         _authService = authService;
     }
 
     public async Task<AuthResponse> Handle(SignUpCommand request, CancellationToken cancellationToken)
     {
-        var existingUser = await _userRepository.GetByEmailAsync(request.Email);
+        // Validar username format (3-20 chars, alphanumeric + underscore/hyphen)
+        if (request.Username.Length < 3 || request.Username.Length > 20)
+            throw new DomainException("Username must be between 3 and 20 characters");
+
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.Username, @"^[a-zA-Z0-9_-]+$"))
+            throw new DomainException("Username can only contain letters, numbers, underscores and hyphens");
+
+        var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
         if (existingUser != null)
-            throw new DomainException("Email already registered");
+            throw new DomainException("Username already registered");
+
+        // Se FamilyId não fornecido, criar nova Family
+        Family family;
+        if (request.FamilyId.HasValue)
+        {
+            family = await _familyRepository.GetByIdAsync(request.FamilyId.Value)
+                ?? throw new NotFoundException("Family", request.FamilyId.Value);
+        }
+        else
+        {
+            family = new Family
+            {
+                Id = Guid.NewGuid(),
+                Name = $"{request.Name}'s Family",
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _familyRepository.AddAsync(family);
+            await _familyRepository.SaveChangesAsync();
+        }
 
         var refreshToken = _authService.GenerateRefreshToken();
 
         var user = new User
         {
             Id = Guid.NewGuid(),
+            FamilyId = family.Id,
             Name = request.Name,
-            Email = request.Email,
+            Username = request.Username,
             PasswordHash = _authService.HashPassword(request.Password),
             RefreshToken = refreshToken,
             RefreshTokenExpiry = DateTime.UtcNow.AddDays(7),
@@ -47,7 +77,7 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, AuthResponse>
             accessToken,
             refreshToken,
             DateTime.UtcNow.AddHours(1),
-            new UserDto(user.Id, user.Name, user.Email, user.Role)
+            new UserDto(user.Id, user.Name, user.Username, user.Role, family.Id, family.Name)
         );
     }
 }

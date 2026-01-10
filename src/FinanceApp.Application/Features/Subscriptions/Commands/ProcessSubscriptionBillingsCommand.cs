@@ -5,7 +5,7 @@ using FinanceApp.Domain.Enums;
 
 namespace FinanceApp.Application.Features.Subscriptions.Commands;
 
-public record ProcessSubscriptionBillingsCommand(Guid UserId) : IRequest<int>;
+public record ProcessSubscriptionBillingsCommand(Guid FamilyId, string Username) : IRequest<int>;
 
 public class ProcessSubscriptionBillingsCommandHandler : IRequestHandler<ProcessSubscriptionBillingsCommand, int>
 {
@@ -30,12 +30,12 @@ public class ProcessSubscriptionBillingsCommandHandler : IRequestHandler<Process
 
         // Get all active subscriptions for user
         var subscriptions = await _subscriptionRepository.FindAsync(
-            s => s.UserId == request.UserId && s.Status == SubscriptionStatus.Active
+            s => s.FamilyId == request.FamilyId && s.Status == SubscriptionStatus.Active
         );
 
         // Get user's default account (first active account)
         var defaultAccount = (await _accountRepository.FindAsync(
-            a => a.UserId == request.UserId && a.IsActive
+            a => a.FamilyId == request.FamilyId && a.IsActive
         )).FirstOrDefault();
 
         if (defaultAccount == null)
@@ -51,14 +51,15 @@ public class ProcessSubscriptionBillingsCommandHandler : IRequestHandler<Process
             var transaction = new Transaction
             {
                 Id = Guid.NewGuid(),
-                UserId = request.UserId,
+                FamilyId = request.FamilyId,
                 AccountId = defaultAccount.Id,
                 CategoryId = subscription.CategoryId,
                 Amount = subscription.Amount,
                 Description = $"Assinatura: {subscription.Name}",
                 Type = TransactionType.Expense,
                 Date = subscription.NextBillingDate.Value,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                CreatedByUsername = request.Username
             };
 
             await _transactionRepository.AddAsync(transaction);

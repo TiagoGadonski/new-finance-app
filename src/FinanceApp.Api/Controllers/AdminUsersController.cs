@@ -12,13 +12,16 @@ namespace FinanceApp.Api.Controllers;
 public class AdminUsersController : BaseAuthenticatedController
 {
     private readonly IUserRepository _userRepository;
+    private readonly IFamilyRepository _familyRepository;
     private readonly IAuthService _authService;
 
     public AdminUsersController(
         IUserRepository userRepository,
+        IFamilyRepository familyRepository,
         IAuthService authService)
     {
         _userRepository = userRepository;
+        _familyRepository = familyRepository;
         _authService = authService;
     }
 
@@ -29,8 +32,10 @@ public class AdminUsersController : BaseAuthenticatedController
         var userDtos = users.Select(u => new AdminUserDto(
             u.Id,
             u.Name,
-            u.Email,
+            u.Username,
             u.Role,
+            u.FamilyId,
+            u.Family.Name,
             u.CreatedAt,
             u.UpdatedAt
         ));
@@ -48,8 +53,10 @@ public class AdminUsersController : BaseAuthenticatedController
         return Ok(new AdminUserDto(
             user.Id,
             user.Name,
-            user.Email,
+            user.Username,
             user.Role,
+            user.FamilyId,
+            user.Family.Name,
             user.CreatedAt,
             user.UpdatedAt
         ));
@@ -58,16 +65,29 @@ public class AdminUsersController : BaseAuthenticatedController
     [HttpPost]
     public async Task<ActionResult<AdminUserDto>> CreateUser([FromBody] CreateUserRequest request)
     {
-        // Check if email already exists
-        var existingUser = await _userRepository.GetByEmailAsync(request.Email);
+        // Validate username format
+        if (request.Username.Length < 3 || request.Username.Length > 20)
+            return BadRequest(new { message = "Username must be between 3 and 20 characters" });
+
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.Username, @"^[a-zA-Z0-9_-]+$"))
+            return BadRequest(new { message = "Username can only contain letters, numbers, underscores and hyphens" });
+
+        // Check if username already exists
+        var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
         if (existingUser != null)
-            return BadRequest(new { message = "Email already in use" });
+            return BadRequest(new { message = "Username already in use" });
+
+        // Verify family exists
+        var family = await _familyRepository.GetByIdAsync(request.FamilyId);
+        if (family == null)
+            return BadRequest(new { message = "Family not found" });
 
         var user = new User
         {
             Id = Guid.NewGuid(),
+            FamilyId = request.FamilyId,
             Name = request.Name,
-            Email = request.Email,
+            Username = request.Username,
             PasswordHash = _authService.HashPassword(request.Password),
             Role = request.Role,
             CreatedAt = DateTime.UtcNow
@@ -79,7 +99,7 @@ public class AdminUsersController : BaseAuthenticatedController
         return CreatedAtAction(
             nameof(GetUserById),
             new { id = user.Id },
-            new AdminUserDto(user.Id, user.Name, user.Email, user.Role, user.CreatedAt, user.UpdatedAt)
+            new AdminUserDto(user.Id, user.Name, user.Username, user.Role, user.FamilyId, family.Name, user.CreatedAt, user.UpdatedAt)
         );
     }
 
@@ -98,23 +118,17 @@ public class AdminUsersController : BaseAuthenticatedController
                 return BadRequest(new { message = "Cannot demote the last admin user" });
         }
 
-        // Check if new email conflicts with existing user
-        if (user.Email != request.Email)
-        {
-            var existingUser = await _userRepository.GetByEmailAsync(request.Email);
-            if (existingUser != null)
-                return BadRequest(new { message = "Email already in use" });
-        }
+        if (request.Name != null)
+            user.Name = request.Name;
+        if (request.Role.HasValue)
+            user.Role = request.Role.Value;
 
-        user.Name = request.Name;
-        user.Email = request.Email;
-        user.Role = request.Role;
         user.UpdatedAt = DateTime.UtcNow;
 
         await _userRepository.UpdateAsync(user);
         await _userRepository.SaveChangesAsync();
 
-        return Ok(new AdminUserDto(user.Id, user.Name, user.Email, user.Role, user.CreatedAt, user.UpdatedAt));
+        return Ok(new AdminUserDto(user.Id, user.Name, user.Username, user.Role, user.FamilyId, user.Family.Name, user.CreatedAt, user.UpdatedAt));
     }
 
     [HttpDelete("{id}")]
@@ -156,5 +170,47 @@ public class AdminUsersController : BaseAuthenticatedController
         await _userRepository.SaveChangesAsync();
 
         return Ok(new { message = "Password changed successfully" });
+    }
+
+    [HttpGet("families")]
+    public async Task<ActionResult<IEnumerable<FamilyDto>>> GetAllFamilies()
+    {
+        var families = await _familyRepository.GetAllWithUsersAsync();
+        var familyDtos = families.Select(f => new FamilyDto(
+            f.Id,
+            f.Name,
+            f.IsActive,
+            f.Users.Count,
+            f.CreatedAt
+        ));
+
+        return Ok(familyDtos);
+    }
+
+    [HttpGet("families/{familyId}")]
+    public async Task<ActionResult<FamilyDetailDto>> GetFamilyById(Guid familyId)
+    {
+        var family = await _familyRepository.GetWithUsersAsync(familyId);
+        if (family == null)
+            return NotFound();
+
+        var userDtos = family.Users.Select(u => new AdminUserDto(
+            u.Id,
+            u.Name,
+            u.Username,
+            u.Role,
+            u.FamilyId,
+            family.Name,
+            u.CreatedAt,
+            u.UpdatedAt
+        )).ToList();
+
+        return Ok(new FamilyDetailDto(
+            family.Id,
+            family.Name,
+            family.IsActive,
+            userDtos,
+            family.CreatedAt
+        ));
     }
 }

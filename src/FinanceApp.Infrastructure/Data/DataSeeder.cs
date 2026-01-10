@@ -20,57 +20,69 @@ public static class DataSeeder
             // Table doesn't exist yet, continue with seeding
         }
 
-        // Criar usuário padrão para desenvolvimento
+        // 1. Criar Family padrão
+        var defaultFamily = new Family
+        {
+            Id = Guid.NewGuid(),
+            Name = "Demo Family",
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow
+        };
+        await context.Families.AddAsync(defaultFamily);
+        await context.SaveChangesAsync();
+
+        // 2. Criar User com FamilyId e Username
         var defaultUser = new User
         {
             Id = Guid.NewGuid(),
+            FamilyId = defaultFamily.Id,
             Name = "Demo User",
-            Email = "demo@financeapp.com",
+            Username = "demo",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("Demo@123"),
-            Role = Domain.Enums.UserRole.Admin,
+            Role = UserRole.Admin,
             CreatedAt = DateTime.UtcNow
         };
-
         await context.Users.AddAsync(defaultUser);
         await context.SaveChangesAsync();
 
-        // Categorias padrão de despesas
+        // 3. Categorias padrão de despesas (family-specific)
         var expenseCategories = new[]
         {
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Alimentação", Type = TransactionType.Expense, Icon = "🍔", Color = "#FF6B6B", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Transporte", Type = TransactionType.Expense, Icon = "🚗", Color = "#4ECDC4", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Moradia", Type = TransactionType.Expense, Icon = "🏠", Color = "#45B7D1", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Saúde", Type = TransactionType.Expense, Icon = "⚕️", Color = "#96CEB4", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Educação", Type = TransactionType.Expense, Icon = "📚", Color = "#FFEAA7", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Lazer", Type = TransactionType.Expense, Icon = "🎮", Color = "#DFE6E9", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Assinaturas", Type = TransactionType.Expense, Icon = "📱", Color = "#74B9FF", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "MEI/Negócios", Type = TransactionType.Expense, Icon = "💼", Color = "#A29BFE", IsDefault = true, CreatedAt = DateTime.UtcNow },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Alimentação", Type = TransactionType.Expense, Icon = "🍔", Color = "#FF6B6B", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Transporte", Type = TransactionType.Expense, Icon = "🚗", Color = "#4ECDC4", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Moradia", Type = TransactionType.Expense, Icon = "🏠", Color = "#45B7D1", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Saúde", Type = TransactionType.Expense, Icon = "⚕️", Color = "#96CEB4", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Educação", Type = TransactionType.Expense, Icon = "📚", Color = "#FFEAA7", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Lazer", Type = TransactionType.Expense, Icon = "🎮", Color = "#DFE6E9", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Assinaturas", Type = TransactionType.Expense, Icon = "📱", Color = "#74B9FF", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "MEI/Negócios", Type = TransactionType.Expense, Icon = "💼", Color = "#A29BFE", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
         };
 
-        // Categorias padrão de receitas
+        // 4. Categorias padrão de receitas (family-specific)
         var incomeCategories = new[]
         {
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Salário", Type = TransactionType.Income, Icon = "💰", Color = "#00B894", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Freelance", Type = TransactionType.Income, Icon = "💻", Color = "#00CEC9", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "MEI/Serviços", Type = TransactionType.Income, Icon = "🏢", Color = "#6C5CE7", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Investimentos", Type = TransactionType.Income, Icon = "📈", Color = "#FDCB6E", IsDefault = true, CreatedAt = DateTime.UtcNow },
-            new Category { Id = Guid.NewGuid(), UserId = defaultUser.Id, Name = "Outros", Type = TransactionType.Income, Icon = "💵", Color = "#55EFC4", IsDefault = true, CreatedAt = DateTime.UtcNow },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Salário", Type = TransactionType.Income, Icon = "💰", Color = "#00B894", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Freelance", Type = TransactionType.Income, Icon = "💻", Color = "#00CEC9", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "MEI/Serviços", Type = TransactionType.Income, Icon = "🏢", Color = "#6C5CE7", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Investimentos", Type = TransactionType.Income, Icon = "📈", Color = "#FDCB6E", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
+            new Category { Id = Guid.NewGuid(), FamilyId = defaultFamily.Id, Name = "Outros", Type = TransactionType.Income, Icon = "💵", Color = "#55EFC4", IsDefault = false, CreatedAt = DateTime.UtcNow, CreatedByUsername = "demo" },
         };
 
         await context.Categories.AddRangeAsync(expenseCategories);
         await context.Categories.AddRangeAsync(incomeCategories);
 
-        // Conta padrão - Carteira
+        // 5. Conta padrão - Carteira
         var defaultAccount = new Account
         {
             Id = Guid.NewGuid(),
-            UserId = defaultUser.Id,
+            FamilyId = defaultFamily.Id,
             Name = "Carteira",
             Type = AccountType.Wallet,
             Balance = 0,
             Color = "#2ECC71",
             IsActive = true,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            CreatedByUsername = "demo"
         };
 
         await context.Accounts.AddAsync(defaultAccount);

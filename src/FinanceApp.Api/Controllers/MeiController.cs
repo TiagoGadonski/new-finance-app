@@ -22,7 +22,7 @@ public class MeiController : BaseAuthenticatedController
     [HttpGet("dashboard/{year}")]
     public async Task<ActionResult<MeiDashboardDto>> GetDashboard(int year)
     {
-        var query = new GetMeiDashboardQuery(UserId, year);
+        var query = new GetMeiDashboardQuery(FamilyId, year);
         var result = await _mediator.Send(query);
         return Ok(result);
     }
@@ -34,7 +34,7 @@ public class MeiController : BaseAuthenticatedController
     public async Task<ActionResult<MeiDashboardDto>> GetCurrentYearDashboard()
     {
         var currentYear = DateTime.Now.Year;
-        var query = new GetMeiDashboardQuery(UserId, currentYear);
+        var query = new GetMeiDashboardQuery(FamilyId, currentYear);
         var result = await _mediator.Send(query);
         return Ok(result);
     }
@@ -45,7 +45,7 @@ public class MeiController : BaseAuthenticatedController
     [HttpPost("configure")]
     public async Task<ActionResult<MeiSettingsDto>> Configure([FromBody] CreateMeiSettingsRequest request)
     {
-        var command = new ConfigureMeiSettingsCommand(UserId, request);
+        var command = new ConfigureMeiSettingsCommand(FamilyId, Username, request);
         var result = await _mediator.Send(command);
         return Ok(result);
     }
@@ -56,7 +56,7 @@ public class MeiController : BaseAuthenticatedController
     [HttpGet("alerts/{year}")]
     public async Task<ActionResult<List<MeiAlertDto>>> GetAlerts(int year)
     {
-        var dashboard = await _mediator.Send(new GetMeiDashboardQuery(UserId, year));
+        var dashboard = await _mediator.Send(new GetMeiDashboardQuery(FamilyId, year));
 
         var alerts = new List<MeiAlertDto>();
 

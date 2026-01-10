@@ -21,7 +21,7 @@ public class CategoriesController : BaseAuthenticatedController
         var category = new Category
         {
             Id = Guid.NewGuid(),
-            UserId = UserId,
+            FamilyId = FamilyId,
             Name = request.Name,
             Type = request.Type,
             Icon = request.Icon,
@@ -46,9 +46,9 @@ public class CategoriesController : BaseAuthenticatedController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CategoryDto>>> GetAll([FromQuery] string? type = null)
     {
-        // Get both default categories and user's custom categories
+        // Get both default categories and family's custom categories
         var categories = await _categoryRepository.FindAsync(c =>
-            c.UserId == UserId || c.IsDefault);
+            c.FamilyId == FamilyId || c.IsDefault);
 
         if (!string.IsNullOrEmpty(type) && Enum.TryParse<Domain.Enums.TransactionType>(type, true, out var transactionType))
         {
@@ -71,7 +71,7 @@ public class CategoriesController : BaseAuthenticatedController
     public async Task<ActionResult<CategoryDto>> GetById(Guid id)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
-        if (category == null || (category.UserId != UserId && !category.IsDefault))
+        if (category == null || (category.FamilyId != FamilyId && !category.IsDefault))
             return NotFound();
 
         return Ok(new CategoryDto(
@@ -88,7 +88,7 @@ public class CategoriesController : BaseAuthenticatedController
     public async Task<ActionResult<CategoryDto>> Update(Guid id, [FromBody] UpdateCategoryRequest request)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
-        if (category == null || (category.UserId != UserId && !category.IsDefault))
+        if (category == null || (category.FamilyId != FamilyId && !category.IsDefault))
             return NotFound();
 
         if (category.IsDefault)
@@ -116,7 +116,7 @@ public class CategoriesController : BaseAuthenticatedController
     public async Task<ActionResult> Delete(Guid id)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
-        if (category == null || (category.UserId != UserId && !category.IsDefault))
+        if (category == null || (category.FamilyId != FamilyId && !category.IsDefault))
             return NotFound();
 
         if (category.IsDefault)

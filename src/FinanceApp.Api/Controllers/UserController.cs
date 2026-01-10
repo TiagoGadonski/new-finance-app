@@ -18,10 +18,10 @@ public class UserController : BaseAuthenticatedController
     [HttpGet("me")]
     public async Task<ActionResult<UserDto>> GetMe()
     {
-        var user = await _userRepository.GetByIdAsync(UserId);
+        var user = await _userRepository.GetByIdAsync(UserId, u => u.Family);
         if (user == null)
             return NotFound();
 
-        return Ok(new UserDto(user.Id, user.Name, user.Email, user.Role));
+        return Ok(new UserDto(user.Id, user.Name, user.Username, user.Role, user.FamilyId, user.Family?.Name ?? ""));
     }
 }

@@ -2,9 +2,9 @@ using FinanceApp.Domain.Enums;
 
 namespace FinanceApp.Application.Common.DTOs;
 
-public record SignUpRequest(string Name, string Email, string Password);
+public record SignUpRequest(string Name, string Username, string Password, Guid? FamilyId = null);
 
-public record LoginRequest(string Email, string Password);
+public record LoginRequest(string Username, string Password);
 
 public record RefreshTokenRequest(string RefreshToken);
 
@@ -15,4 +15,4 @@ public record AuthResponse(
     UserDto User
 );
 
-public record UserDto(Guid Id, string Name, string Email, UserRole Role);
+public record UserDto(Guid Id, string Name, string Username, UserRole Role, Guid FamilyId, string FamilyName);

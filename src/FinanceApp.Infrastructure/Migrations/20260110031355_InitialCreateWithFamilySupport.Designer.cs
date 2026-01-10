@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FinanceApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251229121023_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260110031355_InitialCreateWithFamilySupport")]
+    partial class InitialCreateWithFamilySupport
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,7 +38,15 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
@@ -52,14 +60,15 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FamilyId");
 
                     b.ToTable("Accounts");
                 });
@@ -77,7 +86,15 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Limit")
                         .HasColumnType("decimal(18,2)");
@@ -89,10 +106,11 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int>("Year")
                         .HasColumnType("integer");
@@ -101,7 +119,7 @@ namespace FinanceApp.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FamilyId");
 
                     b.ToTable("Budgets");
                 });
@@ -116,7 +134,15 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid?>("FamilyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Icon")
                         .HasColumnType("text");
@@ -133,14 +159,15 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FamilyId");
 
                     b.ToTable("Categories");
 
@@ -149,7 +176,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             Color = "#10b981",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6207),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2597),
+                            CreatedByUsername = "system",
                             Icon = "💰",
                             IsDefault = true,
                             Name = "Salário",
@@ -159,7 +187,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111112"),
                             Color = "#3b82f6",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6211),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2605),
+                            CreatedByUsername = "system",
                             Icon = "💼",
                             IsDefault = true,
                             Name = "Freelance",
@@ -169,7 +198,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111113"),
                             Color = "#8b5cf6",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6213),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2608),
+                            CreatedByUsername = "system",
                             Icon = "📈",
                             IsDefault = true,
                             Name = "Investimentos",
@@ -179,7 +209,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111114"),
                             Color = "#06b6d4",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6216),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2610),
+                            CreatedByUsername = "system",
                             Icon = "💵",
                             IsDefault = true,
                             Name = "Outros Rendimentos",
@@ -189,7 +220,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222221"),
                             Color = "#f97316",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6218),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2613),
+                            CreatedByUsername = "system",
                             Icon = "🍔",
                             IsDefault = true,
                             Name = "Alimentação",
@@ -199,7 +231,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             Color = "#eab308",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6221),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2616),
+                            CreatedByUsername = "system",
                             Icon = "🚗",
                             IsDefault = true,
                             Name = "Transporte",
@@ -209,7 +242,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222223"),
                             Color = "#a855f7",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6223),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2621),
+                            CreatedByUsername = "system",
                             Icon = "🏠",
                             IsDefault = true,
                             Name = "Moradia",
@@ -219,7 +253,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222224"),
                             Color = "#ec4899",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6226),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2623),
+                            CreatedByUsername = "system",
                             Icon = "🏥",
                             IsDefault = true,
                             Name = "Saúde",
@@ -229,7 +264,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222225"),
                             Color = "#6366f1",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6228),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2625),
+                            CreatedByUsername = "system",
                             Icon = "📚",
                             IsDefault = true,
                             Name = "Educação",
@@ -239,7 +275,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222226"),
                             Color = "#14b8a6",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6230),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2628),
+                            CreatedByUsername = "system",
                             Icon = "🎮",
                             IsDefault = true,
                             Name = "Lazer",
@@ -249,7 +286,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222227"),
                             Color = "#f43f5e",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6232),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2630),
+                            CreatedByUsername = "system",
                             Icon = "🛍️",
                             IsDefault = true,
                             Name = "Compras",
@@ -259,7 +297,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222228"),
                             Color = "#ef4444",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6235),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2634),
+                            CreatedByUsername = "system",
                             Icon = "📄",
                             IsDefault = true,
                             Name = "Contas",
@@ -269,7 +308,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222229"),
                             Color = "#84cc16",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6237),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2636),
+                            CreatedByUsername = "system",
                             Icon = "📱",
                             IsDefault = true,
                             Name = "Assinaturas",
@@ -279,7 +319,8 @@ namespace FinanceApp.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222230"),
                             Color = "#64748b",
-                            CreatedAt = new DateTime(2025, 12, 29, 12, 10, 23, 485, DateTimeKind.Utc).AddTicks(6240),
+                            CreatedAt = new DateTime(2026, 1, 10, 3, 13, 50, 876, DateTimeKind.Utc).AddTicks(2638),
+                            CreatedByUsername = "system",
                             Icon = "💸",
                             IsDefault = true,
                             Name = "Outros Gastos",
@@ -297,7 +338,15 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsLearned")
                         .HasColumnType("boolean");
@@ -311,16 +360,17 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FamilyId");
 
                     b.ToTable("ClassificationRules");
                 });
@@ -332,10 +382,18 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<DateTime?>("DueDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("InterestRate")
                         .HasColumnType("decimal(5,2)");
@@ -355,16 +413,44 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FamilyId");
 
                     b.ToTable("Debts");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.Entities.Family", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Families");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Goal", b =>
@@ -374,10 +460,18 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<decimal>("CurrentAmount")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -391,17 +485,18 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("TargetDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FamilyId");
 
                     b.ToTable("Goals");
                 });
@@ -434,7 +529,15 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("MainCategoryId")
                         .HasColumnType("uuid");
@@ -443,10 +546,11 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int>("Year")
                         .HasColumnType("integer");
@@ -455,7 +559,7 @@ namespace FinanceApp.Infrastructure.Migrations
 
                     b.HasIndex("MainCategoryId");
 
-                    b.HasIndex("UserId", "Year")
+                    b.HasIndex("FamilyId", "Year")
                         .IsUnique();
 
                     b.ToTable("MeiSettings");
@@ -468,9 +572,17 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<Guid>("DestinationAccountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FamilyId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsActive")
@@ -483,18 +595,19 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DestinationAccountId");
 
-                    b.HasIndex("SourceAccountId");
+                    b.HasIndex("FamilyId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("SourceAccountId");
 
                     b.ToTable("RoundupRules");
                 });
@@ -513,7 +626,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("character varying(100)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<decimal>("EstimatedPrice")
                         .HasColumnType("decimal(10,2)");
@@ -530,7 +643,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("PurchasedDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
@@ -542,7 +655,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -560,11 +673,19 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -575,17 +696,18 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("TargetDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId", "Status");
+                    b.HasIndex("FamilyId", "Status");
 
                     b.ToTable("ShoppingLists");
                 });
@@ -594,6 +716,9 @@ namespace FinanceApp.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AccountId")
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
@@ -606,10 +731,18 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("LastUsedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -617,25 +750,28 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("character varying(200)");
 
                     b.Property<DateTime?>("NextBillingDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int>("UsageCount")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FamilyId");
 
                     b.ToTable("Subscriptions");
                 });
@@ -656,18 +792,35 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<int?>("CurrentInstallment")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int?>("InstallmentCount")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("IsRecurring")
                         .HasColumnType("boolean");
+
+                    b.Property<Guid?>("ParentTransactionId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Tags")
                         .HasColumnType("text");
@@ -676,10 +829,11 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UpdatedByUsername")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
@@ -687,7 +841,7 @@ namespace FinanceApp.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("FamilyId");
 
                     b.ToTable("Transactions");
                 });
@@ -699,12 +853,10 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
+                    b.Property<Guid>("FamilyId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -719,7 +871,7 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("RefreshTokenExpiry")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Role")
                         .ValueGeneratedOnAdd()
@@ -727,11 +879,18 @@ namespace FinanceApp.Infrastructure.Migrations
                         .HasDefaultValue(0);
 
                     b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("FamilyId");
+
+                    b.HasIndex("Username")
                         .IsUnique();
 
                     b.ToTable("Users");
@@ -739,13 +898,13 @@ namespace FinanceApp.Infrastructure.Migrations
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Account", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
                         .WithMany("Accounts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FamilyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Budget", b =>
@@ -756,25 +915,25 @@ namespace FinanceApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
                         .WithMany("Budgets")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FamilyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
 
-                    b.Navigation("User");
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Category", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
                         .WithMany("Categories")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FamilyId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("User");
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.ClassificationRule", b =>
@@ -785,55 +944,55 @@ namespace FinanceApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
                         .WithMany("ClassificationRules")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FamilyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
 
-                    b.Navigation("User");
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Debt", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
                         .WithMany("Debts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FamilyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Goal", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
                         .WithMany("Goals")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FamilyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.MeiSettings", b =>
                 {
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
+                        .WithMany("MeiSettings")
+                        .HasForeignKey("FamilyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FinanceApp.Domain.Entities.Category", "MainCategory")
                         .WithMany()
                         .HasForeignKey("MainCategoryId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Family");
 
                     b.Navigation("MainCategory");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.RoundupRule", b =>
@@ -844,23 +1003,23 @@ namespace FinanceApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
+                        .WithMany("RoundupRules")
+                        .HasForeignKey("FamilyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("FinanceApp.Domain.Entities.Account", "SourceAccount")
                         .WithMany()
                         .HasForeignKey("SourceAccountId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
-                        .WithMany("RoundupRules")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("DestinationAccount");
 
-                    b.Navigation("SourceAccount");
+                    b.Navigation("Family");
 
-                    b.Navigation("User");
+                    b.Navigation("SourceAccount");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.ShoppingItem", b =>
@@ -883,32 +1042,40 @@ namespace FinanceApp.Infrastructure.Migrations
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.ShoppingList", b =>
                 {
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
+                        .WithMany("ShoppingLists")
+                        .HasForeignKey("FamilyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Subscription", b =>
                 {
+                    b.HasOne("FinanceApp.Domain.Entities.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("FinanceApp.Domain.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
                         .WithMany("Subscriptions")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FamilyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Account");
+
                     b.Navigation("Category");
 
-                    b.Navigation("User");
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Transaction", b =>
@@ -925,9 +1092,9 @@ namespace FinanceApp.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("FinanceApp.Domain.Entities.User", "User")
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
                         .WithMany("Transactions")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("FamilyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -935,7 +1102,18 @@ namespace FinanceApp.Infrastructure.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("User");
+                    b.Navigation("Family");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.Entities.User", b =>
+                {
+                    b.HasOne("FinanceApp.Domain.Entities.Family", "Family")
+                        .WithMany("Users")
+                        .HasForeignKey("FamilyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("FinanceApp.Domain.Entities.Account", b =>
@@ -950,12 +1128,7 @@ namespace FinanceApp.Infrastructure.Migrations
                     b.Navigation("Transactions");
                 });
 
-            modelBuilder.Entity("FinanceApp.Domain.Entities.ShoppingList", b =>
-                {
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("FinanceApp.Domain.Entities.User", b =>
+            modelBuilder.Entity("FinanceApp.Domain.Entities.Family", b =>
                 {
                     b.Navigation("Accounts");
 
@@ -969,11 +1142,22 @@ namespace FinanceApp.Infrastructure.Migrations
 
                     b.Navigation("Goals");
 
+                    b.Navigation("MeiSettings");
+
                     b.Navigation("RoundupRules");
+
+                    b.Navigation("ShoppingLists");
 
                     b.Navigation("Subscriptions");
 
                     b.Navigation("Transactions");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("FinanceApp.Domain.Entities.ShoppingList", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

@@ -21,7 +21,7 @@ public class AccountsController : BaseAuthenticatedController
         var account = new Account
         {
             Id = Guid.NewGuid(),
-            UserId = UserId,
+            FamilyId = FamilyId,
             Name = request.Name,
             Type = request.Type,
             Balance = request.InitialBalance,
@@ -46,7 +46,7 @@ public class AccountsController : BaseAuthenticatedController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AccountDto>>> GetAll()
     {
-        var accounts = await _accountRepository.FindAsync(a => a.UserId == UserId);
+        var accounts = await _accountRepository.FindAsync(a => a.FamilyId == FamilyId);
 
         var accountDtos = accounts.Select(a => new AccountDto(
             a.Id,
@@ -64,7 +64,7 @@ public class AccountsController : BaseAuthenticatedController
     public async Task<ActionResult<AccountDto>> GetById(Guid id)
     {
         var account = await _accountRepository.GetByIdAsync(id);
-        if (account == null || account.UserId != UserId)
+        if (account == null || account.FamilyId != FamilyId)
             return NotFound();
 
         return Ok(new AccountDto(
@@ -81,7 +81,7 @@ public class AccountsController : BaseAuthenticatedController
     public async Task<ActionResult<AccountDto>> Update(Guid id, [FromBody] UpdateAccountRequest request)
     {
         var account = await _accountRepository.GetByIdAsync(id);
-        if (account == null || account.UserId != UserId)
+        if (account == null || account.FamilyId != FamilyId)
             return NotFound();
 
         account.Name = request.Name;
@@ -106,7 +106,7 @@ public class AccountsController : BaseAuthenticatedController
     public async Task<ActionResult> Delete(Guid id)
     {
         var account = await _accountRepository.GetByIdAsync(id);
-        if (account == null || account.UserId != UserId)
+        if (account == null || account.FamilyId != FamilyId)
             return NotFound();
 
         await _accountRepository.DeleteAsync(account);

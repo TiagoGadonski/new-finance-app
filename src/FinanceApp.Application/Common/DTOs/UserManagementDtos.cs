@@ -6,8 +6,10 @@ namespace FinanceApp.Application.Common.DTOs;
 public record AdminUserDto(
     Guid Id,
     string Name,
-    string Email,
+    string Username,
     UserRole Role,
+    Guid FamilyId,
+    string FamilyName,
     DateTime CreatedAt,
     DateTime? UpdatedAt
 );
@@ -15,19 +17,33 @@ public record AdminUserDto(
 // Request to create a new user (admin only)
 public record CreateUserRequest(
     string Name,
-    string Email,
+    string Username,
     string Password,
-    UserRole Role
+    Guid FamilyId,
+    UserRole Role = UserRole.User
 );
 
 // Request to update user details (admin only)
 public record UpdateUserRequest(
-    string Name,
-    string Email,
-    UserRole Role
+    string? Name = null,
+    UserRole? Role = null
 );
 
 // Request to change user password (admin only)
-public record ChangeUserPasswordRequest(
-    string NewPassword
+public record ChangeUserPasswordRequest(string NewPassword);
+
+public record FamilyDto(
+    Guid Id,
+    string Name,
+    bool IsActive,
+    int UserCount,
+    DateTime CreatedAt
+);
+
+public record FamilyDetailDto(
+    Guid Id,
+    string Name,
+    bool IsActive,
+    List<AdminUserDto> Users,
+    DateTime CreatedAt
 );

@@ -28,10 +28,10 @@ public class RoundupsController : BaseAuthenticatedController
         var sourceAccount = await _accountRepository.GetByIdAsync(request.SourceAccountId);
         var destinationAccount = await _accountRepository.GetByIdAsync(request.DestinationAccountId);
 
-        if (sourceAccount == null || sourceAccount.UserId != UserId)
+        if (sourceAccount == null || sourceAccount.FamilyId != FamilyId)
             return NotFound("Source account not found");
 
-        if (destinationAccount == null || destinationAccount.UserId != UserId)
+        if (destinationAccount == null || destinationAccount.FamilyId != FamilyId)
             return NotFound("Destination account not found");
 
         if (request.SourceAccountId == request.DestinationAccountId)
@@ -40,7 +40,8 @@ public class RoundupsController : BaseAuthenticatedController
         var rule = new RoundupRule
         {
             Id = Guid.NewGuid(),
-            UserId = UserId,
+            FamilyId = FamilyId,
+            CreatedByUsername = Username,
             SourceAccountId = request.SourceAccountId,
             DestinationAccountId = request.DestinationAccountId,
             IsActive = true,
@@ -65,7 +66,7 @@ public class RoundupsController : BaseAuthenticatedController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RoundupRuleDto>>> GetAll()
     {
-        var rules = await _roundupRepository.FindAsync(r => r.UserId == UserId);
+        var rules = await _roundupRepository.FindAsync(r => r.FamilyId == FamilyId);
         var dtos = new List<RoundupRuleDto>();
 
         foreach (var rule in rules)
@@ -91,7 +92,7 @@ public class RoundupsController : BaseAuthenticatedController
     public async Task<ActionResult<RoundupRuleDto>> Update(Guid id, [FromBody] UpdateRoundupRuleRequest request)
     {
         var rule = await _roundupRepository.GetByIdAsync(id);
-        if (rule == null || rule.UserId != UserId)
+        if (rule == null || rule.FamilyId != FamilyId)
             return NotFound();
 
         rule.IsActive = request.IsActive;
@@ -119,7 +120,7 @@ public class RoundupsController : BaseAuthenticatedController
     public async Task<ActionResult> Delete(Guid id)
     {
         var rule = await _roundupRepository.GetByIdAsync(id);
-        if (rule == null || rule.UserId != UserId)
+        if (rule == null || rule.FamilyId != FamilyId)
             return NotFound();
 
         await _roundupRepository.DeleteAsync(rule);
@@ -131,12 +132,12 @@ public class RoundupsController : BaseAuthenticatedController
     [HttpPost("simulate")]
     public async Task<ActionResult<RoundupSimulationDto>> Simulate([FromBody] RoundupSimulationRequest request)
     {
-        var rules = await _roundupRepository.FindAsync(r => r.UserId == UserId && r.IsActive);
+        var rules = await _roundupRepository.FindAsync(r => r.FamilyId == FamilyId && r.IsActive);
         if (!rules.Any())
             return Ok(new RoundupSimulationDto(0, 0, new List<RoundupDetailDto>()));
 
         var transactions = await _transactionRepository.FindAsync(t =>
-            t.UserId == UserId &&
+            t.FamilyId == FamilyId &&
             t.Date.Month == request.Month &&
             t.Date.Year == request.Year &&
             t.Type == Domain.Enums.TransactionType.Expense);

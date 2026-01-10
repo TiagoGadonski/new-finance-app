@@ -35,7 +35,7 @@ public class ShoppingListsController : BaseAuthenticatedController
         var shoppingList = new ShoppingList
         {
             Id = Guid.NewGuid(),
-            UserId = UserId,
+            FamilyId = FamilyId,
             Name = request.Name,
             Description = request.Description,
             TargetDate = request.TargetDate,
@@ -52,7 +52,7 @@ public class ShoppingListsController : BaseAuthenticatedController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ShoppingListDto>>> GetAllLists()
     {
-        var lists = await _shoppingListRepository.FindAsync(sl => sl.UserId == UserId);
+        var lists = await _shoppingListRepository.FindAsync(sl => sl.FamilyId == FamilyId);
         var result = new List<ShoppingListDto>();
 
         foreach (var list in lists)
@@ -67,7 +67,7 @@ public class ShoppingListsController : BaseAuthenticatedController
     public async Task<ActionResult<ShoppingListDto>> GetListById(Guid id)
     {
         var shoppingList = await _shoppingListRepository.GetByIdAsync(id);
-        if (shoppingList == null || shoppingList.UserId != UserId)
+        if (shoppingList == null || shoppingList.FamilyId != FamilyId)
             return NotFound();
 
         return Ok(await MapToDetailedDtoAsync(shoppingList));
@@ -77,7 +77,7 @@ public class ShoppingListsController : BaseAuthenticatedController
     public async Task<ActionResult<ShoppingListDto>> UpdateList(Guid id, [FromBody] UpdateShoppingListRequest request)
     {
         var shoppingList = await _shoppingListRepository.GetByIdAsync(id);
-        if (shoppingList == null || shoppingList.UserId != UserId)
+        if (shoppingList == null || shoppingList.FamilyId != FamilyId)
             return NotFound();
 
         shoppingList.Name = request.Name;
@@ -96,7 +96,7 @@ public class ShoppingListsController : BaseAuthenticatedController
     public async Task<ActionResult> DeleteList(Guid id)
     {
         var shoppingList = await _shoppingListRepository.GetByIdAsync(id);
-        if (shoppingList == null || shoppingList.UserId != UserId)
+        if (shoppingList == null || shoppingList.FamilyId != FamilyId)
             return NotFound();
 
         await _shoppingListRepository.DeleteAsync(shoppingList);
@@ -111,7 +111,7 @@ public class ShoppingListsController : BaseAuthenticatedController
     public async Task<ActionResult<ShoppingItemDto>> CreateItem(Guid listId, [FromBody] CreateShoppingItemRequest request)
     {
         var shoppingList = await _shoppingListRepository.GetByIdAsync(listId);
-        if (shoppingList == null || shoppingList.UserId != UserId)
+        if (shoppingList == null || shoppingList.FamilyId != FamilyId)
             return NotFound("Shopping list not found");
 
         var item = new ShoppingItem
@@ -137,7 +137,7 @@ public class ShoppingListsController : BaseAuthenticatedController
     public async Task<ActionResult<ShoppingItemDto>> UpdateItem(Guid listId, Guid itemId, [FromBody] UpdateShoppingItemRequest request)
     {
         var shoppingList = await _shoppingListRepository.GetByIdAsync(listId);
-        if (shoppingList == null || shoppingList.UserId != UserId)
+        if (shoppingList == null || shoppingList.FamilyId != FamilyId)
             return NotFound("Shopping list not found");
 
         var item = await _shoppingItemRepository.GetByIdAsync(itemId);
@@ -168,7 +168,7 @@ public class ShoppingListsController : BaseAuthenticatedController
     public async Task<ActionResult> DeleteItem(Guid listId, Guid itemId)
     {
         var shoppingList = await _shoppingListRepository.GetByIdAsync(listId);
-        if (shoppingList == null || shoppingList.UserId != UserId)
+        if (shoppingList == null || shoppingList.FamilyId != FamilyId)
             return NotFound("Shopping list not found");
 
         var item = await _shoppingItemRepository.GetByIdAsync(itemId);
@@ -185,7 +185,7 @@ public class ShoppingListsController : BaseAuthenticatedController
     public async Task<ActionResult<ShoppingItemDto>> MarkItemPurchased(Guid listId, Guid itemId, [FromBody] MarkItemPurchasedRequest request)
     {
         var shoppingList = await _shoppingListRepository.GetByIdAsync(listId);
-        if (shoppingList == null || shoppingList.UserId != UserId)
+        if (shoppingList == null || shoppingList.FamilyId != FamilyId)
             return NotFound("Shopping list not found");
 
         var item = await _shoppingItemRepository.GetByIdAsync(itemId);
@@ -202,20 +202,21 @@ public class ShoppingListsController : BaseAuthenticatedController
         if (request.CreateTransaction && request.AccountId.HasValue && request.CategoryId.HasValue)
         {
             var account = await _accountRepository.GetByIdAsync(request.AccountId.Value);
-            if (account == null || account.UserId != UserId)
+            if (account == null || account.FamilyId != FamilyId)
                 return BadRequest("Invalid account");
 
             var transaction = new Transaction
             {
                 Id = Guid.NewGuid(),
-                UserId = UserId,
+                FamilyId = FamilyId,
                 AccountId = request.AccountId.Value,
                 CategoryId = request.CategoryId.Value,
                 Amount = item.ActualPrice.Value * item.Quantity,
                 Description = $"{item.Name} (Lista: {shoppingList.Name})",
                 Type = TransactionType.Expense,
                 Date = DateTime.UtcNow,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                CreatedByUsername = Username
             };
 
             await _transactionRepository.AddAsync(transaction);

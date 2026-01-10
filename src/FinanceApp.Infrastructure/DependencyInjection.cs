@@ -30,10 +30,15 @@ public static class DependencyInjection
         // Repositories
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IFamilyRepository, FamilyRepository>();
+
+        // HttpContextAccessor (necessário para CurrentUserService)
+        services.AddHttpContextAccessor();
 
         // Services
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IClassificationService, ClassificationService>();
+        services.AddScoped<Application.Common.Interfaces.ICurrentUserService, CurrentUserService>();
 
         return services;
     }

@@ -10,7 +10,7 @@ using System.Globalization;
 
 namespace FinanceApp.Application.Features.Transactions.Commands;
 
-public record ImportCsvCommand(Guid UserId, ImportCsvRequest Request) : IRequest<List<TransactionDto>>;
+public record ImportCsvCommand(Guid FamilyId, string Username, ImportCsvRequest Request) : IRequest<List<TransactionDto>>;
 
 public class CsvTransactionMap : ClassMap<CsvTransaction>
 {
@@ -53,7 +53,7 @@ public class ImportCsvCommandHandler : IRequestHandler<ImportCsvCommand, List<Tr
     public async Task<List<TransactionDto>> Handle(ImportCsvCommand request, CancellationToken cancellationToken)
     {
         var account = await _accountRepository.GetByIdAsync(request.Request.AccountId);
-        if (account == null || account.UserId != request.UserId)
+        if (account == null || account.FamilyId != request.FamilyId)
             throw new NotFoundException("Account", request.Request.AccountId);
 
         using var reader = new StringReader(request.Request.CsvContent);
@@ -77,14 +77,14 @@ public class ImportCsvCommandHandler : IRequestHandler<ImportCsvCommand, List<Tr
 
             // Sugerir categoria usando classificação automática
             var suggestedCategoryId = await _classificationService.SuggestCategoryAsync(
-                request.UserId,
+                request.FamilyId,
                 record.Description);
 
             if (suggestedCategoryId == null)
             {
                 // Usar categoria padrão se não houver sugestão
                 var defaultCategory = (await _categoryRepository.FindAsync(c =>
-                    c.UserId == request.UserId && c.IsDefault && c.Type == type)).FirstOrDefault();
+                    c.FamilyId == request.FamilyId && c.IsDefault && c.Type == type)).FirstOrDefault();
                 suggestedCategoryId = defaultCategory?.Id ?? Guid.Empty;
             }
 
@@ -93,7 +93,7 @@ public class ImportCsvCommandHandler : IRequestHandler<ImportCsvCommand, List<Tr
             var transaction = new Transaction
             {
                 Id = Guid.NewGuid(),
-                UserId = request.UserId,
+                FamilyId = request.FamilyId,
                 AccountId = request.Request.AccountId,
                 CategoryId = suggestedCategoryId.Value,
                 Amount = amount,
@@ -101,7 +101,8 @@ public class ImportCsvCommandHandler : IRequestHandler<ImportCsvCommand, List<Tr
                 Description = record.Description,
                 Date = date,
                 IsRecurring = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                CreatedByUsername = request.Username
             };
 
             // Atualizar saldo

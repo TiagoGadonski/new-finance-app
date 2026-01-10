@@ -5,7 +5,7 @@ using FinanceApp.Domain.Exceptions;
 
 namespace FinanceApp.Application.Features.Auth.Commands;
 
-public record LoginCommand(string Email, string Password) : IRequest<AuthResponse>;
+public record LoginCommand(string Username, string Password) : IRequest<AuthResponse>;
 
 public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
 {
@@ -20,7 +20,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
 
     public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByEmailAsync(request.Email);
+        var user = await _userRepository.GetByUsernameAsync(request.Username);
         if (user == null)
             throw new UnauthorizedException("Invalid credentials");
 
@@ -40,7 +40,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
             accessToken,
             refreshToken,
             DateTime.UtcNow.AddHours(1),
-            new UserDto(user.Id, user.Name, user.Email, user.Role)
+            new UserDto(user.Id, user.Name, user.Username, user.Role, user.FamilyId, user.Family.Name)
         );
     }
 }

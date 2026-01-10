@@ -5,7 +5,7 @@ using FinanceApp.Domain.Entities;
 
 namespace FinanceApp.Application.Features.Budgets.Queries;
 
-public record GetBudgetConsolidatedQuery(Guid UserId, int Month, int Year) : IRequest<BudgetConsolidatedDto>;
+public record GetBudgetConsolidatedQuery(Guid FamilyId, int Month, int Year) : IRequest<BudgetConsolidatedDto>;
 
 public class GetBudgetConsolidatedQueryHandler : IRequestHandler<GetBudgetConsolidatedQuery, BudgetConsolidatedDto>
 {
@@ -23,12 +23,12 @@ public class GetBudgetConsolidatedQueryHandler : IRequestHandler<GetBudgetConsol
     public async Task<BudgetConsolidatedDto> Handle(GetBudgetConsolidatedQuery request, CancellationToken cancellationToken)
     {
         var budgets = await _budgetRepository.FindAsync(b =>
-            b.UserId == request.UserId &&
+            b.FamilyId == request.FamilyId &&
             b.Month == request.Month &&
             b.Year == request.Year);
 
         var transactions = await _transactionRepository.FindAsync(t =>
-            t.UserId == request.UserId &&
+            t.FamilyId == request.FamilyId &&
             t.Date.Month == request.Month &&
             t.Date.Year == request.Year &&
             t.Type == Domain.Enums.TransactionType.Expense);

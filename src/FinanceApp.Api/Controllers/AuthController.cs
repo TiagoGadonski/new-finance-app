@@ -19,7 +19,7 @@ public class AuthController : ControllerBase
     [HttpPost("signup")]
     public async Task<ActionResult<AuthResponse>> SignUp([FromBody] SignUpRequest request)
     {
-        var command = new SignUpCommand(request.Name, request.Email, request.Password);
+        var command = new SignUpCommand(request.Name, request.Username, request.Password, request.FamilyId);
         var result = await _mediator.Send(command);
         return Ok(result);
     }
@@ -27,7 +27,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginRequest request)
     {
-        var command = new LoginCommand(request.Email, request.Password);
+        var command = new LoginCommand(request.Username, request.Password);
         var result = await _mediator.Send(command);
         return Ok(result);
     }

@@ -25,12 +25,12 @@ public class DebtSimulationTests
     public async Task SimulateDebtPayment_Snowball_OrdersBySmallestBalance()
     {
         // Arrange
-        var userId = Guid.NewGuid();
+        var familyId = Guid.NewGuid();
         var debts = new List<Debt>
         {
-            new Debt { Id = Guid.NewGuid(), UserId = userId, Name = "Debt 1", RemainingAmount = 5000m, InterestRate = 15m, MinimumPayment = 200m },
-            new Debt { Id = Guid.NewGuid(), UserId = userId, Name = "Debt 2", RemainingAmount = 2000m, InterestRate = 20m, MinimumPayment = 100m },
-            new Debt { Id = Guid.NewGuid(), UserId = userId, Name = "Debt 3", RemainingAmount = 8000m, InterestRate = 10m, MinimumPayment = 300m }
+            new Debt { Id = Guid.NewGuid(), FamilyId = familyId, Name = "Debt 1", RemainingAmount = 5000m, InterestRate = 15m, MinimumPayment = 200m },
+            new Debt { Id = Guid.NewGuid(), FamilyId = familyId, Name = "Debt 2", RemainingAmount = 2000m, InterestRate = 20m, MinimumPayment = 100m },
+            new Debt { Id = Guid.NewGuid(), FamilyId = familyId, Name = "Debt 3", RemainingAmount = 8000m, InterestRate = 10m, MinimumPayment = 300m }
         };
 
         _mockDebtRepository
@@ -38,7 +38,7 @@ public class DebtSimulationTests
             .ReturnsAsync(debts);
 
         var request = new DebtSimulationRequest(1000m, DebtPaymentStrategy.Snowball);
-        var command = new SimulateDebtPaymentCommand(userId, request);
+        var command = new SimulateDebtPaymentCommand(familyId, request);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -54,12 +54,12 @@ public class DebtSimulationTests
     public async Task SimulateDebtPayment_Avalanche_OrdersByHighestInterestRate()
     {
         // Arrange
-        var userId = Guid.NewGuid();
+        var familyId = Guid.NewGuid();
         var debts = new List<Debt>
         {
-            new Debt { Id = Guid.NewGuid(), UserId = userId, Name = "Debt 1", RemainingAmount = 5000m, InterestRate = 15m, MinimumPayment = 200m },
-            new Debt { Id = Guid.NewGuid(), UserId = userId, Name = "Debt 2", RemainingAmount = 2000m, InterestRate = 20m, MinimumPayment = 100m },
-            new Debt { Id = Guid.NewGuid(), UserId = userId, Name = "Debt 3", RemainingAmount = 8000m, InterestRate = 10m, MinimumPayment = 300m }
+            new Debt { Id = Guid.NewGuid(), FamilyId = familyId, Name = "Debt 1", RemainingAmount = 5000m, InterestRate = 15m, MinimumPayment = 200m },
+            new Debt { Id = Guid.NewGuid(), FamilyId = familyId, Name = "Debt 2", RemainingAmount = 2000m, InterestRate = 20m, MinimumPayment = 100m },
+            new Debt { Id = Guid.NewGuid(), FamilyId = familyId, Name = "Debt 3", RemainingAmount = 8000m, InterestRate = 10m, MinimumPayment = 300m }
         };
 
         _mockDebtRepository
@@ -67,7 +67,7 @@ public class DebtSimulationTests
             .ReturnsAsync(debts);
 
         var request = new DebtSimulationRequest(1000m, DebtPaymentStrategy.Avalanche);
-        var command = new SimulateDebtPaymentCommand(userId, request);
+        var command = new SimulateDebtPaymentCommand(familyId, request);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
@@ -83,14 +83,14 @@ public class DebtSimulationTests
     public async Task SimulateDebtPayment_WithNoDebts_ReturnsEmptyPlan()
     {
         // Arrange
-        var userId = Guid.NewGuid();
+        var familyId = Guid.NewGuid();
 
         _mockDebtRepository
             .Setup(r => r.FindAsync(It.IsAny<Expression<Func<Debt, bool>>>()))
             .ReturnsAsync(new List<Debt>());
 
         var request = new DebtSimulationRequest(1000m, DebtPaymentStrategy.Snowball);
-        var command = new SimulateDebtPaymentCommand(userId, request);
+        var command = new SimulateDebtPaymentCommand(familyId, request);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);

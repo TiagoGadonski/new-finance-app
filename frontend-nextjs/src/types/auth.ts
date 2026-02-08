@@ -1,12 +1,13 @@
 export interface LoginRequest {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface SignUpRequest {
   name: string;
-  email: string;
+  username: string;
   password: string;
+  familyName?: string;
 }
 
 export interface AuthResponse {
@@ -19,6 +20,8 @@ export interface AuthResponse {
 export interface UserDto {
   id: string;
   name: string;
-  email: string;
+  username: string;
+  familyId: string;
+  familyName: string;
   role: 'User' | 'Admin';
 }

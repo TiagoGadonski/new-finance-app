@@ -5,9 +5,9 @@ services:
     image: postgres:16-alpine
     container_name: financeapp-postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: financeapp
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-financeapp}
     ports:
       - "5432:5432"
     volumes:
@@ -44,13 +44,14 @@ services:
       - "5000:8080"
       - "5001:8081"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=financeapp;Username=postgres;Password=postgres
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${DB_NAME:-financeapp};Username=${DB_USER:-postgres};Password=${DB_PASSWORD:-postgres}
       - ConnectionStrings__Redis=redis:6379
-      - JwtSettings__SecretKey=your-super-secret-key-change-this-in-production-minimum-32-characters-required
-      - JwtSettings__Issuer=FinanceApp
-      - JwtSettings__Audience=FinanceAppUsers
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY:-your-super-secret-key-change-this-in-production-minimum-32-characters-required}
+      - JwtSettings__Issuer=${JWT_ISSUER:-FinanceApp}
+      - JwtSettings__Audience=${JWT_AUDIENCE:-FinanceAppUsers}
+      - SEED_ADMIN_PASSWORD=${SEED_ADMIN_PASSWORD:-Admin@123456}
     depends_on:
       postgres:
         condition: service_healthy
@@ -60,6 +61,20 @@ services:
       - financeapp-network
     volumes:
       - ./logs:/app/logs
+
+  frontend:
+    build:
+      context: ./frontend-nextjs
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:5000/api
+    container_name: financeapp-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    networks:
+      - financeapp-network
 
 volumes:
   postgres-data:

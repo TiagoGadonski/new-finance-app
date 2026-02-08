@@ -25,6 +25,9 @@ public class ApplicationDbContext : DbContext
     public DbSet<MeiSettings> MeiSettings => Set<MeiSettings>();
     public DbSet<ShoppingList> ShoppingLists => Set<ShoppingList>();
     public DbSet<ShoppingItem> ShoppingItems => Set<ShoppingItem>();
+    public DbSet<WorkCalendarSettings> WorkCalendarSettings => Set<WorkCalendarSettings>();
+    public DbSet<WorkDay> WorkDays => Set<WorkDay>();
+    public DbSet<Holiday> Holidays => Set<Holiday>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -339,6 +342,48 @@ public class ApplicationDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.TransactionId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // WorkCalendarSettings
+        modelBuilder.Entity<WorkCalendarSettings>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.FamilyId).IsUnique();
+            entity.Property(e => e.HourlyRate).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.HoursPerDay).HasColumnType("decimal(5,2)");
+
+            entity.HasOne(e => e.Family)
+                .WithOne(f => f.WorkCalendarSettings)
+                .HasForeignKey<WorkCalendarSettings>(e => e.FamilyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
+        });
+
+        // WorkDay
+        modelBuilder.Entity<WorkDay>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.FamilyId, e.Date }).IsUnique();
+            entity.Property(e => e.HoursWorked).HasColumnType("decimal(5,2)");
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.WorkDays)
+                .HasForeignKey(e => e.FamilyId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Holiday
+        modelBuilder.Entity<Holiday>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Holidays)
+                .HasForeignKey(e => e.FamilyId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

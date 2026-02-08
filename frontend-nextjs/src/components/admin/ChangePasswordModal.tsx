@@ -53,7 +53,7 @@ export function ChangePasswordModal({ isOpen, user, onClose }: ChangePasswordMod
 
         <div className="mb-4">
           <p className="text-sm text-gray-600">
-            Alterando senha para: <strong>{user.name}</strong> ({user.email})
+            Alterando senha para: <strong>{user.name}</strong> (@{user.username})
           </p>
         </div>
 
@@ -63,8 +63,12 @@ export function ChangePasswordModal({ isOpen, user, onClose }: ChangePasswordMod
           {...register('newPassword', {
             required: 'Nova senha é obrigatória',
             minLength: {
-              value: 6,
-              message: 'A senha deve ter pelo menos 6 caracteres',
+              value: 8,
+              message: 'A senha deve ter pelo menos 8 caracteres',
+            },
+            pattern: {
+              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/,
+              message: 'Deve conter maiúscula, minúscula, número e caractere especial',
             },
           })}
           error={errors.newPassword?.message}

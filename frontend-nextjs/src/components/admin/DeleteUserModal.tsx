@@ -72,8 +72,8 @@ export function DeleteUserModal({ isOpen, user, onClose }: DeleteUserModalProps)
               <dd className="font-medium text-gray-900">{user.name}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-gray-600">Email:</dt>
-              <dd className="font-medium text-gray-900">{user.email}</dd>
+              <dt className="text-gray-600">Usuário:</dt>
+              <dd className="font-medium text-gray-900">{user.username}</dd>
             </div>
             <div className="flex justify-between">
               <dt className="text-gray-600">Função:</dt>

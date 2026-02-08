@@ -22,4 +22,7 @@ public class Family : BaseEntity
     public ICollection<ClassificationRule> ClassificationRules { get; set; } = new List<ClassificationRule>();
     public ICollection<MeiSettings> MeiSettings { get; set; } = new List<MeiSettings>();
     public ICollection<ShoppingList> ShoppingLists { get; set; } = new List<ShoppingList>();
+    public WorkCalendarSettings? WorkCalendarSettings { get; set; }
+    public ICollection<WorkDay> WorkDays { get; set; } = new List<WorkDay>();
+    public ICollection<Holiday> Holidays { get; set; } = new List<Holiday>();
 }

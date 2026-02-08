@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using FinanceApp.Application.Common.DTOs;
 using FinanceApp.Domain.Interfaces;
 using FinanceApp.Domain.Exceptions;
@@ -11,21 +12,29 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
 {
     private readonly IUserRepository _userRepository;
     private readonly IAuthService _authService;
+    private readonly ILogger<LoginCommandHandler> _logger;
 
-    public LoginCommandHandler(IUserRepository userRepository, IAuthService authService)
+    public LoginCommandHandler(IUserRepository userRepository, IAuthService authService, ILogger<LoginCommandHandler> logger)
     {
         _userRepository = userRepository;
         _authService = authService;
+        _logger = logger;
     }
 
     public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByUsernameAsync(request.Username);
         if (user == null)
+        {
+            _logger.LogWarning("Failed login attempt for non-existent username: {Username}", request.Username);
             throw new UnauthorizedException("Invalid credentials");
+        }
 
         if (!_authService.VerifyPassword(request.Password, user.PasswordHash))
+        {
+            _logger.LogWarning("Failed login attempt for user: {Username} (wrong password)", request.Username);
             throw new UnauthorizedException("Invalid credentials");
+        }
 
         var refreshToken = _authService.GenerateRefreshToken();
         user.RefreshToken = refreshToken;
@@ -35,6 +44,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
         await _userRepository.SaveChangesAsync();
 
         var accessToken = _authService.GenerateJwtToken(user);
+
+        _logger.LogInformation("Successful login for user: {Username}", request.Username);
 
         return new AuthResponse(
             accessToken,

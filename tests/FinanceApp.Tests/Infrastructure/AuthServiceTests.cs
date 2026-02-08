@@ -75,8 +75,9 @@ public class AuthServiceTests
         var user = new User
         {
             Id = Guid.NewGuid(),
+            FamilyId = Guid.NewGuid(),
             Name = "Test User",
-            Email = "test@example.com"
+            Username = "testuser"
         };
 
         // Act

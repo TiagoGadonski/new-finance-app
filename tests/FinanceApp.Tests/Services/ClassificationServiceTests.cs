@@ -23,7 +23,7 @@ public class ClassificationServiceTests
     public async Task SuggestCategoryAsync_WithMatchingRule_ReturnsCategoryId()
     {
         // Arrange
-        var userId = Guid.NewGuid();
+        var familyId = Guid.NewGuid();
         var categoryId = Guid.NewGuid();
         var description = "Compra no Uber Eats";
 
@@ -32,7 +32,7 @@ public class ClassificationServiceTests
             new ClassificationRule
             {
                 Id = Guid.NewGuid(),
-                UserId = userId,
+                FamilyId = familyId,
                 Keyword = "uber",
                 CategoryId = categoryId,
                 Priority = 5,
@@ -45,7 +45,7 @@ public class ClassificationServiceTests
             .ReturnsAsync(rules);
 
         // Act
-        var result = await _service.SuggestCategoryAsync(userId, description);
+        var result = await _service.SuggestCategoryAsync(familyId, description);
 
         // Assert
         result.Should().Be(categoryId);
@@ -55,7 +55,7 @@ public class ClassificationServiceTests
     public async Task SuggestCategoryAsync_WithNoMatchingRule_ReturnsNull()
     {
         // Arrange
-        var userId = Guid.NewGuid();
+        var familyId = Guid.NewGuid();
         var description = "Random transaction";
 
         _mockRuleRepository
@@ -63,7 +63,7 @@ public class ClassificationServiceTests
             .ReturnsAsync(new List<ClassificationRule>());
 
         // Act
-        var result = await _service.SuggestCategoryAsync(userId, description);
+        var result = await _service.SuggestCategoryAsync(familyId, description);
 
         // Assert
         result.Should().BeNull();
@@ -73,7 +73,7 @@ public class ClassificationServiceTests
     public async Task LearnFromUserChoiceAsync_CreatesNewRule_WhenNoExistingRule()
     {
         // Arrange
-        var userId = Guid.NewGuid();
+        var familyId = Guid.NewGuid();
         var categoryId = Guid.NewGuid();
         var description = "Pagamento Netflix";
 
@@ -82,7 +82,7 @@ public class ClassificationServiceTests
             .ReturnsAsync(new List<ClassificationRule>());
 
         // Act
-        await _service.LearnFromUserChoiceAsync(userId, description, categoryId);
+        await _service.LearnFromUserChoiceAsync(familyId, description, categoryId);
 
         // Assert
         _mockRuleRepository.Verify(r => r.AddAsync(It.Is<ClassificationRule>(

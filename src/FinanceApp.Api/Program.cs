@@ -12,6 +12,9 @@ using FinanceApp.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Remove Server header
+builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
+
 // Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -86,15 +89,25 @@ builder.Services.AddAuthentication(options =>
 // Rate Limiting
 builder.Services.AddRateLimiter(options =>
 {
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
     options.GlobalLimiter = System.Threading.RateLimiting.PartitionedRateLimiter.Create<HttpContext, string>(context =>
         System.Threading.RateLimiting.RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey: context.User.Identity?.Name ?? context.Request.Headers.Host.ToString(),
+            partitionKey: context.User.Identity?.Name ?? context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
             factory: partition => new System.Threading.RateLimiting.FixedWindowRateLimiterOptions
             {
                 AutoReplenishment = true,
                 PermitLimit = 100,
                 Window = TimeSpan.FromMinutes(1)
             }));
+
+    // Stricter rate limiting for auth endpoints
+    options.AddFixedWindowLimiter("auth", limiterOptions =>
+    {
+        limiterOptions.AutoReplenishment = true;
+        limiterOptions.PermitLimit = 10;
+        limiterOptions.Window = TimeSpan.FromMinutes(1);
+    });
 });
 
 // CORS - Support Azure Static Web Apps
@@ -113,8 +126,8 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins(allowedOrigins)
-              .AllowAnyMethod()
-              .AllowAnyHeader()
+              .WithMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+              .WithHeaders("Content-Type", "Authorization", "X-Requested-With")
               .AllowCredentials();
     });
 });
@@ -128,20 +141,15 @@ var app = builder.Build();
 // Security Headers
 app.Use(async (context, next) =>
 {
-    // Prevent clickjacking
-    context.Response.Headers.Add("X-Frame-Options", "DENY");
-    // Prevent MIME type sniffing
-    context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-    // Enable XSS protection
-    context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
-    // Strict transport security
-    context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-    // Content security policy
-    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; frame-ancestors 'none'");
-    // Referrer policy
-    context.Response.Headers.Add("Referrer-Policy", "strict-origin-when-cross-origin");
-    // Permissions policy
-    context.Response.Headers.Add("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["X-XSS-Protection"] = "0";
+    context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload";
+    context.Response.Headers["Content-Security-Policy"] = "default-src 'none'; frame-ancestors 'none'";
+    context.Response.Headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
+    context.Response.Headers["Permissions-Policy"] = "geolocation=(), microphone=(), camera=(), accelerometer=(), gyroscope=()";
+    context.Response.Headers["Cache-Control"] = "no-store";
+    context.Response.Headers["Pragma"] = "no-cache";
 
     await next();
 });
@@ -173,7 +181,7 @@ using (var scope = app.Services.CreateScope())
     // Apply pending migrations
     await context.Database.MigrateAsync();
 
-    // Seed initial data
+    // Seed initial admin user if no users exist
     await DataSeeder.SeedAsync(context);
 }
 

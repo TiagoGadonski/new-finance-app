@@ -20,8 +20,12 @@ public class SignUpRequestValidator : AbstractValidator<SignUpRequest>
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Senha é obrigatória")
-            .MinimumLength(6).WithMessage("Senha deve ter pelo menos 6 caracteres")
-            .MaximumLength(100).WithMessage("Senha deve ter no máximo 100 caracteres");
+            .MinimumLength(8).WithMessage("Senha deve ter pelo menos 8 caracteres")
+            .MaximumLength(100).WithMessage("Senha deve ter no máximo 100 caracteres")
+            .Matches(@"[A-Z]").WithMessage("Senha deve conter pelo menos uma letra maiúscula")
+            .Matches(@"[a-z]").WithMessage("Senha deve conter pelo menos uma letra minúscula")
+            .Matches(@"[0-9]").WithMessage("Senha deve conter pelo menos um número")
+            .Matches(@"[^a-zA-Z0-9]").WithMessage("Senha deve conter pelo menos um caractere especial");
     }
 }
 

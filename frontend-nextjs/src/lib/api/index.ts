@@ -4,3 +4,4 @@ export * from './shoppingListsApi';
 export * from './meiApi';
 export * from './coreApi';
 export * from './adminApi';
+export * from './workCalendarApi';

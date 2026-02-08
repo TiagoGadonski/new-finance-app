@@ -20,7 +20,7 @@ export function EditUserModal({ isOpen, user, onClose }: EditUserModalProps) {
   const { register, handleSubmit, formState: { errors }, reset } = useForm<UpdateUserRequest>({
     defaultValues: {
       name: user.name,
-      email: user.email,
+      username: user.username,
       role: user.role,
     },
   });
@@ -28,7 +28,7 @@ export function EditUserModal({ isOpen, user, onClose }: EditUserModalProps) {
   useEffect(() => {
     reset({
       name: user.name,
-      email: user.email,
+      username: user.username,
       role: user.role,
     });
   }, [user, reset]);
@@ -61,16 +61,20 @@ export function EditUserModal({ isOpen, user, onClose }: EditUserModalProps) {
         />
 
         <Input
-          label="Email"
-          type="email"
-          {...register('email', {
-            required: 'Email é obrigatório',
+          label="Usuário"
+          type="text"
+          {...register('username', {
+            required: 'Usuário é obrigatório',
+            minLength: {
+              value: 3,
+              message: 'Usuário deve ter no mínimo 3 caracteres',
+            },
             pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: 'Endereço de email inválido',
+              value: /^[a-zA-Z0-9_-]+$/,
+              message: 'Usuário pode conter apenas letras, números, _ e -',
             },
           })}
-          error={errors.email?.message}
+          error={errors.username?.message}
         />
 
         <Select

@@ -51,16 +51,20 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
         />
 
         <Input
-          label="Email"
-          type="email"
-          {...register('email', {
-            required: 'Email é obrigatório',
+          label="Usuário"
+          type="text"
+          {...register('username', {
+            required: 'Usuário é obrigatório',
+            minLength: {
+              value: 3,
+              message: 'Usuário deve ter no mínimo 3 caracteres',
+            },
             pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: 'Endereço de email inválido',
+              value: /^[a-zA-Z0-9_-]+$/,
+              message: 'Usuário pode conter apenas letras, números, _ e -',
             },
           })}
-          error={errors.email?.message}
+          error={errors.username?.message}
         />
 
         <Input
@@ -69,8 +73,12 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
           {...register('password', {
             required: 'Senha é obrigatória',
             minLength: {
-              value: 6,
-              message: 'A senha deve ter pelo menos 6 caracteres',
+              value: 8,
+              message: 'A senha deve ter pelo menos 8 caracteres',
+            },
+            pattern: {
+              value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/,
+              message: 'Deve conter maiúscula, minúscula, número e caractere especial',
             },
           })}
           error={errors.password?.message}

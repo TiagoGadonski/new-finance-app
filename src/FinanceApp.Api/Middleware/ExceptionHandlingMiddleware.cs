@@ -84,8 +84,7 @@ public class ExceptionHandlingMiddleware
             statusCode = (int)statusCode,
             correlationId,
             timestamp = DateTime.UtcNow,
-            errors = errors,
-            stackTrace = _environment.IsDevelopment() ? exception.StackTrace : null
+            errors = errors
         };
 
         context.Response.ContentType = "application/json";

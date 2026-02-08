@@ -13,8 +13,8 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors } } = useForm<LoginRequest>({
     defaultValues: {
-      email: 'demo@financeapp.com',
-      password: 'Demo@123',
+      username: '',
+      password: '',
     },
   });
 
@@ -92,17 +92,17 @@ export default function LoginPage() {
 
             <div className="space-y-5">
               <Input
-                label="Email"
-                type="email"
-                autoComplete="email"
-                {...register('email', {
-                  required: 'Email é obrigatório',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Email inválido',
+                label="Usuário"
+                type="text"
+                autoComplete="username"
+                {...register('username', {
+                  required: 'Usuário é obrigatório',
+                  minLength: {
+                    value: 3,
+                    message: 'Usuário deve ter no mínimo 3 caracteres',
                   },
                 })}
-                error={errors.email?.message}
+                error={errors.username?.message}
               />
 
               <Input
@@ -112,8 +112,8 @@ export default function LoginPage() {
                 {...register('password', {
                   required: 'Senha é obrigatória',
                   minLength: {
-                    value: 6,
-                    message: 'Senha deve ter no mínimo 6 caracteres',
+                    value: 8,
+                    message: 'Senha deve ter no mínimo 8 caracteres',
                   },
                 })}
                 error={errors.password?.message}

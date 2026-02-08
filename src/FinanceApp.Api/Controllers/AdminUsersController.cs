@@ -28,7 +28,7 @@ public class AdminUsersController : BaseAuthenticatedController
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AdminUserDto>>> GetAllUsers()
     {
-        var users = await _userRepository.GetAllAsync();
+        var users = await _userRepository.GetAllAsync(u => u.Family);
         var userDtos = users.Select(u => new AdminUserDto(
             u.Id,
             u.Name,
@@ -46,7 +46,7 @@ public class AdminUsersController : BaseAuthenticatedController
     [HttpGet("{id}")]
     public async Task<ActionResult<AdminUserDto>> GetUserById(Guid id)
     {
-        var user = await _userRepository.GetByIdAsync(id);
+        var user = await _userRepository.GetByIdAsync(id, u => u.Family);
         if (user == null)
             return NotFound();
 
@@ -71,6 +71,18 @@ public class AdminUsersController : BaseAuthenticatedController
 
         if (!System.Text.RegularExpressions.Regex.IsMatch(request.Username, @"^[a-zA-Z0-9_-]+$"))
             return BadRequest(new { message = "Username can only contain letters, numbers, underscores and hyphens" });
+
+        // Validate password strength
+        if (string.IsNullOrEmpty(request.Password) || request.Password.Length < 8)
+            return BadRequest(new { message = "Senha deve ter pelo menos 8 caracteres" });
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.Password, @"[A-Z]"))
+            return BadRequest(new { message = "Senha deve conter pelo menos uma letra maiúscula" });
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.Password, @"[a-z]"))
+            return BadRequest(new { message = "Senha deve conter pelo menos uma letra minúscula" });
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.Password, @"[0-9]"))
+            return BadRequest(new { message = "Senha deve conter pelo menos um número" });
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.Password, @"[^a-zA-Z0-9]"))
+            return BadRequest(new { message = "Senha deve conter pelo menos um caractere especial" });
 
         // Check if username already exists
         var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
@@ -106,7 +118,7 @@ public class AdminUsersController : BaseAuthenticatedController
     [HttpPut("{id}")]
     public async Task<ActionResult<AdminUserDto>> UpdateUser(Guid id, [FromBody] UpdateUserRequest request)
     {
-        var user = await _userRepository.GetByIdAsync(id);
+        var user = await _userRepository.GetByIdAsync(id, u => u.Family);
         if (user == null)
             return NotFound();
 
@@ -162,6 +174,18 @@ public class AdminUsersController : BaseAuthenticatedController
         var user = await _userRepository.GetByIdAsync(id);
         if (user == null)
             return NotFound();
+
+        // Validate password strength
+        if (string.IsNullOrEmpty(request.NewPassword) || request.NewPassword.Length < 8)
+            return BadRequest(new { message = "Senha deve ter pelo menos 8 caracteres" });
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.NewPassword, @"[A-Z]"))
+            return BadRequest(new { message = "Senha deve conter pelo menos uma letra maiúscula" });
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.NewPassword, @"[a-z]"))
+            return BadRequest(new { message = "Senha deve conter pelo menos uma letra minúscula" });
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.NewPassword, @"[0-9]"))
+            return BadRequest(new { message = "Senha deve conter pelo menos um número" });
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.NewPassword, @"[^a-zA-Z0-9]"))
+            return BadRequest(new { message = "Senha deve conter pelo menos um caractere especial" });
 
         user.PasswordHash = _authService.HashPassword(request.NewPassword);
         user.UpdatedAt = DateTime.UtcNow;

@@ -1,7 +1,9 @@
 export interface AdminUserDto {
   id: string;
   name: string;
-  email: string;
+  username: string;
+  familyId: string;
+  familyName: string;
   role: 'User' | 'Admin';
   createdAt: string;
   updatedAt?: string;
@@ -9,14 +11,15 @@ export interface AdminUserDto {
 
 export interface CreateUserRequest {
   name: string;
-  email: string;
+  username: string;
   password: string;
   role: 'User' | 'Admin';
+  familyId?: string;
 }
 
 export interface UpdateUserRequest {
   name: string;
-  email: string;
+  username: string;
   role: 'User' | 'Admin';
 }
 

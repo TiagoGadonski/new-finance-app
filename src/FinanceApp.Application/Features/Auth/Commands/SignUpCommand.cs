@@ -23,6 +23,18 @@ public class SignUpCommandHandler : IRequestHandler<SignUpCommand, AuthResponse>
 
     public async Task<AuthResponse> Handle(SignUpCommand request, CancellationToken cancellationToken)
     {
+        // Validate password strength
+        if (string.IsNullOrEmpty(request.Password) || request.Password.Length < 8)
+            throw new DomainException("Senha deve ter pelo menos 8 caracteres");
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.Password, @"[A-Z]"))
+            throw new DomainException("Senha deve conter pelo menos uma letra maiúscula");
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.Password, @"[a-z]"))
+            throw new DomainException("Senha deve conter pelo menos uma letra minúscula");
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.Password, @"[0-9]"))
+            throw new DomainException("Senha deve conter pelo menos um número");
+        if (!System.Text.RegularExpressions.Regex.IsMatch(request.Password, @"[^a-zA-Z0-9]"))
+            throw new DomainException("Senha deve conter pelo menos um caractere especial");
+
         // Validar username format (3-20 chars, alphanumeric + underscore/hyphen)
         if (request.Username.Length < 3 || request.Username.Length > 20)
             throw new DomainException("Username must be between 3 and 20 characters");

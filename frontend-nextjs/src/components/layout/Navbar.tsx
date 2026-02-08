@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, ShoppingCart, TrendingUp, LogOut, User, ArrowLeftRight, PiggyBank, Bell, Target, CreditCard, Shield, Moon, Sun, Settings, FileText } from 'lucide-react';
+import { Home, ShoppingCart, TrendingUp, LogOut, User, ArrowLeftRight, PiggyBank, Bell, Target, CreditCard, Shield, Moon, Sun, Settings, FileText, Calendar } from 'lucide-react';
 import { clsx } from 'clsx';
 import { authApi } from '@/lib/api';
 import { Button } from '@/components/ui';
@@ -18,6 +18,7 @@ const navItems = [
   { href: '/debts', label: 'Dívidas', icon: CreditCard },
   { href: '/shopping-lists', label: 'Compras', icon: ShoppingCart },
   { href: '/mei', label: 'MEI', icon: TrendingUp },
+  { href: '/work-calendar', label: 'PJ', icon: Calendar },
   { href: '/settings', label: 'Configurações', icon: Settings },
 ];
 

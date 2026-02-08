@@ -350,7 +350,7 @@ export interface ContributeGoalRequest {
 export interface DebtDto {
   id: string;
   name: string;
-  totalAmount: number;
+  totalAmount: number | null;
   remainingAmount: number;
   interestRate: number;
   minimumPayment: number;
@@ -359,7 +359,7 @@ export interface DebtDto {
 
 export interface CreateDebtRequest {
   name: string;
-  totalAmount: number;
+  totalAmount?: number | null;
   remainingAmount: number;
   interestRate: number;
   minimumPayment: number;
@@ -368,6 +368,7 @@ export interface CreateDebtRequest {
 
 export interface UpdateDebtRequest {
   name: string;
+  totalAmount?: number | null;
   remainingAmount: number;
   interestRate: number;
   minimumPayment: number;

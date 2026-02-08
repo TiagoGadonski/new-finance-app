@@ -48,11 +48,12 @@ export default function DebtsPage() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
+    const totalAmountStr = formData.get('totalAmount') as string;
     const data: CreateDebtRequest = {
       name: formData.get('name') as string,
-      totalAmount: parseFloat(formData.get('totalAmount') as string),
-      remainingAmount: parseFloat(formData.get('remainingAmount') as string),
-      interestRate: parseFloat(formData.get('interestRate') as string),
+      totalAmount: totalAmountStr ? parseFloat(totalAmountStr) : null,
+      remainingAmount: parseFloat(formData.get('remainingAmount') as string) || 0,
+      interestRate: parseFloat(formData.get('interestRate') as string) || 0,
       minimumPayment: parseFloat(formData.get('minimumPayment') as string),
     };
 
@@ -78,9 +79,10 @@ export default function DebtsPage() {
   };
 
   // Calculate totals
-  const totalDebt = debts?.reduce((sum, d) => sum + d.totalAmount, 0) || 0;
+  const debtsWithTotal = debts?.filter(d => d.totalAmount != null) || [];
+  const totalDebt = debtsWithTotal.reduce((sum, d) => sum + d.totalAmount!, 0);
   const totalRemaining = debts?.reduce((sum, d) => sum + d.remainingAmount, 0) || 0;
-  const totalPaid = totalDebt - totalRemaining;
+  const totalPaid = debtsWithTotal.reduce((sum, d) => sum + (d.totalAmount! - d.remainingAmount), 0);
   const averageProgress = totalDebt > 0 ? (totalPaid / totalDebt) * 100 : 0;
   const totalMinimumPayment = debts?.reduce((sum, d) => sum + d.minimumPayment, 0) || 0;
 
@@ -187,8 +189,9 @@ export default function DebtsPage() {
         <div className="space-y-4">
           {debts && debts.length > 0 ? (
             debts.map((debt) => {
-              const percentagePaid = debt.totalAmount > 0
-                ? ((debt.totalAmount - debt.remainingAmount) / debt.totalAmount) * 100
+              const hasTotalAmount = debt.totalAmount != null && debt.totalAmount > 0;
+              const percentagePaid = hasTotalAmount
+                ? ((debt.totalAmount! - debt.remainingAmount) / debt.totalAmount!) * 100
                 : 0;
 
               return (
@@ -198,8 +201,12 @@ export default function DebtsPage() {
                       <div>
                         <h3 className="text-lg font-semibold text-slate-900">{debt.name}</h3>
                         <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-sm text-slate-600">
-                          <span>Taxa: {debt.interestRate}% a.m.</span>
-                          <span>• Parcela mínima: {formatCurrency(debt.minimumPayment)}</span>
+                          {debt.interestRate > 0 && <span>Taxa: {debt.interestRate}% a.m.</span>}
+                          {debt.interestRate > 0 && <span>•</span>}
+                          <span>Parcela: {formatCurrency(debt.minimumPayment)}/mês</span>
+                          {!hasTotalAmount && (
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-700">Valor indeterminado</span>
+                          )}
                         </div>
                       </div>
                       <div className="flex gap-1 self-end sm:self-auto">
@@ -221,31 +228,40 @@ export default function DebtsPage() {
                       </div>
                     </div>
 
-                    <div>
-                      <div className="flex items-center justify-between text-sm mb-2">
-                        <span className="text-slate-600">
-                          {formatCurrency(debt.totalAmount - debt.remainingAmount)} de {formatCurrency(debt.totalAmount)} pagos
-                        </span>
-                        <span className="font-semibold text-slate-900">
-                          {percentagePaid.toFixed(1)}%
-                        </span>
+                    {hasTotalAmount ? (
+                      <div>
+                        <div className="flex items-center justify-between text-sm mb-2">
+                          <span className="text-slate-600">
+                            {formatCurrency(debt.totalAmount! - debt.remainingAmount)} de {formatCurrency(debt.totalAmount!)} pagos
+                          </span>
+                          <span className="font-semibold text-slate-900">
+                            {percentagePaid.toFixed(1)}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-slate-200 rounded-full h-3">
+                          <div
+                            className={`h-3 rounded-full transition-all ${
+                              percentagePaid >= 75
+                                ? 'bg-emerald-600'
+                                : percentagePaid >= 50
+                                ? 'bg-yellow-500'
+                                : 'bg-rose-600'
+                            }`}
+                            style={{ width: `${Math.min(percentagePaid, 100)}%` }}
+                          />
+                        </div>
+                        <p className="text-sm text-slate-600 mt-2">
+                          Restante: <span className="font-semibold text-rose-600">{formatCurrency(debt.remainingAmount)}</span>
+                        </p>
                       </div>
-                      <div className="w-full bg-slate-200 rounded-full h-3">
-                        <div
-                          className={`h-3 rounded-full transition-all ${
-                            percentagePaid >= 75
-                              ? 'bg-emerald-600'
-                              : percentagePaid >= 50
-                              ? 'bg-yellow-500'
-                              : 'bg-rose-600'
-                          }`}
-                          style={{ width: `${Math.min(percentagePaid, 100)}%` }}
-                        />
+                    ) : (
+                      <div className="text-sm text-slate-600">
+                        <p>Valor mensal: <span className="font-semibold">{formatCurrency(debt.minimumPayment)}</span></p>
+                        {debt.remainingAmount > 0 && (
+                          <p className="mt-1">Já pago acumulado: <span className="font-semibold text-emerald-600">{formatCurrency(debt.remainingAmount)}</span></p>
+                        )}
                       </div>
-                      <p className="text-sm text-slate-600 mt-2">
-                        Restante: <span className="font-semibold text-rose-600">{formatCurrency(debt.remainingAmount)}</span>
-                      </p>
-                    </div>
+                    )}
                   </div>
                 </Card>
               );
@@ -290,9 +306,9 @@ export default function DebtsPage() {
             name="totalAmount"
             type="number"
             step="0.01"
-            label="Valor Total"
-            placeholder="0.00"
-            required
+            label="Valor Total (opcional)"
+            placeholder="Deixe vazio se não souber"
+            helperText="Ex: dívida de valor indeterminado como faculdade"
           />
 
           <Input
@@ -301,7 +317,7 @@ export default function DebtsPage() {
             step="0.01"
             label="Valor Restante"
             placeholder="0.00"
-            required
+            helperText="Quanto ainda falta pagar (0 se não souber)"
           />
 
           <Input
@@ -309,15 +325,15 @@ export default function DebtsPage() {
             type="number"
             step="0.01"
             label="Taxa de Juros (% ao mês)"
-            placeholder="0.00"
-            required
+            placeholder="0"
+            helperText="0 se não tiver juros"
           />
 
           <Input
             name="minimumPayment"
             type="number"
             step="0.01"
-            label="Pagamento Mínimo Mensal"
+            label="Valor da Parcela Mensal"
             placeholder="0.00"
             required
           />

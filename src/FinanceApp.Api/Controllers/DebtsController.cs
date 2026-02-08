@@ -73,6 +73,7 @@ public class DebtsController : BaseAuthenticatedController
             return NotFound();
 
         debt.Name = request.Name;
+        debt.TotalAmount = request.TotalAmount;
         debt.RemainingAmount = request.RemainingAmount;
         debt.InterestRate = request.InterestRate;
         debt.MinimumPayment = request.MinimumPayment;

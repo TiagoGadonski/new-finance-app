@@ -13,11 +13,21 @@ interface EditDebtModalProps {
   onClose: () => void;
 }
 
+interface DebtFormData {
+  name: string;
+  totalAmount: string;
+  remainingAmount: number;
+  interestRate: number;
+  minimumPayment: number;
+  dueDate: string;
+}
+
 export function EditDebtModal({ debt, isOpen, onClose }: EditDebtModalProps) {
   const queryClient = useQueryClient();
-  const { register, handleSubmit, formState: { errors } } = useForm<UpdateDebtRequest>({
+  const { register, handleSubmit, formState: { errors } } = useForm<DebtFormData>({
     defaultValues: {
       name: debt.name,
+      totalAmount: debt.totalAmount != null ? String(debt.totalAmount) : '',
       remainingAmount: debt.remainingAmount,
       interestRate: debt.interestRate,
       minimumPayment: debt.minimumPayment,
@@ -37,9 +47,10 @@ export function EditDebtModal({ debt, isOpen, onClose }: EditDebtModalProps) {
     },
   });
 
-  const onSubmit = (data: UpdateDebtRequest) => {
+  const onSubmit = (data: DebtFormData) => {
     updateMutation.mutate({
-      ...data,
+      name: data.name,
+      totalAmount: data.totalAmount ? parseFloat(data.totalAmount) : null,
       remainingAmount: Number(data.remainingAmount),
       interestRate: Number(data.interestRate),
       minimumPayment: Number(data.minimumPayment),
@@ -57,10 +68,19 @@ export function EditDebtModal({ debt, isOpen, onClose }: EditDebtModalProps) {
         />
 
         <Input
+          label="Valor Total (opcional)"
+          type="number"
+          step="0.01"
+          placeholder="Deixe vazio se não souber"
+          {...register('totalAmount')}
+          helperText="Ex: dívida de valor indeterminado como faculdade"
+        />
+
+        <Input
           label="Valor Restante"
           type="number"
           step="0.01"
-          {...register('remainingAmount', { required: 'Valor é obrigatório', valueAsNumber: true })}
+          {...register('remainingAmount', { valueAsNumber: true })}
           error={errors.remainingAmount?.message}
         />
 
@@ -68,15 +88,16 @@ export function EditDebtModal({ debt, isOpen, onClose }: EditDebtModalProps) {
           label="Taxa de Juros (% ao mês)"
           type="number"
           step="0.01"
-          {...register('interestRate', { required: 'Taxa é obrigatória', valueAsNumber: true })}
+          {...register('interestRate', { valueAsNumber: true })}
           error={errors.interestRate?.message}
+          helperText="0 se não tiver juros"
         />
 
         <Input
-          label="Pagamento Mínimo Mensal"
+          label="Valor da Parcela Mensal"
           type="number"
           step="0.01"
-          {...register('minimumPayment', { required: 'Pagamento mínimo é obrigatório', valueAsNumber: true })}
+          {...register('minimumPayment', { required: 'Valor da parcela é obrigatório', valueAsNumber: true })}
           error={errors.minimumPayment?.message}
         />
 

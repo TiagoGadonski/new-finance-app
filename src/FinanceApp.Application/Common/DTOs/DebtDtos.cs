@@ -5,7 +5,7 @@ namespace FinanceApp.Application.Common.DTOs;
 public record DebtDto(
     Guid Id,
     string Name,
-    decimal TotalAmount,
+    decimal? TotalAmount,
     decimal RemainingAmount,
     decimal InterestRate,
     decimal MinimumPayment,
@@ -14,7 +14,7 @@ public record DebtDto(
 
 public record CreateDebtRequest(
     string Name,
-    decimal TotalAmount,
+    decimal? TotalAmount,
     decimal RemainingAmount,
     decimal InterestRate,
     decimal MinimumPayment,
@@ -23,6 +23,7 @@ public record CreateDebtRequest(
 
 public record UpdateDebtRequest(
     string Name,
+    decimal? TotalAmount,
     decimal RemainingAmount,
     decimal InterestRate,
     decimal MinimumPayment,

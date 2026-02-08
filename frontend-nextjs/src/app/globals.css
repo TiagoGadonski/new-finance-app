@@ -466,3 +466,26 @@ html {
 [data-theme="dark"] .hover\:bg-slate-700:hover {
   background-color: #475569;
 }
+
+/* Select/option dark mode support */
+[data-theme="dark"] select,
+[data-theme="dark"] select option {
+  background-color: var(--card-bg);
+  color: var(--foreground);
+}
+
+.text-gray-700 {
+  color: #374151;
+}
+
+[data-theme="dark"] .text-gray-700 {
+  color: #d1d5db;
+}
+
+.border-gray-300 {
+  border-color: #d1d5db;
+}
+
+[data-theme="dark"] .border-gray-300 {
+  border-color: #4b5563;
+}

@@ -126,6 +126,66 @@ public class TransactionsController : BaseAuthenticatedController
         ));
     }
 
+    [HttpPut("{id}")]
+    public async Task<ActionResult<TransactionDto>> Update(Guid id, [FromBody] UpdateTransactionRequest request)
+    {
+        var transaction = await _transactionRepository.GetByIdAsync(id, t => t.Account, t => t.Category);
+        if (transaction == null || transaction.FamilyId != FamilyId)
+            return NotFound();
+
+        // Adjust account balance based on amount difference
+        var account = await _accountRepository.GetByIdAsync(transaction.AccountId);
+        if (account != null)
+        {
+            // Reverse old amount
+            if (transaction.Type == Domain.Enums.TransactionType.Income)
+                account.Balance -= transaction.Amount;
+            else
+                account.Balance += transaction.Amount;
+
+            // Apply new amount
+            if (transaction.Type == Domain.Enums.TransactionType.Income)
+                account.Balance += request.Amount;
+            else
+                account.Balance -= request.Amount;
+
+            await _accountRepository.UpdateAsync(account);
+        }
+
+        transaction.CategoryId = request.CategoryId;
+        transaction.Amount = request.Amount;
+        transaction.Description = request.Description;
+        transaction.Date = request.Date;
+        transaction.IsRecurring = request.IsRecurring;
+        transaction.Tags = request.Tags;
+        transaction.UpdatedAt = DateTime.UtcNow;
+
+        await _transactionRepository.UpdateAsync(transaction);
+        await _transactionRepository.SaveChangesAsync();
+
+        // Reload with navigation properties
+        transaction = await _transactionRepository.GetByIdAsync(id, t => t.Account, t => t.Category);
+
+        var dto = new TransactionDto(
+            transaction!.Id,
+            transaction.AccountId,
+            transaction.CategoryId,
+            transaction.Amount,
+            transaction.Type,
+            transaction.Description,
+            transaction.Date,
+            transaction.IsRecurring,
+            transaction.Tags,
+            transaction.Account?.Name ?? "N/A",
+            transaction.Category?.Name ?? "N/A",
+            transaction.InstallmentCount,
+            transaction.CurrentInstallment,
+            transaction.ParentTransactionId
+        );
+
+        return Ok(dto);
+    }
+
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {

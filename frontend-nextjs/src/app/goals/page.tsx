@@ -5,15 +5,17 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { goalsApi } from '@/lib/api';
 import { Card, Button, Modal, Input, EmptyState, ListSkeleton, Badge, Alert } from '@/components/ui';
-import { Plus, Trash2, Target, TrendingUp, CheckCircle } from 'lucide-react';
+import { EditGoalModal } from '@/components/goals/EditGoalModal';
+import { Plus, Trash2, Edit2, Target, TrendingUp, CheckCircle } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { CreateGoalRequest, ContributeGoalRequest, GoalStatus } from '@/types';
+import { CreateGoalRequest, ContributeGoalRequest, GoalStatus, GoalDto } from '@/types';
 
 export default function GoalsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [contributeModalGoalId, setContributeModalGoalId] = useState<string | null>(null);
+  const [editingGoal, setEditingGoal] = useState<GoalDto | null>(null);
   const queryClient = useQueryClient();
 
   const { data: goals, isLoading: goalsLoading } = useQuery({
@@ -196,6 +198,13 @@ export default function GoalsPage() {
                           <Button
                             variant="ghost"
                             size="sm"
+                            onClick={() => setEditingGoal(goal)}
+                          >
+                            <Edit2 className="w-4 h-4 text-blue-600" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
                             onClick={() => handleDeleteGoal(goal.id)}
                             disabled={deleteMutation.isPending}
                           >
@@ -276,6 +285,15 @@ export default function GoalsPage() {
             }}
           />
         ) : null}
+
+      {/* Edit Goal Modal */}
+      {editingGoal && (
+        <EditGoalModal
+          goal={editingGoal}
+          isOpen={!!editingGoal}
+          onClose={() => setEditingGoal(null)}
+        />
+      )}
 
       {/* Create Goal Modal */}
       <Modal

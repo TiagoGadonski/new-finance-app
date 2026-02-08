@@ -39,6 +39,12 @@ export enum PaymentStrategy {
   Avalanche = 1
 }
 
+export enum SubscriptionStatus {
+  Active = 0,
+  Paused = 1,
+  Cancelled = 2
+}
+
 // Shopping Lists Types
 export interface ShoppingListDto {
   id: string;
@@ -182,6 +188,12 @@ export interface CreateAccountRequest {
   color?: string;
 }
 
+export interface UpdateAccountRequest {
+  name: string;
+  color?: string;
+  isActive: boolean;
+}
+
 // Categories
 export interface CategoryDto {
   id: string;
@@ -195,6 +207,12 @@ export interface CategoryDto {
 export interface CreateCategoryRequest {
   name: string;
   type: TransactionType;
+  icon?: string;
+  color?: string;
+}
+
+export interface UpdateCategoryRequest {
+  name: string;
   icon?: string;
   color?: string;
 }
@@ -229,6 +247,15 @@ export interface CreateTransactionRequest {
   installmentCount?: number | null;
 }
 
+export interface UpdateTransactionRequest {
+  categoryId: string;
+  amount: number;
+  description: string;
+  date: string;
+  isRecurring: boolean;
+  tags?: string | null;
+}
+
 // Budgets
 export interface BudgetDto {
   id: string;
@@ -258,6 +285,10 @@ export interface CreateBudgetRequest {
   year: number;
 }
 
+export interface UpdateBudgetRequest {
+  limit: number;
+}
+
 // Subscriptions
 export interface SubscriptionDto {
   id: string;
@@ -278,6 +309,13 @@ export interface CreateSubscriptionRequest {
   billingDay: number;
 }
 
+export interface UpdateSubscriptionRequest {
+  name: string;
+  amount: number;
+  billingDay: number;
+  status: SubscriptionStatus;
+}
+
 // Goals
 export interface GoalDto {
   id: string;
@@ -294,6 +332,14 @@ export interface CreateGoalRequest {
   name: string;
   targetAmount: number;
   targetDate: string;
+}
+
+export interface UpdateGoalRequest {
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  targetDate: string;
+  status: GoalStatus;
 }
 
 export interface ContributeGoalRequest {
@@ -314,6 +360,14 @@ export interface DebtDto {
 export interface CreateDebtRequest {
   name: string;
   totalAmount: number;
+  remainingAmount: number;
+  interestRate: number;
+  minimumPayment: number;
+  dueDate?: string | null;
+}
+
+export interface UpdateDebtRequest {
+  name: string;
   remainingAmount: number;
   interestRate: number;
   minimumPayment: number;

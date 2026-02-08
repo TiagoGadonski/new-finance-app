@@ -5,17 +5,19 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { subscriptionsApi, categoriesApi, accountsApi } from '@/lib/api';
 import { Card, Button, Modal, Input, Select, EmptyState, ListSkeleton, Badge, ConfirmDialog } from '@/components/ui';
-import { Plus, Trash2, ToggleLeft, ToggleRight, Bell, Calendar, RefreshCw } from 'lucide-react';
+import { EditSubscriptionModal } from '@/components/subscriptions/EditSubscriptionModal';
+import { Plus, Trash2, Edit2, ToggleLeft, ToggleRight, Bell, Calendar, RefreshCw } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { CreateSubscriptionRequest, TransactionType } from '@/types';
+import { CreateSubscriptionRequest, TransactionType, SubscriptionDto } from '@/types';
 import toast from 'react-hot-toast';
 
 export default function SubscriptionsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [toggleId, setToggleId] = useState<string | null>(null);
+  const [editingSubscription, setEditingSubscription] = useState<SubscriptionDto | null>(null);
   const queryClient = useQueryClient();
 
   const { data: subscriptions, isLoading: subscriptionsLoading } = useQuery({
@@ -253,6 +255,13 @@ export default function SubscriptionsPage() {
                       </div>
                       <div className="flex flex-col gap-2">
                         <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setEditingSubscription(subscription)}
+                        >
+                          <Edit2 className="w-4 h-4 text-blue-600" />
+                        </Button>
+                        <Button
                           variant="secondary"
                           size="sm"
                           onClick={() => handleToggleActive(subscription.id)}
@@ -289,6 +298,15 @@ export default function SubscriptionsPage() {
             />
           )}
         </div>
+
+      {/* Edit Subscription Modal */}
+      {editingSubscription && (
+        <EditSubscriptionModal
+          subscription={editingSubscription}
+          isOpen={!!editingSubscription}
+          onClose={() => setEditingSubscription(null)}
+        />
+      )}
 
       {/* Create Subscription Modal */}
       <Modal

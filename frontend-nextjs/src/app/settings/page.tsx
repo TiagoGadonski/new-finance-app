@@ -5,13 +5,18 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { accountsApi, categoriesApi } from '@/lib/api';
 import { Card, Button, Modal, Input, Select, EmptyState, Alert } from '@/components/ui';
+import { EditAccountModal } from '@/components/settings/EditAccountModal';
+import { EditCategoryModal } from '@/components/settings/EditCategoryModal';
 import { Plus, Trash2, Edit2, Wallet, Tag, Circle } from 'lucide-react';
-import { CreateCategoryRequest, CreateAccountRequest, AccountType, TransactionType } from '@/types';
+import { CreateCategoryRequest, CreateAccountRequest, AccountType, TransactionType, AccountDto, CategoryDto } from '@/types';
+import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState<'accounts' | 'categories'>('accounts');
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
+  const [editingAccount, setEditingAccount] = useState<AccountDto | null>(null);
+  const [editingCategory, setEditingCategory] = useState<CategoryDto | null>(null);
   const queryClient = useQueryClient();
 
   const { data: accounts, isLoading: accountsLoading } = useQuery({
@@ -191,6 +196,13 @@ export default function SettingsPage() {
                             }).format(account.balance)}
                           </p>
                         </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setEditingAccount(account)}
+                        >
+                          <Edit2 className="w-4 h-4 text-blue-600" />
+                        </Button>
                         <Button
                           variant="ghost"
                           size="sm"

@@ -5,14 +5,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { debtsApi } from '@/lib/api';
 import { Card, Button, Modal, Input, Select, EmptyState, ListSkeleton, Alert } from '@/components/ui';
-import { Plus, Trash2, CreditCard, Calculator, TrendingDown } from 'lucide-react';
+import { EditDebtModal } from '@/components/debts/EditDebtModal';
+import { Plus, Trash2, Edit2, CreditCard, Calculator, TrendingDown } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
-import { CreateDebtRequest, DebtSimulationRequest, PaymentStrategy, DebtSimulationResult } from '@/types';
+import { CreateDebtRequest, DebtSimulationRequest, PaymentStrategy, DebtSimulationResult, DebtDto } from '@/types';
 
 export default function DebtsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const [simulationResult, setSimulationResult] = useState<DebtSimulationResult | null>(null);
+  const [editingDebt, setEditingDebt] = useState<DebtDto | null>(null);
   const queryClient = useQueryClient();
 
   const { data: debts, isLoading: debtsLoading } = useQuery({
@@ -200,15 +202,23 @@ export default function DebtsPage() {
                           <span>• Parcela mínima: {formatCurrency(debt.minimumPayment)}</span>
                         </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDeleteDebt(debt.id)}
-                        disabled={deleteMutation.isPending}
-                        className="self-end sm:self-auto"
-                      >
-                        <Trash2 className="w-4 h-4 text-rose-600" />
-                      </Button>
+                      <div className="flex gap-1 self-end sm:self-auto">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setEditingDebt(debt)}
+                        >
+                          <Edit2 className="w-4 h-4 text-blue-600" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteDebt(debt.id)}
+                          disabled={deleteMutation.isPending}
+                        >
+                          <Trash2 className="w-4 h-4 text-rose-600" />
+                        </Button>
+                      </div>
                     </div>
 
                     <div>
@@ -252,6 +262,15 @@ export default function DebtsPage() {
             />
           )}
         </div>
+
+      {/* Edit Debt Modal */}
+      {editingDebt && (
+        <EditDebtModal
+          debt={editingDebt}
+          isOpen={!!editingDebt}
+          onClose={() => setEditingDebt(null)}
+        />
+      )}
 
       {/* Create Debt Modal */}
       <Modal

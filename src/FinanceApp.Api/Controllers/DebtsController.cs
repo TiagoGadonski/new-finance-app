@@ -54,4 +54,47 @@ public class DebtsController : BaseAuthenticatedController
         var debts = await _debtRepository.FindAsync(d => d.FamilyId == FamilyId);
         return Ok(debts);
     }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Debt>> GetById(Guid id)
+    {
+        var debt = await _debtRepository.GetByIdAsync(id);
+        if (debt == null || debt.FamilyId != FamilyId)
+            return NotFound();
+
+        return Ok(debt);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Debt>> Update(Guid id, [FromBody] UpdateDebtRequest request)
+    {
+        var debt = await _debtRepository.GetByIdAsync(id);
+        if (debt == null || debt.FamilyId != FamilyId)
+            return NotFound();
+
+        debt.Name = request.Name;
+        debt.RemainingAmount = request.RemainingAmount;
+        debt.InterestRate = request.InterestRate;
+        debt.MinimumPayment = request.MinimumPayment;
+        debt.DueDate = request.DueDate;
+        debt.UpdatedAt = DateTime.UtcNow;
+
+        await _debtRepository.UpdateAsync(debt);
+        await _debtRepository.SaveChangesAsync();
+
+        return Ok(debt);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(Guid id)
+    {
+        var debt = await _debtRepository.GetByIdAsync(id);
+        if (debt == null || debt.FamilyId != FamilyId)
+            return NotFound();
+
+        await _debtRepository.DeleteAsync(debt);
+        await _debtRepository.SaveChangesAsync();
+
+        return NoContent();
+    }
 }

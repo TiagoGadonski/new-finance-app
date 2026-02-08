@@ -120,6 +120,77 @@ public class SubscriptionsController : BaseAuthenticatedController
         return Ok(dto);
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<SubscriptionDto>> GetById(Guid id)
+    {
+        var subscription = await _subscriptionRepository.GetByIdAsync(id, s => s.Category);
+        if (subscription == null || subscription.FamilyId != FamilyId)
+            return NotFound();
+
+        var dto = new SubscriptionDto(
+            subscription.Id,
+            subscription.Name,
+            subscription.CategoryId,
+            subscription.Category?.Name ?? "N/A",
+            subscription.Amount,
+            subscription.BillingDay,
+            subscription.Status,
+            subscription.NextBillingDate,
+            subscription.UsageCount,
+            subscription.IsLowUsage,
+            subscription.Status == Domain.Enums.SubscriptionStatus.Active
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<SubscriptionDto>> Update(Guid id, [FromBody] UpdateSubscriptionRequest request)
+    {
+        var subscription = await _subscriptionRepository.GetByIdAsync(id, s => s.Category);
+        if (subscription == null || subscription.FamilyId != FamilyId)
+            return NotFound();
+
+        subscription.Name = request.Name;
+        subscription.Amount = request.Amount;
+        subscription.BillingDay = request.BillingDay;
+        subscription.Status = request.Status;
+        subscription.NextBillingDate = CalculateNextBillingDate(request.BillingDay);
+        subscription.UpdatedAt = DateTime.UtcNow;
+
+        await _subscriptionRepository.UpdateAsync(subscription);
+        await _subscriptionRepository.SaveChangesAsync();
+
+        var dto = new SubscriptionDto(
+            subscription.Id,
+            subscription.Name,
+            subscription.CategoryId,
+            subscription.Category?.Name ?? "N/A",
+            subscription.Amount,
+            subscription.BillingDay,
+            subscription.Status,
+            subscription.NextBillingDate,
+            subscription.UsageCount,
+            subscription.IsLowUsage,
+            subscription.Status == Domain.Enums.SubscriptionStatus.Active
+        );
+
+        return Ok(dto);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> Delete(Guid id)
+    {
+        var subscription = await _subscriptionRepository.GetByIdAsync(id);
+        if (subscription == null || subscription.FamilyId != FamilyId)
+            return NotFound();
+
+        await _subscriptionRepository.DeleteAsync(subscription);
+        await _subscriptionRepository.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     [HttpPost("forecast")]
     public async Task<ActionResult<SubscriptionForecastDto>> Forecast([FromQuery] int days = 30)
     {

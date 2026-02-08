@@ -5,12 +5,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { budgetsApi, categoriesApi } from '@/lib/api';
 import { Card, Button, Modal, Input, Select, EmptyState, ListSkeleton, Alert } from '@/components/ui';
-import { Plus, Trash2, TrendingDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { EditBudgetModal } from '@/components/budgets/EditBudgetModal';
+import { Plus, Trash2, Edit2, TrendingDown, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
-import { CreateBudgetRequest, TransactionType } from '@/types';
+import { CreateBudgetRequest, TransactionType, BudgetDto } from '@/types';
+import toast from 'react-hot-toast';
 
 export default function BudgetsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [editingBudget, setEditingBudget] = useState<BudgetDto | null>(null);
   const currentDate = new Date();
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
@@ -199,14 +202,23 @@ export default function BudgetsPage() {
                         </p>
                       </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteBudget(budget.id)}
-                      disabled={deleteMutation.isPending}
-                    >
-                      <Trash2 className="w-4 h-4 text-rose-600" />
-                    </Button>
+                    <div className="flex gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setEditingBudget(budget)}
+                      >
+                        <Edit2 className="w-4 h-4 text-blue-600" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteBudget(budget.id)}
+                        disabled={deleteMutation.isPending}
+                      >
+                        <Trash2 className="w-4 h-4 text-rose-600" />
+                      </Button>
+                    </div>
                   </div>
 
                   <div>
@@ -251,6 +263,15 @@ export default function BudgetsPage() {
             />
           )}
         </div>
+
+      {/* Edit Budget Modal */}
+      {editingBudget && (
+        <EditBudgetModal
+          budget={editingBudget}
+          isOpen={!!editingBudget}
+          onClose={() => setEditingBudget(null)}
+        />
+      )}
 
       {/* Create Budget Modal */}
       <Modal

@@ -8,17 +8,19 @@ import { Card, Button, Modal, Input, Select, Alert, ConfirmDialog, EmptyState, L
 import { TransactionFilters } from '@/components/transactions/TransactionFilters';
 import { useTransactionFilters } from '@/hooks/useTransactionFilters';
 import { exportToCSV, exportToExcel, printTransactions } from '@/lib/utils/export';
-import { Plus, Trash2, TrendingUp, TrendingDown, Download, FileSpreadsheet, Printer, Inbox } from 'lucide-react';
+import { EditTransactionModal } from '@/components/transactions/EditTransactionModal';
+import { Plus, Trash2, Edit2, TrendingUp, TrendingDown, Download, FileSpreadsheet, Printer, Inbox } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { CreateTransactionRequest, TransactionType } from '@/types';
+import { CreateTransactionRequest, TransactionType, TransactionDto } from '@/types';
 import toast from 'react-hot-toast';
 
 export default function TransactionsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [editingTransaction, setEditingTransaction] = useState<TransactionDto | null>(null);
   const queryClient = useQueryClient();
 
   const { data: transactions, isLoading: transactionsLoading } = useQuery({
@@ -309,6 +311,13 @@ export default function TransactionsPage() {
                       <Button
                         variant="ghost"
                         size="sm"
+                        onClick={() => setEditingTransaction(transaction)}
+                      >
+                        <Edit2 className="w-4 h-4 text-blue-600" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => handleDeleteTransaction(transaction.id)}
                         disabled={deleteMutation.isPending}
                         className="hover:bg-red-50 dark:hover:bg-red-900/20"
@@ -422,6 +431,16 @@ export default function TransactionsPage() {
             </div>
           </form>
         </Modal>
+
+        {/* Edit Transaction Modal */}
+        {editingTransaction && (
+          <EditTransactionModal
+            transaction={editingTransaction}
+            categories={categories}
+            isOpen={!!editingTransaction}
+            onClose={() => setEditingTransaction(null)}
+          />
+        )}
 
         {/* Delete Confirmation Dialog */}
         <ConfirmDialog

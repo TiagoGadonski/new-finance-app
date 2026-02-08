@@ -4,18 +4,25 @@ import {
   CategoryDto,
   TransactionDto,
   CreateTransactionRequest,
+  UpdateTransactionRequest,
   CreateAccountRequest,
+  UpdateAccountRequest,
   CreateCategoryRequest,
+  UpdateCategoryRequest,
   BudgetDto,
   BudgetConsolidatedDto,
   CreateBudgetRequest,
+  UpdateBudgetRequest,
   SubscriptionDto,
   CreateSubscriptionRequest,
+  UpdateSubscriptionRequest,
   GoalDto,
   CreateGoalRequest,
+  UpdateGoalRequest,
   ContributeGoalRequest,
   DebtDto,
   CreateDebtRequest,
+  UpdateDebtRequest,
   DebtSimulationRequest,
   DebtSimulationResult,
 } from '@/types';
@@ -29,6 +36,11 @@ export const accountsApi = {
 
   create: async (data: CreateAccountRequest): Promise<AccountDto> => {
     const response = await apiClient.post<AccountDto>('/Accounts', data);
+    return response.data;
+  },
+
+  update: async (id: string, data: UpdateAccountRequest): Promise<AccountDto> => {
+    const response = await apiClient.put<AccountDto>(`/Accounts/${id}`, data);
     return response.data;
   },
 
@@ -49,6 +61,11 @@ export const categoriesApi = {
     return response.data;
   },
 
+  update: async (id: string, data: UpdateCategoryRequest): Promise<CategoryDto> => {
+    const response = await apiClient.put<CategoryDto>(`/Categories/${id}`, data);
+    return response.data;
+  },
+
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/Categories/${id}`);
   },
@@ -66,6 +83,11 @@ export const transactionsApi = {
     return response.data;
   },
 
+  update: async (id: string, data: UpdateTransactionRequest): Promise<TransactionDto> => {
+    const response = await apiClient.put<TransactionDto>(`/Transactions/${id}`, data);
+    return response.data;
+  },
+
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/Transactions/${id}`);
   },
@@ -73,6 +95,11 @@ export const transactionsApi = {
 
 // Budgets
 export const budgetsApi = {
+  getAll: async (): Promise<BudgetDto[]> => {
+    const response = await apiClient.get<BudgetDto[]>('/Budgets');
+    return response.data;
+  },
+
   getConsolidated: async (month: number, year: number): Promise<BudgetConsolidatedDto> => {
     const response = await apiClient.get<BudgetConsolidatedDto>(`/Budgets/consolidated/${year}/${month}`);
     return response.data;
@@ -80,6 +107,11 @@ export const budgetsApi = {
 
   create: async (data: CreateBudgetRequest): Promise<BudgetDto> => {
     const response = await apiClient.post<BudgetDto>('/Budgets', data);
+    return response.data;
+  },
+
+  update: async (id: string, data: UpdateBudgetRequest): Promise<BudgetDto> => {
+    const response = await apiClient.put<BudgetDto>(`/Budgets/${id}`, data);
     return response.data;
   },
 
@@ -97,6 +129,11 @@ export const subscriptionsApi = {
 
   create: async (data: CreateSubscriptionRequest): Promise<SubscriptionDto> => {
     const response = await apiClient.post<SubscriptionDto>('/Subscriptions', data);
+    return response.data;
+  },
+
+  update: async (id: string, data: UpdateSubscriptionRequest): Promise<SubscriptionDto> => {
+    const response = await apiClient.put<SubscriptionDto>(`/Subscriptions/${id}`, data);
     return response.data;
   },
 
@@ -127,6 +164,11 @@ export const goalsApi = {
     return response.data;
   },
 
+  update: async (id: string, data: UpdateGoalRequest): Promise<GoalDto> => {
+    const response = await apiClient.put<GoalDto>(`/Goals/${id}`, data);
+    return response.data;
+  },
+
   contribute: async (id: string, data: ContributeGoalRequest): Promise<GoalDto> => {
     const response = await apiClient.post<GoalDto>(`/Goals/${id}/contribute`, data);
     return response.data;
@@ -146,6 +188,11 @@ export const debtsApi = {
 
   create: async (data: CreateDebtRequest): Promise<DebtDto> => {
     const response = await apiClient.post<DebtDto>('/Debts', data);
+    return response.data;
+  },
+
+  update: async (id: string, data: UpdateDebtRequest): Promise<DebtDto> => {
+    const response = await apiClient.put<DebtDto>(`/Debts/${id}`, data);
     return response.data;
   },
 

@@ -10,7 +10,11 @@ public record GoalDto(
     decimal RemainingAmount,
     decimal PercentageAchieved,
     DateTime TargetDate,
-    GoalStatus Status
+    GoalStatus Status,
+    string CreatedByUsername,
+    DateTime CreatedAt,
+    string? UpdatedByUsername,
+    DateTime? UpdatedAt
 );
 
 public record CreateGoalRequest(

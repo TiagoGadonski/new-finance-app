@@ -127,7 +127,11 @@ public class ImportCsvCommandHandler : IRequestHandler<ImportCsvCommand, List<Tr
                 category?.Name ?? "Unknown",
                 null,
                 null,
-                null
+                null,
+                transaction.CreatedByUsername,
+                transaction.CreatedAt,
+                transaction.UpdatedByUsername,
+                transaction.UpdatedAt
             ));
         }
 

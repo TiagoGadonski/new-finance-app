@@ -78,6 +78,7 @@ export default function SettingsPage() {
       type: parseInt(formData.get('type') as string) as AccountType,
       initialBalance: parseFloat(formData.get('initialBalance') as string) || 0,
       color: formData.get('color') as string || undefined,
+      currency: formData.get('currency') as string || 'BRL',
     };
 
     createAccountMutation.mutate(data);
@@ -183,6 +184,9 @@ export default function SettingsPage() {
                           </h3>
                           <p className="text-sm text-slate-600 dark:text-slate-400">
                             {accountTypeLabels[account.type]}
+                            {account.currency && account.currency !== 'BRL' && (
+                              <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">{account.currency}</span>
+                            )}
                           </p>
                         </div>
                       </div>
@@ -357,6 +361,13 @@ export default function SettingsPage() {
             placeholder="0.00"
             required
           />
+
+          <Select name="currency" label="Moeda" required>
+            <option value="BRL">BRL - Real Brasileiro</option>
+            <option value="USD">USD - Dólar Americano</option>
+            <option value="EUR">EUR - Euro</option>
+            <option value="GBP">GBP - Libra Esterlina</option>
+          </Select>
 
           <Input
             name="color"

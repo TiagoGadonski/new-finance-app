@@ -9,11 +9,15 @@ import { TransactionFilters } from '@/components/transactions/TransactionFilters
 import { useTransactionFilters } from '@/hooks/useTransactionFilters';
 import { exportToCSV, exportToExcel, printTransactions } from '@/lib/utils/export';
 import { EditTransactionModal } from '@/components/transactions/EditTransactionModal';
-import { Plus, Trash2, Edit2, TrendingUp, TrendingDown, Download, FileSpreadsheet, Printer, Inbox } from 'lucide-react';
+import { Plus, Trash2, Edit2, TrendingUp, TrendingDown, Download, FileSpreadsheet, Printer, Inbox, FileText, Upload, BookTemplate, LayoutTemplate } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { CreateTransactionRequest, TransactionType, TransactionDto } from '@/types';
+import { Pagination } from '@/components/ui';
+import { TemplatesModal } from '@/components/transactions/TemplatesModal';
+import { ImportModal } from '@/components/transactions/ImportModal';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 export default function TransactionsPage() {
@@ -21,6 +25,10 @@ export default function TransactionsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [editingTransaction, setEditingTransaction] = useState<TransactionDto | null>(null);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 25;
   const queryClient = useQueryClient();
 
   const { data: transactions, isLoading: transactionsLoading } = useQuery({
@@ -140,6 +148,12 @@ export default function TransactionsPage() {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-between">
           <div className="flex flex-wrap gap-2">
+            <Link href="/statement">
+              <Button variant="secondary" size="sm">
+                <FileText className="w-4 h-4 mr-2" />
+                Ver Extrato Completo
+              </Button>
+            </Link>
             <Button
               variant="secondary"
               size="sm"
@@ -185,10 +199,20 @@ export default function TransactionsPage() {
             </Button>
           </div>
 
-          <Button onClick={() => setIsCreateModalOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Nova Transação
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={() => setShowImport(true)} size="sm">
+              <Upload className="w-4 h-4 mr-1" />
+              Importar
+            </Button>
+            <Button variant="secondary" onClick={() => setShowTemplates(true)} size="sm">
+              <LayoutTemplate className="w-4 h-4 mr-1" />
+              Templates
+            </Button>
+            <Button onClick={() => setIsCreateModalOpen(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Nova Transação
+            </Button>
+          </div>
         </div>
 
         {/* Advanced Filters */}
@@ -272,6 +296,7 @@ export default function TransactionsPage() {
               <div className="space-y-3">
                 {filteredTransactions
                   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                  .slice((currentPage - 1) * pageSize, currentPage * pageSize)
                   .map((transaction, index) => (
                   <div
                     key={transaction.id}
@@ -300,6 +325,9 @@ export default function TransactionsPage() {
                           <span className="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium">
                             Parcela {transaction.currentInstallment}/{transaction.installmentCount}
                           </span>
+                        )}
+                        {transaction.createdByUsername && (
+                          <span>• @{transaction.createdByUsername}</span>
                         )}
                       </div>
                     </div>
@@ -442,6 +470,15 @@ export default function TransactionsPage() {
           />
         )}
 
+        {/* Pagination */}
+        {filteredTransactions.length > pageSize && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(filteredTransactions.length / pageSize)}
+            onChange={setCurrentPage}
+          />
+        )}
+
         {/* Delete Confirmation Dialog */}
         <ConfirmDialog
           isOpen={deleteId !== null}
@@ -451,6 +488,19 @@ export default function TransactionsPage() {
           message="Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita."
           confirmText="Excluir"
           variant="danger"
+        />
+
+        {/* Templates Modal */}
+        <TemplatesModal
+          isOpen={showTemplates}
+          onClose={() => setShowTemplates(false)}
+          onApply={() => setShowTemplates(false)}
+        />
+
+        {/* Import Modal */}
+        <ImportModal
+          isOpen={showImport}
+          onClose={() => setShowImport(false)}
         />
       </div>
     </PageContainer>

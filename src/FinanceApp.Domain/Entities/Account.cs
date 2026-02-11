@@ -9,6 +9,7 @@ public class Account : AuditableEntity
     public AccountType Type { get; set; }
     public decimal Balance { get; set; }
     public string? Color { get; set; }
+    public string Currency { get; set; } = "BRL";
     public bool IsActive { get; set; } = true;
 
     // Navigation properties

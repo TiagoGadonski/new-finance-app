@@ -13,15 +13,18 @@ public class TransactionsController : BaseAuthenticatedController
     private readonly IMediator _mediator;
     private readonly IRepository<Transaction> _transactionRepository;
     private readonly IRepository<Account> _accountRepository;
+    private readonly IRepository<Subscription> _subscriptionRepository;
 
     public TransactionsController(
         IMediator mediator,
         IRepository<Transaction> transactionRepository,
-        IRepository<Account> accountRepository)
+        IRepository<Account> accountRepository,
+        IRepository<Subscription> subscriptionRepository)
     {
         _mediator = mediator;
         _transactionRepository = transactionRepository;
         _accountRepository = accountRepository;
+        _subscriptionRepository = subscriptionRepository;
     }
 
     [HttpPost]
@@ -47,24 +50,7 @@ public class TransactionsController : BaseAuthenticatedController
         if (transaction == null || transaction.FamilyId != FamilyId)
             return NotFound();
 
-        var dto = new TransactionDto(
-            transaction.Id,
-            transaction.AccountId,
-            transaction.CategoryId,
-            transaction.Amount,
-            transaction.Type,
-            transaction.Description,
-            transaction.Date,
-            transaction.IsRecurring,
-            transaction.Tags,
-            transaction.Account?.Name ?? "N/A",
-            transaction.Category?.Name ?? "N/A",
-            transaction.InstallmentCount,
-            transaction.CurrentInstallment,
-            transaction.ParentTransactionId
-        );
-
-        return Ok(dto);
+        return Ok(MapToDto(transaction));
     }
 
     [HttpGet]
@@ -75,24 +61,7 @@ public class TransactionsController : BaseAuthenticatedController
             t => t.Account,
             t => t.Category);
 
-        var dtos = transactions.Select(t => new TransactionDto(
-            t.Id,
-            t.AccountId,
-            t.CategoryId,
-            t.Amount,
-            t.Type,
-            t.Description,
-            t.Date,
-            t.IsRecurring,
-            t.Tags,
-            t.Account?.Name ?? "N/A",
-            t.Category?.Name ?? "N/A",
-            t.InstallmentCount,
-            t.CurrentInstallment,
-            t.ParentTransactionId
-        )).ToList();
-
-        return Ok(dtos);
+        return Ok(transactions.Select(MapToDto).ToList());
     }
 
     [HttpGet("summary")]
@@ -159,6 +128,7 @@ public class TransactionsController : BaseAuthenticatedController
         transaction.IsRecurring = request.IsRecurring;
         transaction.Tags = request.Tags;
         transaction.UpdatedAt = DateTime.UtcNow;
+        transaction.UpdatedByUsername = Username;
 
         await _transactionRepository.UpdateAsync(transaction);
         await _transactionRepository.SaveChangesAsync();
@@ -166,24 +136,97 @@ public class TransactionsController : BaseAuthenticatedController
         // Reload with navigation properties
         transaction = await _transactionRepository.GetByIdAsync(id, t => t.Account, t => t.Category);
 
-        var dto = new TransactionDto(
-            transaction!.Id,
-            transaction.AccountId,
-            transaction.CategoryId,
-            transaction.Amount,
-            transaction.Type,
-            transaction.Description,
-            transaction.Date,
-            transaction.IsRecurring,
-            transaction.Tags,
-            transaction.Account?.Name ?? "N/A",
-            transaction.Category?.Name ?? "N/A",
-            transaction.InstallmentCount,
-            transaction.CurrentInstallment,
-            transaction.ParentTransactionId
-        );
+        return Ok(MapToDto(transaction!));
+    }
 
-        return Ok(dto);
+    [HttpGet("duplicates")]
+    public async Task<ActionResult<IEnumerable<DuplicateTransactionGroupDto>>> GetDuplicates()
+    {
+        var transactions = await _transactionRepository.FindAsync(
+            t => t.FamilyId == FamilyId,
+            t => t.Account,
+            t => t.Category);
+
+        var groups = transactions
+            .GroupBy(t => new { Desc = t.Description.ToLower().Trim(), t.Amount })
+            .Where(g => g.Count() > 1)
+            .Where(g =>
+            {
+                var dates = g.Select(t => t.Date).OrderBy(d => d).ToList();
+                for (int i = 1; i < dates.Count; i++)
+                {
+                    if ((dates[i] - dates[i - 1]).TotalDays <= 3)
+                        return true;
+                }
+                return false;
+            })
+            .Select(g => new DuplicateTransactionGroupDto(
+                g.First().Description,
+                g.Key.Amount,
+                g.Select(t => MapToDto(t)).ToList()
+            ))
+            .ToList();
+
+        return Ok(groups);
+    }
+
+    [HttpPost("recurring/generate")]
+    public async Task<ActionResult<List<TransactionDto>>> GenerateRecurring()
+    {
+        var now = DateTime.UtcNow;
+        var subscriptions = await _subscriptionRepository.FindAsync(
+            s => s.FamilyId == FamilyId && s.Status == Domain.Enums.SubscriptionStatus.Active,
+            s => s.Account,
+            s => s.Category);
+
+        var created = new List<TransactionDto>();
+
+        foreach (var sub in subscriptions)
+        {
+            // Check if transaction already exists for this month
+            var existing = await _transactionRepository.FindAsync(
+                t => t.FamilyId == FamilyId &&
+                     t.Description.Contains(sub.Name) &&
+                     t.Date.Month == now.Month &&
+                     t.Date.Year == now.Year &&
+                     t.Amount == sub.Amount);
+
+            if (existing.Any()) continue;
+
+            var billingDate = new DateTime(now.Year, now.Month,
+                Math.Min(sub.BillingDay, DateTime.DaysInMonth(now.Year, now.Month)));
+
+            var transaction = new Transaction
+            {
+                Id = Guid.NewGuid(),
+                FamilyId = FamilyId,
+                AccountId = sub.AccountId,
+                CategoryId = sub.CategoryId,
+                Amount = sub.Amount,
+                Type = Domain.Enums.TransactionType.Expense,
+                Description = $"{sub.Name} (recorrente)",
+                Date = billingDate,
+                IsRecurring = true,
+                CreatedAt = DateTime.UtcNow,
+                CreatedByUsername = Username
+            };
+
+            var account = await _accountRepository.GetByIdAsync(sub.AccountId);
+            if (account != null)
+            {
+                account.Balance -= transaction.Amount;
+                await _accountRepository.UpdateAsync(account);
+            }
+
+            await _transactionRepository.AddAsync(transaction);
+
+            created.Add(MapToDto(transaction));
+        }
+
+        if (created.Any())
+            await _transactionRepository.SaveChangesAsync();
+
+        return Ok(created);
     }
 
     [HttpDelete("{id}")]
@@ -214,4 +257,12 @@ public class TransactionsController : BaseAuthenticatedController
 
         return NoContent();
     }
+
+    private static TransactionDto MapToDto(Transaction t) => new(
+        t.Id, t.AccountId, t.CategoryId, t.Amount, t.Type,
+        t.Description, t.Date, t.IsRecurring, t.Tags,
+        t.Account?.Name ?? "N/A", t.Category?.Name ?? "N/A",
+        t.InstallmentCount, t.CurrentInstallment, t.ParentTransactionId,
+        t.CreatedByUsername, t.CreatedAt, t.UpdatedByUsername, t.UpdatedAt
+    );
 }

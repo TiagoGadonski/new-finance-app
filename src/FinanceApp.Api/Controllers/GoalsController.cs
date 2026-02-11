@@ -28,7 +28,8 @@ public class GoalsController : BaseAuthenticatedController
             CurrentAmount = 0,
             TargetDate = request.TargetDate,
             Status = GoalStatus.Active,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            CreatedByUsername = Username
         };
 
         await _goalRepository.AddAsync(goal);
@@ -67,6 +68,7 @@ public class GoalsController : BaseAuthenticatedController
         goal.TargetDate = request.TargetDate;
         goal.Status = request.Status;
         goal.UpdatedAt = DateTime.UtcNow;
+        goal.UpdatedByUsername = Username;
 
         // Auto-marcar como alcançada se atingiu o valor
         if (goal.CurrentAmount >= goal.TargetAmount && goal.Status == GoalStatus.Active)
@@ -108,6 +110,7 @@ public class GoalsController : BaseAuthenticatedController
         }
 
         goal.UpdatedAt = DateTime.UtcNow;
+        goal.UpdatedByUsername = Username;
 
         await _goalRepository.UpdateAsync(goal);
         await _goalRepository.SaveChangesAsync();
@@ -123,6 +126,10 @@ public class GoalsController : BaseAuthenticatedController
         goal.RemainingAmount,
         goal.PercentageAchieved,
         goal.TargetDate,
-        goal.Status
+        goal.Status,
+        goal.CreatedByUsername,
+        goal.CreatedAt,
+        goal.UpdatedByUsername,
+        goal.UpdatedAt
     );
 }

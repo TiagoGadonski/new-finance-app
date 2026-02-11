@@ -9,7 +9,11 @@ public record DebtDto(
     decimal RemainingAmount,
     decimal InterestRate,
     decimal MinimumPayment,
-    DateTime? DueDate
+    DateTime? DueDate,
+    string CreatedByUsername,
+    DateTime CreatedAt,
+    string? UpdatedByUsername,
+    DateTime? UpdatedAt
 );
 
 public record CreateDebtRequest(

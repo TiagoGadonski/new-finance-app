@@ -31,13 +31,15 @@ public class DebtsController : BaseAuthenticatedController
             RemainingAmount = request.RemainingAmount,
             InterestRate = request.InterestRate,
             MinimumPayment = request.MinimumPayment,
-            DueDate = request.DueDate
+            DueDate = request.DueDate,
+            CreatedAt = DateTime.UtcNow,
+            CreatedByUsername = Username
         };
 
         await _debtRepository.AddAsync(debt);
         await _debtRepository.SaveChangesAsync();
 
-        return Ok(debt);
+        return Ok(MapToDto(debt));
     }
 
     [HttpPost("simulate")]
@@ -49,20 +51,20 @@ public class DebtsController : BaseAuthenticatedController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Debt>>> GetAll()
+    public async Task<ActionResult<IEnumerable<DebtDto>>> GetAll()
     {
         var debts = await _debtRepository.FindAsync(d => d.FamilyId == FamilyId);
-        return Ok(debts);
+        return Ok(debts.Select(MapToDto));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Debt>> GetById(Guid id)
+    public async Task<ActionResult<DebtDto>> GetById(Guid id)
     {
         var debt = await _debtRepository.GetByIdAsync(id);
         if (debt == null || debt.FamilyId != FamilyId)
             return NotFound();
 
-        return Ok(debt);
+        return Ok(MapToDto(debt));
     }
 
     [HttpPut("{id}")]
@@ -79,11 +81,12 @@ public class DebtsController : BaseAuthenticatedController
         debt.MinimumPayment = request.MinimumPayment;
         debt.DueDate = request.DueDate;
         debt.UpdatedAt = DateTime.UtcNow;
+        debt.UpdatedByUsername = Username;
 
         await _debtRepository.UpdateAsync(debt);
         await _debtRepository.SaveChangesAsync();
 
-        return Ok(debt);
+        return Ok(MapToDto(debt));
     }
 
     [HttpDelete("{id}")]
@@ -98,4 +101,10 @@ public class DebtsController : BaseAuthenticatedController
 
         return NoContent();
     }
+
+    private static DebtDto MapToDto(Debt d) => new(
+        d.Id, d.Name, d.TotalAmount, d.RemainingAmount, d.InterestRate,
+        d.MinimumPayment, d.DueDate,
+        d.CreatedByUsername, d.CreatedAt, d.UpdatedByUsername, d.UpdatedAt
+    );
 }

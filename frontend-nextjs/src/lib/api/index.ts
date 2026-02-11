@@ -5,3 +5,8 @@ export * from './meiApi';
 export * from './coreApi';
 export * from './adminApi';
 export * from './workCalendarApi';
+export * from './notificationsApi';
+export * from './transactionTemplatesApi';
+export * from './currencyApi';
+export * from './reportsApi';
+export * from './investmentsApi';

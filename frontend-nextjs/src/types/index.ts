@@ -171,6 +171,40 @@ export interface MeiAlertDto {
   recommendation: string;
 }
 
+// Notifications
+export enum NotificationType {
+  Info = 0,
+  Warning = 1,
+  Alert = 2,
+  Success = 3
+}
+
+export interface NotificationDto {
+  id: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+  isRead: boolean;
+  link: string | null;
+  createdAt: string;
+}
+
+// Investment Enums
+export enum InvestmentType {
+  Stock = 0,
+  ETF = 1,
+  Fund = 2,
+  Crypto = 3,
+  FixedIncome = 4,
+  Other = 5
+}
+
+export enum InvestmentTransactionType {
+  Buy = 0,
+  Sell = 1,
+  Dividend = 2
+}
+
 // Accounts
 export interface AccountDto {
   id: string;
@@ -178,7 +212,12 @@ export interface AccountDto {
   type: AccountType;
   balance: number;
   color: string;
+  currency: string;
   isActive: boolean;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
 }
 
 export interface CreateAccountRequest {
@@ -186,12 +225,14 @@ export interface CreateAccountRequest {
   type: AccountType;
   initialBalance: number;
   color?: string;
+  currency?: string;
 }
 
 export interface UpdateAccountRequest {
   name: string;
   color?: string;
   isActive: boolean;
+  currency?: string;
 }
 
 // Categories
@@ -233,6 +274,10 @@ export interface TransactionDto {
   installmentCount?: number | null;
   currentInstallment?: number | null;
   parentTransactionId?: string | null;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
 }
 
 export interface CreateTransactionRequest {
@@ -268,6 +313,10 @@ export interface BudgetDto {
   month: number;
   year: number;
   shouldAlert: boolean;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
 }
 
 export interface BudgetConsolidatedDto {
@@ -299,6 +348,10 @@ export interface SubscriptionDto {
   isActive: boolean;
   nextBillingDate: string;
   categoryName?: string;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
 }
 
 export interface CreateSubscriptionRequest {
@@ -326,6 +379,10 @@ export interface GoalDto {
   percentageAchieved: number;
   targetDate: string;
   status: GoalStatus;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
 }
 
 export interface CreateGoalRequest {
@@ -355,6 +412,10 @@ export interface DebtDto {
   interestRate: number;
   minimumPayment: number;
   dueDate: string | null;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
 }
 
 export interface CreateDebtRequest {
@@ -394,4 +455,182 @@ export interface DebtPaymentPlan {
   principal: number;
   interest: number;
   remainingBalance: number;
+}
+
+// Transaction Templates
+export interface TransactionTemplateDto {
+  id: string;
+  name: string;
+  accountId: string;
+  categoryId: string;
+  amount: number;
+  type: TransactionType;
+  description: string | null;
+  tags: string | null;
+  accountName: string;
+  categoryName: string;
+}
+
+export interface CreateTransactionTemplateRequest {
+  name: string;
+  accountId: string;
+  categoryId: string;
+  amount: number;
+  type: TransactionType;
+  description?: string | null;
+  tags?: string | null;
+}
+
+export interface UpdateTransactionTemplateRequest {
+  name: string;
+  accountId: string;
+  categoryId: string;
+  amount: number;
+  type: TransactionType;
+  description?: string | null;
+  tags?: string | null;
+}
+
+// Currency
+export interface CurrencyRateDto {
+  fromCurrency: string;
+  toCurrency: string;
+  rate: number;
+  date: string;
+}
+
+export interface CurrencyConversionResult {
+  fromCurrency: string;
+  toCurrency: string;
+  originalAmount: number;
+  convertedAmount: number;
+  rate: number;
+}
+
+// Investments
+export interface InvestmentDto {
+  id: string;
+  name: string;
+  type: InvestmentType;
+  symbol: string | null;
+  quantity: number;
+  averagePrice: number;
+  currentPrice: number;
+  currency: string;
+  accountId: string | null;
+  accountName: string | null;
+  totalValue: number;
+  totalGainLoss: number;
+  gainLossPercentage: number;
+}
+
+export interface CreateInvestmentRequest {
+  name: string;
+  type: InvestmentType;
+  symbol?: string | null;
+  quantity?: number;
+  averagePrice?: number;
+  currentPrice?: number;
+  currency?: string;
+  accountId?: string | null;
+}
+
+export interface UpdateInvestmentRequest {
+  name: string;
+  type: InvestmentType;
+  symbol?: string | null;
+  currentPrice?: number;
+  currency?: string;
+  accountId?: string | null;
+}
+
+export interface InvestmentTransactionDto {
+  id: string;
+  investmentId: string;
+  type: InvestmentTransactionType;
+  quantity: number;
+  price: number;
+  date: string;
+  fees: number;
+}
+
+export interface CreateInvestmentTransactionRequest {
+  type: InvestmentTransactionType;
+  quantity: number;
+  price: number;
+  date: string;
+  fees?: number;
+}
+
+export interface InvestmentSummaryDto {
+  totalInvested: number;
+  totalCurrentValue: number;
+  totalGainLoss: number;
+  totalGainLossPercentage: number;
+  totalDividends: number;
+  totalInvestments: number;
+  allocation: InvestmentAllocationDto[];
+}
+
+export interface InvestmentAllocationDto {
+  type: InvestmentType;
+  value: number;
+  percentage: number;
+}
+
+// Reports
+export interface CategorySummaryDto {
+  categoryId: string;
+  categoryName: string;
+  amount: number;
+  transactionCount: number;
+}
+
+export interface TopExpenseDto {
+  description: string;
+  amount: number;
+  categoryName: string;
+  date: string;
+}
+
+export interface MonthlyReportDto {
+  month: number;
+  year: number;
+  totalIncome: number;
+  totalExpenses: number;
+  balance: number;
+  savingsRate: number;
+  expensesByCategory: CategorySummaryDto[];
+  incomeByCategory: CategorySummaryDto[];
+  topExpenses: TopExpenseDto[];
+}
+
+export interface CashFlowPointDto {
+  date: string;
+  balance: number;
+  label: string;
+}
+
+export interface CashFlowForecastDto {
+  points: CashFlowPointDto[];
+  projectedBalance: number;
+  monthlyFixedExpenses: number;
+  averageMonthlyIncome: number;
+  averageMonthlyExpenses: number;
+}
+
+export interface PeriodComparisonDto {
+  period1: MonthlyReportDto;
+  period2: MonthlyReportDto;
+  incomeChange: number;
+  expenseChange: number;
+  balanceChange: number;
+  incomeChangePercentage: number;
+  expenseChangePercentage: number;
+}
+
+export interface DuplicateTransactionGroupDto {
+  description: string;
+  amount: number;
+  transactions: TransactionDto[];
 }

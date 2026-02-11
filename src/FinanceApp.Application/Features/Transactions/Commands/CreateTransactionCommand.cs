@@ -113,7 +113,11 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
                     category.Name,
                     request.Request.InstallmentCount.Value,
                     1,
-                    parentId
+                    parentId,
+                    request.Username,
+                    DateTime.UtcNow,
+                    null,
+                    null
                 );
             }
             else
@@ -170,7 +174,11 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
                     category.Name,
                     transaction.InstallmentCount,
                     transaction.CurrentInstallment,
-                    transaction.ParentTransactionId
+                    transaction.ParentTransactionId,
+                    transaction.CreatedByUsername,
+                    transaction.CreatedAt,
+                    transaction.UpdatedByUsername,
+                    transaction.UpdatedAt
                 );
             }
         }

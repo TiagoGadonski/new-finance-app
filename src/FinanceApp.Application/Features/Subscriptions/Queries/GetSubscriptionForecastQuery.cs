@@ -59,7 +59,11 @@ public class GetSubscriptionForecastQueryHandler : IRequestHandler<GetSubscripti
                     subscription.NextBillingDate,
                     subscription.UsageCount,
                     subscription.IsLowUsage,
-                    subscription.Status == SubscriptionStatus.Active
+                    subscription.Status == SubscriptionStatus.Active,
+                    subscription.CreatedByUsername,
+                    subscription.CreatedAt,
+                    subscription.UpdatedByUsername,
+                    subscription.UpdatedAt
                 ));
             }
         }

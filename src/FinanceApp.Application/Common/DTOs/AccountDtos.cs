@@ -8,18 +8,25 @@ public record AccountDto(
     AccountType Type,
     decimal Balance,
     string? Color,
-    bool IsActive
+    string Currency,
+    bool IsActive,
+    string CreatedByUsername,
+    DateTime CreatedAt,
+    string? UpdatedByUsername,
+    DateTime? UpdatedAt
 );
 
 public record CreateAccountRequest(
     string Name,
     AccountType Type,
     decimal InitialBalance,
-    string? Color
+    string? Color,
+    string Currency = "BRL"
 );
 
 public record UpdateAccountRequest(
     string Name,
     string? Color,
-    bool IsActive
+    bool IsActive,
+    string? Currency = null
 );

@@ -44,7 +44,7 @@ export const UpcomingBills = memo(function UpcomingBills({ subscriptions, daysAh
             Próximas Contas
           </h3>
           <Link
-            href="/subscriptions"
+            href="/monthly-bills"
             className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
           >
             Ver assinaturas
@@ -70,7 +70,7 @@ export const UpcomingBills = memo(function UpcomingBills({ subscriptions, daysAh
           </p>
         </div>
         <Link
-          href="/subscriptions"
+          href="/monthly-bills"
           className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
         >
           Ver todas

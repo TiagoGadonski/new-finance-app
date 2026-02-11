@@ -3,23 +3,23 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, ShoppingCart, TrendingUp, LogOut, User, ArrowLeftRight, PiggyBank, Bell, Target, CreditCard, Shield, Moon, Sun, Settings, FileText, Calendar } from 'lucide-react';
+import { Home, ShoppingCart, LogOut, User, ArrowLeftRight, PiggyBank, Target, Shield, Moon, Sun, Settings, CalendarCheck, Briefcase, BarChart3, TrendingUp } from 'lucide-react';
 import { clsx } from 'clsx';
 import { authApi } from '@/lib/api';
 import { Button } from '@/components/ui';
+import { NotificationDropdown } from '@/components/notifications/NotificationDropdown';
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/statement', label: 'Extrato Completo', icon: FileText },
-  { href: '/transactions', label: 'Transações', icon: ArrowLeftRight },
-  { href: '/budgets', label: 'Orçamentos', icon: PiggyBank },
-  { href: '/subscriptions', label: 'Assinaturas', icon: Bell },
-  { href: '/goals', label: 'Metas', icon: Target },
-  { href: '/debts', label: 'Dívidas', icon: CreditCard },
-  { href: '/shopping-lists', label: 'Compras', icon: ShoppingCart },
-  { href: '/mei', label: 'MEI', icon: TrendingUp },
-  { href: '/work-calendar', label: 'PJ', icon: Calendar },
-  { href: '/settings', label: 'Configurações', icon: Settings },
+  { href: '/dashboard', label: 'Dashboard', icon: Home, matchPaths: ['/dashboard'] },
+  { href: '/monthly-bills', label: 'Contas do Mês', icon: CalendarCheck, matchPaths: ['/monthly-bills', '/subscriptions', '/debts'] },
+  { href: '/transactions', label: 'Transações', icon: ArrowLeftRight, matchPaths: ['/transactions'] },
+  { href: '/budgets', label: 'Orçamentos', icon: PiggyBank, matchPaths: ['/budgets'] },
+  { href: '/goals', label: 'Metas', icon: Target, matchPaths: ['/goals'] },
+  { href: '/reports', label: 'Relatórios', icon: BarChart3, matchPaths: ['/reports'] },
+  { href: '/shopping-lists', label: 'Compras', icon: ShoppingCart, matchPaths: ['/shopping-lists'] },
+  { href: '/investments', label: 'Investimentos', icon: TrendingUp, matchPaths: ['/investments'] },
+  { href: '/trabalho', label: 'Trabalho', icon: Briefcase, matchPaths: ['/trabalho', '/mei', '/work-calendar'] },
+  { href: '/settings', label: 'Configurações', icon: Settings, matchPaths: ['/settings'] },
 ];
 
 export function Navbar() {
@@ -89,7 +89,7 @@ export function Navbar() {
           <div className="flex items-center gap-1 overflow-x-auto flex-1 scrollbar-hide">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href;
+              const isActive = item.matchPaths.some(p => pathname === p);
 
               return (
                 <Link
@@ -127,9 +127,13 @@ export function Navbar() {
 
           {user && (
             <div className="flex items-center gap-2 flex-shrink-0">
+              <NotificationDropdown />
               <div className="hidden md:flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg glass">
                 <User className="w-4 h-4" />
-                <span className="font-medium">{user.name}</span>
+                <div className="flex flex-col leading-tight">
+                  <span className="font-medium">@{user.username}</span>
+                  <span className="text-xs opacity-60">{user.familyName}</span>
+                </div>
               </div>
               <Button
                 variant="ghost"

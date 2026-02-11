@@ -10,7 +10,11 @@ public record BudgetDto(
     decimal PercentageUsed,
     int Month,
     int Year,
-    bool ShouldAlert
+    bool ShouldAlert,
+    string CreatedByUsername,
+    DateTime CreatedAt,
+    string? UpdatedByUsername,
+    DateTime? UpdatedAt
 );
 
 public record CreateBudgetRequest(

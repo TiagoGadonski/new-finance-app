@@ -59,7 +59,11 @@ public class GetBudgetConsolidatedQueryHandler : IRequestHandler<GetBudgetConsol
                 budget.PercentageUsed,
                 budget.Month,
                 budget.Year,
-                budget.ShouldAlert
+                budget.ShouldAlert,
+                budget.CreatedByUsername,
+                budget.CreatedAt,
+                budget.UpdatedByUsername,
+                budget.UpdatedAt
             ));
         }
 

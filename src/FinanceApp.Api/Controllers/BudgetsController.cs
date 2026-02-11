@@ -31,13 +31,17 @@ public class BudgetsController : BaseAuthenticatedController
             Month = request.Month,
             Year = request.Year,
             Spent = 0,
-            AlertSent = false
+            AlertSent = false,
+            CreatedAt = DateTime.UtcNow,
+            CreatedByUsername = Username
         };
 
         await _budgetRepository.AddAsync(budget);
         await _budgetRepository.SaveChangesAsync();
 
-        return Ok(budget);
+        // Reload with category
+        var created = await _budgetRepository.GetByIdAsync(budget.Id, b => b.Category);
+        return Ok(MapToDto(created!));
     }
 
     [HttpGet]
@@ -47,20 +51,7 @@ public class BudgetsController : BaseAuthenticatedController
             b => b.FamilyId == FamilyId,
             b => b.Category);
 
-        var dtos = budgets.Select(b => new BudgetDto(
-            b.Id,
-            b.CategoryId,
-            b.Category?.Name ?? "N/A",
-            b.Limit,
-            b.Spent,
-            b.Limit - b.Spent,
-            b.PercentageUsed,
-            b.Month,
-            b.Year,
-            b.ShouldAlert
-        )).ToList();
-
-        return Ok(dtos);
+        return Ok(budgets.Select(MapToDto).ToList());
     }
 
     [HttpGet("{id}")]
@@ -70,18 +61,7 @@ public class BudgetsController : BaseAuthenticatedController
         if (budget == null || budget.FamilyId != FamilyId)
             return NotFound();
 
-        return Ok(new BudgetDto(
-            budget.Id,
-            budget.CategoryId,
-            budget.Category?.Name ?? "N/A",
-            budget.Limit,
-            budget.Spent,
-            budget.Limit - budget.Spent,
-            budget.PercentageUsed,
-            budget.Month,
-            budget.Year,
-            budget.ShouldAlert
-        ));
+        return Ok(MapToDto(budget));
     }
 
     [HttpGet("consolidated/{year}/{month}")]
@@ -101,22 +81,12 @@ public class BudgetsController : BaseAuthenticatedController
 
         budget.Limit = request.Limit;
         budget.UpdatedAt = DateTime.UtcNow;
+        budget.UpdatedByUsername = Username;
 
         await _budgetRepository.UpdateAsync(budget);
         await _budgetRepository.SaveChangesAsync();
 
-        return Ok(new BudgetDto(
-            budget.Id,
-            budget.CategoryId,
-            budget.Category?.Name ?? "N/A",
-            budget.Limit,
-            budget.Spent,
-            budget.Limit - budget.Spent,
-            budget.PercentageUsed,
-            budget.Month,
-            budget.Year,
-            budget.ShouldAlert
-        ));
+        return Ok(MapToDto(budget));
     }
 
     [HttpDelete("{id}")]
@@ -131,4 +101,10 @@ public class BudgetsController : BaseAuthenticatedController
 
         return NoContent();
     }
+
+    private static BudgetDto MapToDto(Budget b) => new(
+        b.Id, b.CategoryId, b.Category?.Name ?? "N/A", b.Limit, b.Spent,
+        b.Limit - b.Spent, b.PercentageUsed, b.Month, b.Year, b.ShouldAlert,
+        b.CreatedByUsername, b.CreatedAt, b.UpdatedByUsername, b.UpdatedAt
+    );
 }

@@ -13,7 +13,11 @@ public record SubscriptionDto(
     DateTime? NextBillingDate,
     int UsageCount,
     bool IsLowUsage,
-    bool IsActive
+    bool IsActive,
+    string CreatedByUsername,
+    DateTime CreatedAt,
+    string? UpdatedByUsername,
+    DateTime? UpdatedAt
 );
 
 public record CreateSubscriptionRequest(

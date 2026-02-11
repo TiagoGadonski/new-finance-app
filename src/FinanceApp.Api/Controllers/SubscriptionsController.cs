@@ -35,19 +35,7 @@ public class SubscriptionsController : BaseAuthenticatedController
             s => s.FamilyId == FamilyId,
             s => s.Category);
 
-        var dtos = subscriptions.Select(s => new SubscriptionDto(
-            s.Id,
-            s.Name,
-            s.CategoryId,
-            s.Category?.Name ?? "N/A",
-            s.Amount,
-            s.BillingDay,
-            s.Status,
-            s.NextBillingDate,
-            s.UsageCount,
-            s.IsLowUsage,
-            s.Status == Domain.Enums.SubscriptionStatus.Active
-        )).ToList();
+        var dtos = subscriptions.Select(MapToDto).ToList();
 
         return Ok(dtos);
     }
@@ -72,7 +60,8 @@ public class SubscriptionsController : BaseAuthenticatedController
             Status = Domain.Enums.SubscriptionStatus.Active,
             NextBillingDate = CalculateNextBillingDate(request.BillingDay),
             UsageCount = 0,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            CreatedByUsername = Username
         };
 
         await _subscriptionRepository.AddAsync(subscription);
@@ -103,21 +92,7 @@ public class SubscriptionsController : BaseAuthenticatedController
         // Buscar a subscription criada com a categoria incluída
         var createdSubscription = await _subscriptionRepository.GetByIdAsync(subscription.Id, s => s.Category);
 
-        var dto = new SubscriptionDto(
-            createdSubscription!.Id,
-            createdSubscription.Name,
-            createdSubscription.CategoryId,
-            createdSubscription.Category?.Name ?? "N/A",
-            createdSubscription.Amount,
-            createdSubscription.BillingDay,
-            createdSubscription.Status,
-            createdSubscription.NextBillingDate,
-            createdSubscription.UsageCount,
-            createdSubscription.IsLowUsage,
-            createdSubscription.Status == Domain.Enums.SubscriptionStatus.Active
-        );
-
-        return Ok(dto);
+        return Ok(MapToDto(createdSubscription!));
     }
 
     [HttpGet("{id}")]
@@ -127,21 +102,7 @@ public class SubscriptionsController : BaseAuthenticatedController
         if (subscription == null || subscription.FamilyId != FamilyId)
             return NotFound();
 
-        var dto = new SubscriptionDto(
-            subscription.Id,
-            subscription.Name,
-            subscription.CategoryId,
-            subscription.Category?.Name ?? "N/A",
-            subscription.Amount,
-            subscription.BillingDay,
-            subscription.Status,
-            subscription.NextBillingDate,
-            subscription.UsageCount,
-            subscription.IsLowUsage,
-            subscription.Status == Domain.Enums.SubscriptionStatus.Active
-        );
-
-        return Ok(dto);
+        return Ok(MapToDto(subscription));
     }
 
     [HttpPut("{id}")]
@@ -157,25 +118,12 @@ public class SubscriptionsController : BaseAuthenticatedController
         subscription.Status = request.Status;
         subscription.NextBillingDate = CalculateNextBillingDate(request.BillingDay);
         subscription.UpdatedAt = DateTime.UtcNow;
+        subscription.UpdatedByUsername = Username;
 
         await _subscriptionRepository.UpdateAsync(subscription);
         await _subscriptionRepository.SaveChangesAsync();
 
-        var dto = new SubscriptionDto(
-            subscription.Id,
-            subscription.Name,
-            subscription.CategoryId,
-            subscription.Category?.Name ?? "N/A",
-            subscription.Amount,
-            subscription.BillingDay,
-            subscription.Status,
-            subscription.NextBillingDate,
-            subscription.UsageCount,
-            subscription.IsLowUsage,
-            subscription.Status == Domain.Enums.SubscriptionStatus.Active
-        );
-
-        return Ok(dto);
+        return Ok(MapToDto(subscription));
     }
 
     [HttpDelete("{id}")]
@@ -215,21 +163,7 @@ public class SubscriptionsController : BaseAuthenticatedController
         await _subscriptionRepository.UpdateAsync(subscription);
         await _subscriptionRepository.SaveChangesAsync();
 
-        var dto = new SubscriptionDto(
-            subscription.Id,
-            subscription.Name,
-            subscription.CategoryId,
-            subscription.Category?.Name ?? "N/A",
-            subscription.Amount,
-            subscription.BillingDay,
-            subscription.Status,
-            subscription.NextBillingDate,
-            subscription.UsageCount,
-            subscription.IsLowUsage,
-            subscription.Status == Domain.Enums.SubscriptionStatus.Active
-        );
-
-        return Ok(dto);
+        return Ok(MapToDto(subscription));
     }
 
     [HttpPost("process-billings")]
@@ -239,6 +173,13 @@ public class SubscriptionsController : BaseAuthenticatedController
         var processedCount = await _mediator.Send(command);
         return Ok(new { processedCount, message = $"{processedCount} assinatura(s) processada(s) com sucesso" });
     }
+
+    private static SubscriptionDto MapToDto(Subscription s) => new(
+        s.Id, s.Name, s.CategoryId, s.Category?.Name ?? "N/A", s.Amount, s.BillingDay,
+        s.Status, s.NextBillingDate, s.UsageCount, s.IsLowUsage,
+        s.Status == Domain.Enums.SubscriptionStatus.Active,
+        s.CreatedByUsername, s.CreatedAt, s.UpdatedByUsername, s.UpdatedAt
+    );
 
     private DateTime CalculateNextBillingDate(int billingDay)
     {

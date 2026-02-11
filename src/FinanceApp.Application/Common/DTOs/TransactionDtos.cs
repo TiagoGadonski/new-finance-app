@@ -16,7 +16,11 @@ public record TransactionDto(
     string CategoryName,
     int? InstallmentCount,
     int? CurrentInstallment,
-    Guid? ParentTransactionId
+    Guid? ParentTransactionId,
+    string CreatedByUsername,
+    DateTime CreatedAt,
+    string? UpdatedByUsername,
+    DateTime? UpdatedAt
 );
 
 public record CreateTransactionRequest(

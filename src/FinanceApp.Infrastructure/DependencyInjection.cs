@@ -38,7 +38,12 @@ public static class DependencyInjection
         // Services
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IClassificationService, ClassificationService>();
+        services.AddScoped<INotificationService, NotificationService>();
+        services.AddScoped<ICurrencyService, CurrencyService>();
         services.AddScoped<Application.Common.Interfaces.ICurrentUserService, CurrentUserService>();
+
+        // HttpClient for CurrencyService
+        services.AddHttpClient("CurrencyApi");
 
         return services;
     }

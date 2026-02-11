@@ -25,4 +25,7 @@ public class Family : BaseEntity
     public WorkCalendarSettings? WorkCalendarSettings { get; set; }
     public ICollection<WorkDay> WorkDays { get; set; } = new List<WorkDay>();
     public ICollection<Holiday> Holidays { get; set; } = new List<Holiday>();
+    public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+    public ICollection<TransactionTemplate> TransactionTemplates { get; set; } = new List<TransactionTemplate>();
+    public ICollection<Investment> Investments { get; set; } = new List<Investment>();
 }

@@ -26,38 +26,23 @@ public class AccountsController : BaseAuthenticatedController
             Type = request.Type,
             Balance = request.InitialBalance,
             Color = request.Color,
+            Currency = request.Currency,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            CreatedByUsername = Username
         };
 
         await _accountRepository.AddAsync(account);
         await _accountRepository.SaveChangesAsync();
 
-        return Ok(new AccountDto(
-            account.Id,
-            account.Name,
-            account.Type,
-            account.Balance,
-            account.Color,
-            account.IsActive
-        ));
+        return Ok(MapToDto(account));
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AccountDto>>> GetAll()
     {
         var accounts = await _accountRepository.FindAsync(a => a.FamilyId == FamilyId);
-
-        var accountDtos = accounts.Select(a => new AccountDto(
-            a.Id,
-            a.Name,
-            a.Type,
-            a.Balance,
-            a.Color,
-            a.IsActive
-        ));
-
-        return Ok(accountDtos);
+        return Ok(accounts.Select(MapToDto));
     }
 
     [HttpGet("{id}")]
@@ -67,14 +52,7 @@ public class AccountsController : BaseAuthenticatedController
         if (account == null || account.FamilyId != FamilyId)
             return NotFound();
 
-        return Ok(new AccountDto(
-            account.Id,
-            account.Name,
-            account.Type,
-            account.Balance,
-            account.Color,
-            account.IsActive
-        ));
+        return Ok(MapToDto(account));
     }
 
     [HttpPut("{id}")]
@@ -87,19 +65,15 @@ public class AccountsController : BaseAuthenticatedController
         account.Name = request.Name;
         account.Color = request.Color;
         account.IsActive = request.IsActive;
+        if (request.Currency != null)
+            account.Currency = request.Currency;
         account.UpdatedAt = DateTime.UtcNow;
+        account.UpdatedByUsername = Username;
 
         await _accountRepository.UpdateAsync(account);
         await _accountRepository.SaveChangesAsync();
 
-        return Ok(new AccountDto(
-            account.Id,
-            account.Name,
-            account.Type,
-            account.Balance,
-            account.Color,
-            account.IsActive
-        ));
+        return Ok(MapToDto(account));
     }
 
     [HttpDelete("{id}")]
@@ -114,4 +88,9 @@ public class AccountsController : BaseAuthenticatedController
 
         return NoContent();
     }
+
+    private static AccountDto MapToDto(Account a) => new(
+        a.Id, a.Name, a.Type, a.Balance, a.Color, a.Currency, a.IsActive,
+        a.CreatedByUsername, a.CreatedAt, a.UpdatedByUsername, a.UpdatedAt
+    );
 }

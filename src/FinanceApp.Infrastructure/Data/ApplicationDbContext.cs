@@ -28,6 +28,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<WorkCalendarSettings> WorkCalendarSettings => Set<WorkCalendarSettings>();
     public DbSet<WorkDay> WorkDays => Set<WorkDay>();
     public DbSet<Holiday> Holidays => Set<Holiday>();
+    public DbSet<Notification> Notifications => Set<Notification>();
+    public DbSet<TransactionTemplate> TransactionTemplates => Set<TransactionTemplate>();
+    public DbSet<CurrencyRate> CurrencyRates => Set<CurrencyRate>();
+    public DbSet<Investment> Investments => Set<Investment>();
+    public DbSet<InvestmentTransaction> InvestmentTransactions => Set<InvestmentTransaction>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -69,6 +74,7 @@ public class ApplicationDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
             entity.Property(e => e.Balance).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.Currency).IsRequired().HasMaxLength(10).HasDefaultValue("BRL");
 
             entity.HasOne(e => e.Family)
                 .WithMany(f => f.Accounts)
@@ -383,6 +389,102 @@ public class ApplicationDbContext : DbContext
             entity.HasOne(e => e.Family)
                 .WithMany(f => f.Holidays)
                 .HasForeignKey(e => e.FamilyId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Notification
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
+            entity.Property(e => e.Link).HasMaxLength(500);
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Notifications)
+                .HasForeignKey(e => e.FamilyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasIndex(e => new { e.FamilyId, e.IsRead });
+        });
+
+        // TransactionTemplate
+        modelBuilder.Entity<TransactionTemplate>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Amount).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.Description).HasMaxLength(500);
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.TransactionTemplates)
+                .HasForeignKey(e => e.FamilyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Account)
+                .WithMany()
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.Category)
+                .WithMany()
+                .HasForeignKey(e => e.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // CurrencyRate
+        modelBuilder.Entity<CurrencyRate>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.FromCurrency).IsRequired().HasMaxLength(10);
+            entity.Property(e => e.ToCurrency).IsRequired().HasMaxLength(10);
+            entity.Property(e => e.Rate).HasColumnType("decimal(18,8)");
+            entity.Property(e => e.Source).HasMaxLength(100);
+
+            entity.HasIndex(e => new { e.FromCurrency, e.ToCurrency, e.Date });
+        });
+
+        // Investment
+        modelBuilder.Entity<Investment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Symbol).HasMaxLength(20);
+            entity.Property(e => e.Quantity).HasColumnType("decimal(18,8)");
+            entity.Property(e => e.AveragePrice).HasColumnType("decimal(18,8)");
+            entity.Property(e => e.CurrentPrice).HasColumnType("decimal(18,8)");
+            entity.Property(e => e.Currency).IsRequired().HasMaxLength(10).HasDefaultValue("BRL");
+
+            entity.HasOne(e => e.Family)
+                .WithMany(f => f.Investments)
+                .HasForeignKey(e => e.FamilyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Account)
+                .WithMany()
+                .HasForeignKey(e => e.AccountId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
+        });
+
+        // InvestmentTransaction
+        modelBuilder.Entity<InvestmentTransaction>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Quantity).HasColumnType("decimal(18,8)");
+            entity.Property(e => e.Price).HasColumnType("decimal(18,8)");
+            entity.Property(e => e.Fees).HasColumnType("decimal(18,2)");
+
+            entity.HasOne(e => e.Investment)
+                .WithMany(i => i.InvestmentTransactions)
+                .HasForeignKey(e => e.InvestmentId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }

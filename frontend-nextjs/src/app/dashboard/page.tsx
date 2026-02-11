@@ -52,6 +52,7 @@ export default function DashboardPage() {
     recentTransactions,
     monthlySubscriptions,
     totalDebts,
+    totalDebtPayments,
     activeGoals,
     totalMonthlyCommitments
   } = useMemo(() => {
@@ -92,6 +93,10 @@ export default function DashboardPage() {
     // Get active goals
     const activeGoals = goals?.filter(g => g.status === 0) || []; // InProgress = 0
 
+    // Calculate total debt monthly payments
+    const totalDebtPayments = debts
+      ?.reduce((sum, d) => sum + d.minimumPayment, 0) || 0;
+
     // Total monthly commitments (subscriptions + average expense)
     const totalMonthlyCommitments = monthlySubscriptions + monthlyExpense;
 
@@ -102,6 +107,7 @@ export default function DashboardPage() {
       recentTransactions,
       monthlySubscriptions,
       totalDebts,
+      totalDebtPayments,
       activeGoals,
       totalMonthlyCommitments
     };
@@ -138,6 +144,11 @@ export default function DashboardPage() {
                 <p className="text-3xl font-bold animate-scaleIn" style={{ color: 'var(--foreground)' }}>
                   {formatCurrency(totalBalance)}
                 </p>
+                {accounts && accounts.some(a => a.currency && a.currency !== 'BRL') && (
+                  <p className="text-xs mt-1 opacity-50" style={{ color: 'var(--foreground)' }}>
+                    Inclui contas em moeda estrangeira
+                  </p>
+                )}
               </div>
             </div>
           </Card>
@@ -214,8 +225,8 @@ export default function DashboardPage() {
               Resumo Financeiro Consolidado
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Monthly Subscriptions */}
-              <Link href="/subscriptions" className="block">
+              {/* Monthly Subscriptions + Debt Payments */}
+              <Link href="/monthly-bills" className="block">
                 <div className="p-4 rounded-lg border-2 border-transparent hover:border-purple-200 dark:hover:border-purple-800 transition-all cursor-pointer group"
                      style={{ backgroundColor: 'var(--background-secondary)' }}>
                   <div className="flex items-center justify-between mb-2">
@@ -226,16 +237,16 @@ export default function DashboardPage() {
                   </div>
                   <p className="text-sm opacity-70 mb-1" style={{ color: 'var(--foreground)' }}>Despesas Fixas</p>
                   <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                    {formatCurrency(monthlySubscriptions)}
+                    {formatCurrency(monthlySubscriptions + totalDebtPayments)}
                   </p>
                   <p className="text-xs opacity-60 mt-1" style={{ color: 'var(--foreground)' }}>
-                    {subscriptions?.filter(s => s.isActive).length || 0} assinaturas ativas
+                    {subscriptions?.filter(s => s.isActive).length || 0} assinaturas + {debts?.length || 0} dívidas
                   </p>
                 </div>
               </Link>
 
               {/* Total Debts */}
-              <Link href="/debts" className="block">
+              <Link href="/monthly-bills" className="block">
                 <div className="p-4 rounded-lg border-2 border-transparent hover:border-orange-200 dark:hover:border-orange-800 transition-all cursor-pointer group"
                      style={{ backgroundColor: 'var(--background-secondary)' }}>
                   <div className="flex items-center justify-between mb-2">

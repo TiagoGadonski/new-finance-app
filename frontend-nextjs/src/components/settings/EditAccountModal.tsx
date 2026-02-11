@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Modal, Button, Input } from '@/components/ui';
+import { Modal, Button, Input, Select } from '@/components/ui';
 import { accountsApi } from '@/lib/api';
 import { UpdateAccountRequest, AccountDto } from '@/types';
 import toast from 'react-hot-toast';
@@ -20,6 +20,7 @@ export function EditAccountModal({ account, isOpen, onClose }: EditAccountModalP
       name: account.name,
       color: account.color || '#3b82f6',
       isActive: account.isActive,
+      currency: account.currency || 'BRL',
     },
   });
 
@@ -47,6 +48,20 @@ export function EditAccountModal({ account, isOpen, onClose }: EditAccountModalP
           {...register('name', { required: 'Nome é obrigatório' })}
           error={errors.name?.message}
         />
+
+        <div>
+          <label className="block text-sm font-medium mb-1" style={{ color: 'var(--foreground)' }}>Moeda</label>
+          <select
+            {...register('currency')}
+            className="w-full rounded-lg border px-3 py-2 text-sm"
+            style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)', borderColor: 'var(--border-color)' }}
+          >
+            <option value="BRL">BRL - Real Brasileiro</option>
+            <option value="USD">USD - Dólar Americano</option>
+            <option value="EUR">EUR - Euro</option>
+            <option value="GBP">GBP - Libra Esterlina</option>
+          </select>
+        </div>
 
         <Input
           label="Cor"

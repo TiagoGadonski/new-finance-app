@@ -10,3 +10,6 @@ export * from './Toast';
 export * from './ConfirmDialog';
 export * from './Skeleton';
 export * from './EmptyState';
+export * from './Tabs';
+export * from './Pagination';
+export * from './CurrencyDisplay';

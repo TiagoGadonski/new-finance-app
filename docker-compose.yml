@@ -3,17 +3,17 @@ version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: financeapp-postgres
+    container_name: orbit-postgres
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
-      POSTGRES_DB: ${DB_NAME:-financeapp}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required - create a .env file}
+      POSTGRES_DB: ${DB_NAME:-orbit}
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - financeapp-network
+      - orbit-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -22,13 +22,13 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: financeapp-redis
+    container_name: orbit-redis
     ports:
       - "6379:6379"
     volumes:
       - redis-data:/data
     networks:
-      - financeapp-network
+      - orbit-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -39,26 +39,29 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: financeapp-api
+    container_name: orbit-api
     ports:
       - "5000:8080"
       - "5001:8081"
     environment:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${DB_NAME:-financeapp};Username=${DB_USER:-postgres};Password=${DB_PASSWORD:-postgres}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${DB_NAME:-orbit};Username=${DB_USER:-postgres};Password=${DB_PASSWORD:?DB_PASSWORD is required}
       - ConnectionStrings__Redis=redis:6379
-      - JwtSettings__SecretKey=${JWT_SECRET_KEY:-your-super-secret-key-change-this-in-production-minimum-32-characters-required}
-      - JwtSettings__Issuer=${JWT_ISSUER:-FinanceApp}
-      - JwtSettings__Audience=${JWT_AUDIENCE:-FinanceAppUsers}
-      - SEED_ADMIN_PASSWORD=${SEED_ADMIN_PASSWORD:-Admin@123456}
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY:?JWT_SECRET_KEY is required - minimum 32 characters}
+      - JwtSettings__Issuer=${JWT_ISSUER:-Orbit}
+      - JwtSettings__Audience=${JWT_AUDIENCE:-OrbitUsers}
+      - SEED_ADMIN_PASSWORD=${SEED_ADMIN_PASSWORD:?SEED_ADMIN_PASSWORD is required}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
+      - AlertEvaluation__IntervalHours=${ALERT_EVAL_INTERVAL:-6}
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     networks:
-      - financeapp-network
+      - orbit-network
     volumes:
       - ./logs:/app/logs
 
@@ -68,18 +71,18 @@ services:
       dockerfile: Dockerfile
       args:
         - NEXT_PUBLIC_API_URL=http://localhost:5000/api
-    container_name: financeapp-frontend
+    container_name: orbit-frontend
     ports:
       - "3000:3000"
     depends_on:
       - api
     networks:
-      - financeapp-network
+      - orbit-network
 
 volumes:
   postgres-data:
   redis-data:
 
 networks:
-  financeapp-network:
+  orbit-network:
     driver: bridge

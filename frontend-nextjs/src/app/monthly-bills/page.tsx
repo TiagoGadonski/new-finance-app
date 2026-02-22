@@ -6,7 +6,7 @@ import { subscriptionsApi, debtsApi, reportsApi } from '@/lib/api';
 import { Card, LoadingSpinner, Badge, Tabs, Button } from '@/components/ui';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { formatCurrency } from '@/lib/utils/currency';
-import { Receipt, CreditCard, Wallet, ArrowRight, CheckCircle, Clock, RefreshCw } from 'lucide-react';
+import { Receipt, CreditCard, Wallet, ArrowRight, CheckCircle, Clock, RefreshCw, CircleDollarSign } from 'lucide-react';
 import Link from 'next/link';
 import type { SubscriptionDto, DebtDto } from '@/types';
 import toast from 'react-hot-toast';
@@ -27,6 +27,28 @@ export default function MonthlyBillsPage() {
     },
   });
 
+  const markSubPaidMutation = useMutation({
+    mutationFn: subscriptionsApi.markPaid,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
+      toast.success('Assinatura marcada como paga!');
+    },
+    onError: () => {
+      toast.error('Erro ao marcar como paga');
+    },
+  });
+
+  const markDebtPaidMutation = useMutation({
+    mutationFn: debtsApi.markPaid,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['debts'] });
+      toast.success('Parcela marcada como paga!');
+    },
+    onError: () => {
+      toast.error('Erro ao marcar parcela como paga');
+    },
+  });
+
   const { data: subscriptions, isLoading: subsLoading } = useQuery({
     queryKey: ['subscriptions'],
     queryFn: subscriptionsApi.getAll,
@@ -39,23 +61,17 @@ export default function MonthlyBillsPage() {
 
   const isLoading = subsLoading || debtsLoading;
 
-  const { activeSubscriptions, totalSubscriptions, totalDebtPayments, debtCount } = useMemo(() => {
+  const { activeSubscriptions, totalSubscriptions, activeDebts, totalDebtPayments, debtCount } = useMemo(() => {
     const activeSubscriptions = subscriptions?.filter(s => s.isActive) || [];
     const totalSubscriptions = activeSubscriptions.reduce((sum, s) => sum + s.amount, 0);
-    const totalDebtPayments = debts?.reduce((sum, d) => sum + d.minimumPayment, 0) || 0;
-    const debtCount = debts?.length || 0;
+    const activeDebts = debts?.filter(d => !d.isSettled) || [];
+    const totalDebtPayments = activeDebts.reduce((sum, d) => sum + d.minimumPayment, 0);
+    const debtCount = activeDebts.length;
 
-    return { activeSubscriptions, totalSubscriptions, totalDebtPayments, debtCount };
+    return { activeSubscriptions, totalSubscriptions, activeDebts, totalDebtPayments, debtCount };
   }, [subscriptions, debts]);
 
   const totalMonthly = totalSubscriptions + totalDebtPayments;
-
-  const isPaid = (nextBillingDate: string) => {
-    const next = new Date(nextBillingDate);
-    const today = new Date();
-    // If next billing date is in the future beyond this month, it's paid for this month
-    return next.getMonth() > today.getMonth() || next.getFullYear() > today.getFullYear();
-  };
 
   if (isLoading) {
     return (
@@ -90,15 +106,15 @@ export default function MonthlyBillsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           <Card className="card-hover group animate-fadeIn">
             <div className="relative p-6 overflow-hidden">
-              <div className="absolute inset-0 opacity-5" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }} />
+              <div className="absolute inset-0 opacity-5" style={{ background: 'linear-gradient(135deg, #10b981 0%, #8b5cf6 100%)' }} />
               <div className="relative">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-medium opacity-70" style={{ color: 'var(--foreground)' }}>Total Mensal</p>
-                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                    <Wallet className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg">
+                    <Wallet className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
                 </div>
-                <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                <p className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">
                   {formatCurrency(totalMonthly)}
                 </p>
                 <p className="text-xs opacity-60 mt-1" style={{ color: 'var(--foreground)' }}>
@@ -170,7 +186,7 @@ export default function MonthlyBillsPage() {
                 </h3>
                 <Link
                   href="/subscriptions"
-                  className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium flex items-center gap-1 transition-colors"
+                  className="text-sm text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium flex items-center gap-1 transition-colors"
                 >
                   Gerenciar Assinaturas
                   <ArrowRight className="w-4 h-4" />
@@ -182,7 +198,6 @@ export default function MonthlyBillsPage() {
                   {[...activeSubscriptions]
                     .sort((a, b) => a.billingDay - b.billingDay)
                     .map((sub, index) => {
-                      const paid = isPaid(sub.nextBillingDate);
                       const nextDate = new Date(sub.nextBillingDate);
 
                       return (
@@ -209,13 +224,23 @@ export default function MonthlyBillsPage() {
                           </div>
                           <div className="flex items-center gap-3 ml-3">
                             <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                              paid
+                              sub.isPaidThisMonth
                                 ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
                                 : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
                             }`}>
-                              {paid ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                              {paid ? 'Pago' : 'Pendente'}
+                              {sub.isPaidThisMonth ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                              {sub.isPaidThisMonth ? 'Pago' : 'Pendente'}
                             </span>
+                            {!sub.isPaidThisMonth && (
+                              <button
+                                onClick={() => markSubPaidMutation.mutate(sub.id)}
+                                disabled={markSubPaidMutation.isPending}
+                                className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors"
+                                title="Marcar como Pago"
+                              >
+                                <CircleDollarSign className="w-4 h-4" />
+                              </button>
+                            )}
                             <p className="font-bold text-lg" style={{ color: 'var(--foreground)' }}>
                               {formatCurrency(sub.amount)}
                             </p>
@@ -243,16 +268,16 @@ export default function MonthlyBillsPage() {
                 </h3>
                 <Link
                   href="/debts"
-                  className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium flex items-center gap-1 transition-colors"
+                  className="text-sm text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium flex items-center gap-1 transition-colors"
                 >
                   Gerenciar Dívidas
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
 
-              {debts && debts.length > 0 ? (
+              {activeDebts.length > 0 ? (
                 <div className="space-y-3">
-                  {debts.map((debt, index) => {
+                  {activeDebts.map((debt, index) => {
                     const progress = debt.totalAmount
                       ? ((debt.totalAmount - debt.remainingAmount) / debt.totalAmount) * 100
                       : null;
@@ -283,13 +308,33 @@ export default function MonthlyBillsPage() {
                               </div>
                             </div>
                           </div>
-                          <div className="text-right ml-3">
-                            <p className="font-bold text-lg" style={{ color: 'var(--foreground)' }}>
-                              {formatCurrency(debt.minimumPayment)}
-                            </p>
-                            <p className="text-xs opacity-60" style={{ color: 'var(--foreground)' }}>
-                              Restante: {formatCurrency(debt.remainingAmount)}
-                            </p>
+                          <div className="flex items-center gap-3 ml-3">
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                              debt.isPaidThisMonth
+                                ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                                : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                            }`}>
+                              {debt.isPaidThisMonth ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                              {debt.isPaidThisMonth ? 'Pago' : 'Pendente'}
+                            </span>
+                            {!debt.isPaidThisMonth && (
+                              <button
+                                onClick={() => markDebtPaidMutation.mutate(debt.id)}
+                                disabled={markDebtPaidMutation.isPending}
+                                className="p-1.5 rounded-lg text-emerald-600 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors"
+                                title="Marcar Parcela Paga"
+                              >
+                                <CircleDollarSign className="w-4 h-4" />
+                              </button>
+                            )}
+                            <div className="text-right">
+                              <p className="font-bold text-lg" style={{ color: 'var(--foreground)' }}>
+                                {formatCurrency(debt.minimumPayment)}
+                              </p>
+                              <p className="text-xs opacity-60" style={{ color: 'var(--foreground)' }}>
+                                Restante: {formatCurrency(debt.remainingAmount)}
+                              </p>
+                            </div>
                           </div>
                         </div>
 

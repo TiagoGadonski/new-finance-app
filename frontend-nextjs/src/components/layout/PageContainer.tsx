@@ -10,7 +10,7 @@ interface PageContainerProps {
 export function PageContainer({ children, title, subtitle, description }: PageContainerProps) {
   return (
     <div className="w-full">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {(title || subtitle || description) && (
           <div className="mb-6 sm:mb-8">
             {title && (

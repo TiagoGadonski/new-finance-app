@@ -45,7 +45,7 @@ export const UpcomingBills = memo(function UpcomingBills({ subscriptions, daysAh
           </h3>
           <Link
             href="/monthly-bills"
-            className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+            className="text-sm text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
           >
             Ver assinaturas
           </Link>
@@ -71,7 +71,7 @@ export const UpcomingBills = memo(function UpcomingBills({ subscriptions, daysAh
         </div>
         <Link
           href="/monthly-bills"
-          className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+          className="text-sm text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
         >
           Ver todas
         </Link>
@@ -93,12 +93,12 @@ export const UpcomingBills = memo(function UpcomingBills({ subscriptions, daysAh
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <div
-                  className={`p-2 rounded-lg ${isUrgent ? 'bg-rose-100 dark:bg-rose-900/20' : 'bg-blue-100 dark:bg-blue-900/20'}`}
+                  className={`p-2 rounded-lg ${isUrgent ? 'bg-rose-100 dark:bg-rose-900/20' : 'bg-emerald-100 dark:bg-emerald-900/20'}`}
                 >
                   {isUrgent ? (
                     <AlertCircle className="w-5 h-5 text-rose-600" />
                   ) : (
-                    <Calendar className="w-5 h-5 text-blue-600" />
+                    <Calendar className="w-5 h-5 text-emerald-600" />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">

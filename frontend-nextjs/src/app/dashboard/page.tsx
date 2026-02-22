@@ -133,12 +133,12 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           <Card className="card-hover group cursor-pointer animate-fadeIn">
             <div className="relative p-6 overflow-hidden">
-              <div className="absolute inset-0 opacity-5" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }} />
+              <div className="absolute inset-0 opacity-5" style={{ background: 'linear-gradient(135deg, #10b981 0%, #8b5cf6 100%)' }} />
               <div className="relative">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm font-medium opacity-70" style={{ color: 'var(--foreground)' }}>Saldo Total</p>
-                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all">
-                    <Wallet className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all">
+                    <Wallet className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
                 </div>
                 <p className="text-3xl font-bold animate-scaleIn" style={{ color: 'var(--foreground)' }}>
@@ -295,12 +295,12 @@ export default function DashboardPage() {
                   <div className={`p-2 rounded-lg ${
                     monthlyIncome > 0 && (totalMonthlyCommitments / monthlyIncome) > 0.7
                       ? 'bg-red-100 dark:bg-red-900/30'
-                      : 'bg-blue-100 dark:bg-blue-900/30'
+                      : 'bg-emerald-100 dark:bg-emerald-900/30'
                   }`}>
                     <AlertCircle className={`w-5 h-5 ${
                       monthlyIncome > 0 && (totalMonthlyCommitments / monthlyIncome) > 0.7
                         ? 'text-red-600 dark:text-red-400'
-                        : 'text-blue-600 dark:text-blue-400'
+                        : 'text-emerald-600 dark:text-emerald-400'
                     }`} />
                   </div>
                 </div>
@@ -308,7 +308,7 @@ export default function DashboardPage() {
                 <p className={`text-2xl font-bold ${
                   monthlyIncome > 0 && (totalMonthlyCommitments / monthlyIncome) > 0.7
                     ? 'text-red-600 dark:text-red-400'
-                    : 'text-blue-600 dark:text-blue-400'
+                    : 'text-emerald-600 dark:text-emerald-400'
                 }`}>
                   {monthlyIncome > 0
                     ? `${((totalMonthlyCommitments / monthlyIncome) * 100).toFixed(0)}%`
@@ -336,8 +336,8 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold" style={{ color: 'var(--foreground)' }}>Contas</h2>
               <Link
-                href="/accounts"
-                className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium flex items-center gap-1 transition-colors"
+                href="/settings"
+                className="text-sm text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium flex items-center gap-1 transition-colors"
               >
                 Ver todas
                 <ArrowRight className="w-4 h-4" />
@@ -385,7 +385,7 @@ export default function DashboardPage() {
                 description="Comece criando sua primeira conta para gerenciar suas finanças"
                 action={{
                   label: "Criar Conta",
-                  onClick: () => window.location.href = '/accounts'
+                  onClick: () => window.location.href = '/settings'
                 }}
               />
             )}
@@ -399,7 +399,7 @@ export default function DashboardPage() {
               <h2 className="text-xl font-bold" style={{ color: 'var(--foreground)' }}>Transações Recentes</h2>
               <Link
                 href="/transactions"
-                className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium flex items-center gap-1 transition-colors"
+                className="text-sm text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 font-medium flex items-center gap-1 transition-colors"
               >
                 Ver todas
                 <ArrowRight className="w-4 h-4" />

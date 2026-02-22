@@ -107,7 +107,7 @@ export function NotificationDropdown() {
 
       {open && (
         <div
-          className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-y-auto rounded-xl shadow-xl border z-50"
+          className="absolute left-0 bottom-full mb-2 w-80 max-h-96 overflow-y-auto rounded-xl shadow-xl border z-50"
           style={{ backgroundColor: 'var(--background)', borderColor: 'var(--border-color)' }}
         >
           <div className="flex items-center justify-between p-3 border-b" style={{ borderColor: 'var(--border-color)' }}>
@@ -115,7 +115,7 @@ export function NotificationDropdown() {
             {unreadCount > 0 && (
               <button
                 onClick={() => markAllRead.mutate()}
-                className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                className="text-xs text-emerald-600 hover:text-emerald-800 flex items-center gap-1"
               >
                 <CheckCheck className="w-3 h-3" />
                 Marcar todas
@@ -138,7 +138,7 @@ export function NotificationDropdown() {
                   onClick={() => handleNotificationClick(n)}
                   className={clsx(
                     'flex items-start gap-3 p-3 border-b cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors',
-                    !n.isRead && 'bg-blue-50/50 dark:bg-blue-900/10'
+                    !n.isRead && 'bg-emerald-50/50 dark:bg-emerald-900/10'
                   )}
                   style={{ borderColor: 'var(--border-color)' }}
                 >
@@ -154,10 +154,10 @@ export function NotificationDropdown() {
                     {!n.isRead && (
                       <button
                         onClick={(e) => { e.stopPropagation(); markRead.mutate(n.id); }}
-                        className="p-1 rounded hover:bg-blue-100 dark:hover:bg-blue-900/30"
+                        className="p-1 rounded hover:bg-emerald-100 dark:hover:bg-emerald-900/30"
                         title="Marcar como lida"
                       >
-                        <Check className="w-3 h-3 text-blue-500" />
+                        <Check className="w-3 h-3 text-emerald-500" />
                       </button>
                     )}
                     <button

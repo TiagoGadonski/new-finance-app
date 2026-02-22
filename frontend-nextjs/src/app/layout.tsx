@@ -14,9 +14,17 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FinanceApp - Gestão Financeira",
+  title: "Orbit - Gestão Financeira",
   description: "Sistema de gestão financeira com MEI tracking e listas de compras",
   manifest: "/manifest.json",
+  icons: {
+    icon: [
+      { url: "/orbit-logo.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icon-192.png", sizes: "192x192" },
+    ],
+  },
   robots: {
     index: false,
     follow: false,
@@ -30,7 +38,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "FinanceApp",
+    title: "Orbit",
   },
 };
 
@@ -40,8 +48,8 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#3b82f6" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0f1e" },
+    { media: "(prefers-color-scheme: light)", color: "#4ade80" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c1a12" },
   ],
 };
 

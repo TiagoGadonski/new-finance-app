@@ -42,7 +42,7 @@ export function EditBudgetModal({ budget, isOpen, onClose }: EditBudgetModalProp
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Editar Orçamento">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+        <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-sm text-emerald-800">
           Categoria: <strong>{budget.categoryName}</strong>
         </div>
 

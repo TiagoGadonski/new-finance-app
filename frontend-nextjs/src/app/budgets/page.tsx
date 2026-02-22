@@ -208,7 +208,7 @@ export default function BudgetsPage() {
                         size="sm"
                         onClick={() => setEditingBudget(budget)}
                       >
-                        <Edit2 className="w-4 h-4 text-blue-600" />
+                        <Edit2 className="w-4 h-4 text-emerald-600" />
                       </Button>
                       <Button
                         variant="ghost"
@@ -280,7 +280,7 @@ export default function BudgetsPage() {
         title="Novo Orçamento"
       >
         <form onSubmit={handleCreateBudget} className="space-y-4">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-sm text-emerald-800">
             Orçamento para: <strong>{monthNames[selectedMonth - 1]} de {selectedYear}</strong>
           </div>
 

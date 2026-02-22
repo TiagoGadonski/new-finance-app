@@ -16,7 +16,7 @@ export function LoadingSpinner({ size = 'md', className }: LoadingSpinnerProps) 
     <div className={clsx('flex items-center justify-center', className)}>
       <div
         className={clsx(
-          'animate-spin rounded-full border-b-2 border-blue-600',
+          'animate-spin rounded-full border-b-2 border-emerald-600',
           sizes[size]
         )}
       />

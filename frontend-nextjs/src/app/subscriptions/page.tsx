@@ -6,7 +6,7 @@ import { PageContainer } from '@/components/layout/PageContainer';
 import { subscriptionsApi, categoriesApi, accountsApi } from '@/lib/api';
 import { Card, Button, Modal, Input, Select, EmptyState, ListSkeleton, Badge, ConfirmDialog } from '@/components/ui';
 import { EditSubscriptionModal } from '@/components/subscriptions/EditSubscriptionModal';
-import { Plus, Trash2, Edit2, ToggleLeft, ToggleRight, Bell, Calendar, RefreshCw } from 'lucide-react';
+import { Plus, Trash2, Edit2, ToggleLeft, ToggleRight, Bell, Calendar, RefreshCw, CheckCircle, Clock, CircleDollarSign } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -66,6 +66,17 @@ export default function SubscriptionsPage() {
     },
     onError: () => {
       toast.error('Erro ao processar. Tente novamente.');
+    },
+  });
+
+  const markPaidMutation = useMutation({
+    mutationFn: subscriptionsApi.markPaid,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
+      toast.success('Assinatura marcada como paga!');
+    },
+    onError: () => {
+      toast.error('Erro ao marcar como paga');
     },
   });
 
@@ -175,8 +186,8 @@ export default function SubscriptionsPage() {
                   {formatCurrency(monthlyTotal)}
                 </p>
               </div>
-              <div className="p-3 bg-blue-50 rounded-xl">
-                <Bell className="w-6 h-6 text-blue-600" />
+              <div className="p-3 bg-emerald-50 rounded-xl">
+                <Bell className="w-6 h-6 text-emerald-600" />
               </div>
             </div>
           </Card>
@@ -232,6 +243,16 @@ export default function SubscriptionsPage() {
                         <Badge variant={subscription.isActive ? 'success' : 'default'}>
                           {subscription.isActive ? 'Ativa' : 'Inativa'}
                         </Badge>
+                        {subscription.isActive && (
+                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                            subscription.isPaidThisMonth
+                              ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                              : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                          }`}>
+                            {subscription.isPaidThisMonth ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                            {subscription.isPaidThisMonth ? 'Pago' : 'Pendente'}
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-slate-600">
                         <div className="flex items-center gap-1">
@@ -254,12 +275,23 @@ export default function SubscriptionsPage() {
                         <p className="text-xs text-slate-500">por mês</p>
                       </div>
                       <div className="flex flex-col gap-2">
+                        {subscription.isActive && !subscription.isPaidThisMonth && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => markPaidMutation.mutate(subscription.id)}
+                            disabled={markPaidMutation.isPending}
+                            title="Marcar como Pago"
+                          >
+                            <CircleDollarSign className="w-4 h-4 text-emerald-600" />
+                          </Button>
+                        )}
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setEditingSubscription(subscription)}
                         >
-                          <Edit2 className="w-4 h-4 text-blue-600" />
+                          <Edit2 className="w-4 h-4 text-emerald-600" />
                         </Button>
                         <Button
                           variant="secondary"

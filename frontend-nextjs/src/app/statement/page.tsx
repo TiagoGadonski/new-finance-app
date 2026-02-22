@@ -287,7 +287,7 @@ export default function StatementPage() {
                             {item.categoryName && <span>• {item.categoryName}</span>}
                             {item.accountName && <span>• {item.accountName}</span>}
                             {item.installmentInfo && (
-                              <span className="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium">
+                              <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-medium">
                                 Parcela {item.installmentInfo}
                               </span>
                             )}

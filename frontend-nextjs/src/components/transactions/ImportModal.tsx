@@ -35,10 +35,17 @@ export function ImportModal({ isOpen, onClose }: ImportModalProps) {
       return response.data;
     },
     onSuccess: (data: any) => {
-      const count = Array.isArray(data) ? data.length : 0;
       queryClient.invalidateQueries({ queryKey: ['transactions'] });
       queryClient.invalidateQueries({ queryKey: ['accounts'] });
-      toast.success(`${count} transações importadas com sucesso`);
+      const successCount = data.successCount ?? 0;
+      const errorCount = data.errorCount ?? 0;
+      if (errorCount > 0) {
+        const errorLines = (data.errors ?? []).slice(0, 5).map((e: any) => `Linha ${e.line}: ${e.error}`).join('\n');
+        toast.error(`${errorCount} erros na importação:\n${errorLines}`, { duration: 8000 });
+      }
+      if (successCount > 0) {
+        toast.success(`${successCount} transações importadas com sucesso`);
+      }
       onClose();
       resetState();
     },

@@ -15,7 +15,7 @@ const typeLabels: Record<number, string> = {
 };
 
 const typeColors: Record<number, string> = {
-  [InvestmentType.Stock]: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+  [InvestmentType.Stock]: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300',
   [InvestmentType.ETF]: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
   [InvestmentType.Fund]: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300',
   [InvestmentType.Crypto]: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
@@ -50,7 +50,7 @@ export function InvestmentCard({ investment, onEdit, onDelete }: Props) {
         </div>
         <div className="flex gap-1">
           <Button variant="ghost" size="sm" onClick={() => onEdit(investment)}>
-            <Pencil className="w-4 h-4 text-blue-500" />
+            <Pencil className="w-4 h-4 text-emerald-500" />
           </Button>
           <Button variant="ghost" size="sm" onClick={() => onDelete(investment.id)}>
             <Trash2 className="w-4 h-4 text-red-400" />

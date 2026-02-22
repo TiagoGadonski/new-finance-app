@@ -278,8 +278,8 @@ export function WorkCalendarContent() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             <Card padding="sm">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                  <CalendarDays className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
+                  <CalendarDays className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-500">Dias úteis</p>
@@ -415,7 +415,7 @@ export function WorkCalendarContent() {
                 >
                   <span
                     className={`text-xs sm:text-sm font-medium inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full ${
-                      isTodayDate ? 'bg-blue-600 text-white' : ''
+                      isTodayDate ? 'bg-emerald-600 text-white' : ''
                     }`}
                   >
                     {cell.day}
@@ -451,7 +451,7 @@ export function WorkCalendarContent() {
             Fim de semana
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded bg-blue-600" />
+            <span className="w-3 h-3 rounded bg-emerald-600" />
             Hoje
           </div>
         </div>
@@ -516,7 +516,7 @@ export function WorkCalendarContent() {
 
           {/* Holiday Form (inline) */}
           {showHolidayForm && (
-            <Card padding="sm" className="border-blue-200 dark:border-blue-800">
+            <Card padding="sm" className="border-emerald-200 dark:border-emerald-800">
               <div className="space-y-3">
                 <Input
                   label="Nome do feriado"
@@ -530,7 +530,7 @@ export function WorkCalendarContent() {
                       type="radio"
                       checked={holidayIsFixed}
                       onChange={() => setHolidayIsFixed(true)}
-                      className="accent-blue-600"
+                      className="accent-emerald-600"
                     />
                     Data fixa
                   </label>
@@ -539,7 +539,7 @@ export function WorkCalendarContent() {
                       type="radio"
                       checked={!holidayIsFixed}
                       onChange={() => setHolidayIsFixed(false)}
-                      className="accent-blue-600"
+                      className="accent-emerald-600"
                     />
                     Relativo à Páscoa
                   </label>

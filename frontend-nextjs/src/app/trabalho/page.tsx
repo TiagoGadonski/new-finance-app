@@ -136,10 +136,10 @@ function MeiTaxCalculator() {
         </Card>
         <Card className="p-4">
           <div className="flex items-center gap-2 mb-1">
-            <Calculator className="w-4 h-4 text-blue-500" />
+            <Calculator className="w-4 h-4 text-emerald-500" />
             <span className="text-xs font-medium" style={{ color: 'var(--muted-foreground)' }}>Total DAS Estimado</span>
           </div>
-          <p className="text-lg font-bold text-blue-600">{formatCurrency(totalDas)}</p>
+          <p className="text-lg font-bold text-emerald-600">{formatCurrency(totalDas)}</p>
         </Card>
         <Card className="p-4">
           <div className="flex items-center gap-2 mb-1">
@@ -179,7 +179,7 @@ function MeiTaxCalculator() {
                 </div>
                 <div className="text-right">
                   <span className="text-xs" style={{ color: 'var(--muted-foreground)' }}>DAS</span>
-                  <p className="text-sm font-medium text-blue-600">{formatCurrency(m.das)}</p>
+                  <p className="text-sm font-medium text-emerald-600">{formatCurrency(m.das)}</p>
                 </div>
                 <div className="text-right min-w-[60px]">
                   <span className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Vencimento</span>

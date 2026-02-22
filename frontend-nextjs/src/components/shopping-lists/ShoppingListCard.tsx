@@ -30,7 +30,7 @@ export function ShoppingListCard({ list, onDelete }: ShoppingListCardProps) {
       <CardContent className="pt-6">
         <div className="flex items-start justify-between mb-4">
           <Link href={`/shopping-lists/${list.id}`} className="flex-1">
-            <h3 className="text-lg font-semibold text-slate-900 hover:text-blue-600 transition-colors">
+            <h3 className="text-lg font-semibold text-slate-900 hover:text-emerald-600 transition-colors">
               {list.name}
             </h3>
           </Link>
@@ -66,7 +66,7 @@ export function ShoppingListCard({ list, onDelete }: ShoppingListCardProps) {
 
         <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mb-4">
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all"
+            className="bg-emerald-600 h-2 rounded-full transition-all"
             style={{ width: `${list.completionPercentage}%` }}
           />
         </div>

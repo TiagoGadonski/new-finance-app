@@ -162,7 +162,7 @@ export default function TransactionsPage() {
               <TrendingUp className="w-4 h-4 mr-2" />
               {showFilters ? 'Ocultar Filtros' : 'Filtros Avançados'}
               {hasActiveFilters && (
-                <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-600 text-white text-xs">
+                <span className="ml-2 px-2 py-0.5 rounded-full bg-emerald-600 text-white text-xs">
                   {Object.values(filters).filter(v => v && v !== 'all' && v !== 0 && v !== '').length}
                 </span>
               )}
@@ -322,7 +322,7 @@ export default function TransactionsPage() {
                         {transaction.categoryName && <span>• {transaction.categoryName}</span>}
                         {transaction.accountName && <span>• {transaction.accountName}</span>}
                         {transaction.installmentCount && transaction.currentInstallment && (
-                          <span className="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-medium">
+                          <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-medium">
                             Parcela {transaction.currentInstallment}/{transaction.installmentCount}
                           </span>
                         )}
@@ -341,7 +341,7 @@ export default function TransactionsPage() {
                         size="sm"
                         onClick={() => setEditingTransaction(transaction)}
                       >
-                        <Edit2 className="w-4 h-4 text-blue-600" />
+                        <Edit2 className="w-4 h-4 text-emerald-600" />
                       </Button>
                       <Button
                         variant="ghost"

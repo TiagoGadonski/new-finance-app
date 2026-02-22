@@ -44,7 +44,7 @@ export function CreateListModal({ isOpen, onClose }: CreateListModalProps) {
           </label>
           <textarea
             {...register('description')}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
             rows={3}
             placeholder="Descrição da lista..."
           />

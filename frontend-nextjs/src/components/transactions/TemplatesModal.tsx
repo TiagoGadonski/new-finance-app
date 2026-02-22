@@ -122,7 +122,7 @@ export function TemplatesModal({ isOpen, onClose, onApply }: TemplatesModalProps
               {templates.map((t) => (
                 <div key={t.id} className="flex items-center justify-between p-3 rounded-lg border" style={{ borderColor: 'var(--border-color)' }}>
                   <div className="flex items-center gap-3">
-                    <FileText className="w-5 h-5 text-blue-500" />
+                    <FileText className="w-5 h-5 text-emerald-500" />
                     <div>
                       <p className="font-medium text-sm" style={{ color: 'var(--foreground)' }}>{t.name}</p>
                       <p className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
@@ -135,7 +135,7 @@ export function TemplatesModal({ isOpen, onClose, onApply }: TemplatesModalProps
                       <Play className="w-4 h-4 text-green-500" />
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => startEdit(t)} title="Editar">
-                      <Pencil className="w-4 h-4 text-blue-500" />
+                      <Pencil className="w-4 h-4 text-emerald-500" />
                     </Button>
                     <Button variant="ghost" size="sm" onClick={() => deleteMutation.mutate(t.id)} title="Apagar">
                       <Trash2 className="w-4 h-4 text-red-400" />

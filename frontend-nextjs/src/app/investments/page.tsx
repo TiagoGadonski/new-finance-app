@@ -63,7 +63,7 @@ export default function InvestmentsPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <Card className="p-4">
             <div className="flex items-center gap-2 mb-1">
-              <DollarSign className="w-4 h-4 text-blue-500" />
+              <DollarSign className="w-4 h-4 text-emerald-500" />
               <span className="text-xs font-medium" style={{ color: 'var(--muted-foreground)' }}>Investido</span>
             </div>
             <p className="text-lg font-bold" style={{ color: 'var(--foreground)' }}>{formatCurrency(summary.totalInvested)}</p>

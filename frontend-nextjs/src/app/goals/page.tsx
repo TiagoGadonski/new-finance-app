@@ -137,12 +137,12 @@ export default function GoalsPage() {
             <div className="flex items-center justify-between p-6">
               <div>
                 <p className="text-sm font-medium text-slate-600">Metas Ativas</p>
-                <p className="mt-2 text-2xl sm:text-3xl font-bold text-blue-600">
+                <p className="mt-2 text-2xl sm:text-3xl font-bold text-emerald-600">
                   {activeGoals.length}
                 </p>
               </div>
-              <div className="p-3 bg-blue-50 rounded-xl">
-                <Target className="w-6 h-6 text-blue-600" />
+              <div className="p-3 bg-emerald-50 rounded-xl">
+                <Target className="w-6 h-6 text-emerald-600" />
               </div>
             </div>
           </Card>
@@ -200,7 +200,7 @@ export default function GoalsPage() {
                             size="sm"
                             onClick={() => setEditingGoal(goal)}
                           >
-                            <Edit2 className="w-4 h-4 text-blue-600" />
+                            <Edit2 className="w-4 h-4 text-emerald-600" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -224,7 +224,7 @@ export default function GoalsPage() {
                         </div>
                         <div className="w-full bg-slate-200 rounded-full h-3">
                           <div
-                            className="h-3 rounded-full bg-blue-600 transition-all"
+                            className="h-3 rounded-full bg-emerald-600 transition-all"
                             style={{ width: `${Math.min(goal.percentageAchieved, 100)}%` }}
                           />
                         </div>
@@ -360,7 +360,7 @@ export default function GoalsPage() {
         >
           <form onSubmit={handleContribute} className="space-y-4">
             {contributeGoal && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-2">
+              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Progresso atual:</span>
                   <span className="font-semibold">
@@ -369,7 +369,7 @@ export default function GoalsPage() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Falta:</span>
-                  <span className="font-semibold text-blue-700">
+                  <span className="font-semibold text-emerald-700">
                     {formatCurrency(contributeGoal.targetAmount - contributeGoal.currentAmount)}
                   </span>
                 </div>

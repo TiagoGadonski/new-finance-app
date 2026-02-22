@@ -6,21 +6,21 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY ["src/FinanceApp.Api/FinanceApp.Api.csproj", "src/FinanceApp.Api/"]
-COPY ["src/FinanceApp.Application/FinanceApp.Application.csproj", "src/FinanceApp.Application/"]
-COPY ["src/FinanceApp.Domain/FinanceApp.Domain.csproj", "src/FinanceApp.Domain/"]
-COPY ["src/FinanceApp.Infrastructure/FinanceApp.Infrastructure.csproj", "src/FinanceApp.Infrastructure/"]
+COPY ["src/Orbit.Api/Orbit.Api.csproj", "src/Orbit.Api/"]
+COPY ["src/Orbit.Application/Orbit.Application.csproj", "src/Orbit.Application/"]
+COPY ["src/Orbit.Domain/Orbit.Domain.csproj", "src/Orbit.Domain/"]
+COPY ["src/Orbit.Infrastructure/Orbit.Infrastructure.csproj", "src/Orbit.Infrastructure/"]
 
-RUN dotnet restore "src/FinanceApp.Api/FinanceApp.Api.csproj"
+RUN dotnet restore "src/Orbit.Api/Orbit.Api.csproj"
 
 COPY . .
-WORKDIR "/src/src/FinanceApp.Api"
-RUN dotnet build "FinanceApp.Api.csproj" -c Release -o /app/build
+WORKDIR "/src/src/Orbit.Api"
+RUN dotnet build "Orbit.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "FinanceApp.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Orbit.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "FinanceApp.Api.dll"]
+ENTRYPOINT ["dotnet", "Orbit.Api.dll"]

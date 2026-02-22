@@ -151,12 +151,12 @@ export const TransactionFilters = memo(function TransactionFilters({
         <div className="pt-2 border-t" style={{ borderColor: 'var(--border-color)' }}>
           <p className="text-sm opacity-70" style={{ color: 'var(--foreground)' }}>
             {filters.search && (
-              <span className="inline-flex items-center gap-1 mr-2 px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs">
+              <span className="inline-flex items-center gap-1 mr-2 px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs">
                 Busca: "{filters.search}"
               </span>
             )}
             {filters.type !== 'all' && (
-              <span className="inline-flex items-center gap-1 mr-2 px-2 py-1 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs">
+              <span className="inline-flex items-center gap-1 mr-2 px-2 py-1 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs">
                 Tipo: {filters.type === 'income' ? 'Receitas' : 'Despesas'}
               </span>
             )}

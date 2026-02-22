@@ -48,16 +48,24 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
 
         <div
           className={clsx(
-            'relative bg-white rounded-lg shadow-xl w-full',
+            'relative rounded-lg shadow-xl w-full',
             sizes[size]
           )}
+          style={{
+            backgroundColor: 'var(--card-bg)',
+            border: '1px solid var(--border-color)',
+          }}
         >
           {title && (
-            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+            <div
+              className="flex items-center justify-between p-6 border-b"
+              style={{ borderColor: 'var(--border-color)' }}
+            >
+              <h2 className="text-xl font-semibold" style={{ color: 'var(--foreground)' }}>{title}</h2>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="opacity-50 hover:opacity-80 transition-opacity"
+                style={{ color: 'var(--foreground)' }}
               >
                 <X className="w-5 h-5" />
               </button>

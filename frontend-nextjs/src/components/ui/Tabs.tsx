@@ -24,7 +24,7 @@ export const Tabs = memo(function Tabs({ tabs, activeTab, onChange }: TabsProps)
           className={clsx(
             'px-4 py-2 rounded-md text-sm font-medium transition-all',
             activeTab === tab.key
-              ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 shadow-sm'
+              ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 shadow-sm'
               : 'hover:bg-slate-100 dark:hover:bg-slate-700'
           )}
           style={activeTab !== tab.key ? { color: 'var(--foreground)' } : undefined}

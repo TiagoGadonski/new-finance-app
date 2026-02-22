@@ -7,12 +7,13 @@ import { accountsApi, categoriesApi } from '@/lib/api';
 import { Card, Button, Modal, Input, Select, EmptyState, Alert } from '@/components/ui';
 import { EditAccountModal } from '@/components/settings/EditAccountModal';
 import { EditCategoryModal } from '@/components/settings/EditCategoryModal';
+import { ClassificationRulesTab } from '@/components/settings/ClassificationRulesTab';
 import { Plus, Trash2, Edit2, Wallet, Tag, Circle } from 'lucide-react';
 import { CreateCategoryRequest, CreateAccountRequest, AccountType, TransactionType, AccountDto, CategoryDto } from '@/types';
 import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<'accounts' | 'categories'>('accounts');
+  const [activeTab, setActiveTab] = useState<'accounts' | 'categories' | 'rules'>('accounts');
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<AccountDto | null>(null);
@@ -139,7 +140,7 @@ export default function SettingsPage() {
             onClick={() => setActiveTab('accounts')}
             className={`px-4 py-2 font-medium transition-colors ${
               activeTab === 'accounts'
-                ? 'text-blue-600 border-b-2 border-blue-600'
+                ? 'text-emerald-600 border-b-2 border-emerald-600'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -149,11 +150,21 @@ export default function SettingsPage() {
             onClick={() => setActiveTab('categories')}
             className={`px-4 py-2 font-medium transition-colors ${
               activeTab === 'categories'
-                ? 'text-blue-600 border-b-2 border-blue-600'
+                ? 'text-emerald-600 border-b-2 border-emerald-600'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
             Categorias
+          </button>
+          <button
+            onClick={() => setActiveTab('rules')}
+            className={`px-4 py-2 font-medium transition-colors ${
+              activeTab === 'rules'
+                ? 'text-emerald-600 border-b-2 border-emerald-600'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Regras
           </button>
         </div>
 
@@ -175,8 +186,8 @@ export default function SettingsPage() {
                   <Card key={account.id} className="hover:shadow-lg transition-shadow">
                     <div className="flex items-center justify-between p-6">
                       <div className="flex items-center gap-4">
-                        <div className="p-3 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                          <Wallet className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                        <div className="p-3 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
+                          <Wallet className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                         </div>
                         <div>
                           <h3 className="font-semibold text-lg text-slate-900 dark:text-slate-100">
@@ -185,7 +196,7 @@ export default function SettingsPage() {
                           <p className="text-sm text-slate-600 dark:text-slate-400">
                             {accountTypeLabels[account.type]}
                             {account.currency && account.currency !== 'BRL' && (
-                              <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">{account.currency}</span>
+                              <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">{account.currency}</span>
                             )}
                           </p>
                         </div>
@@ -205,7 +216,7 @@ export default function SettingsPage() {
                           size="sm"
                           onClick={() => setEditingAccount(account)}
                         >
-                          <Edit2 className="w-4 h-4 text-blue-600" />
+                          <Edit2 className="w-4 h-4 text-emerald-600" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -327,6 +338,10 @@ export default function SettingsPage() {
               </>
             )}
           </div>
+        )}
+        {/* Rules Tab */}
+        {activeTab === 'rules' && (
+          <ClassificationRulesTab />
         )}
       </div>
 

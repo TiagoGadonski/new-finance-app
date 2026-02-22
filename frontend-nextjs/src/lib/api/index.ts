@@ -10,3 +10,8 @@ export * from './transactionTemplatesApi';
 export * from './currencyApi';
 export * from './reportsApi';
 export * from './investmentsApi';
+export * from './alertConfigurationsApi';
+export * from './classificationRulesApi';
+export * from './expenseSplitsApi';
+export * from './remindersApi';
+export * from './todosApi';

@@ -150,6 +150,11 @@ export const subscriptionsApi = {
     const response = await apiClient.post('/Subscriptions/process-billings');
     return response.data;
   },
+
+  markPaid: async (id: string): Promise<SubscriptionDto> => {
+    const response = await apiClient.patch<SubscriptionDto>(`/Subscriptions/${id}/mark-paid`);
+    return response.data;
+  },
 };
 
 // Goals
@@ -202,6 +207,11 @@ export const debtsApi = {
 
   simulate: async (data: DebtSimulationRequest): Promise<DebtSimulationResult> => {
     const response = await apiClient.post<DebtSimulationResult>('/Debts/simulate', data);
+    return response.data;
+  },
+
+  markPaid: async (id: string): Promise<DebtDto> => {
+    const response = await apiClient.patch<DebtDto>(`/Debts/${id}/mark-paid`);
     return response.data;
   },
 };

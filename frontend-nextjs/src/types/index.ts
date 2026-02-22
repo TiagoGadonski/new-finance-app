@@ -346,6 +346,7 @@ export interface SubscriptionDto {
   amount: number;
   billingDay: number;
   isActive: boolean;
+  isPaidThisMonth: boolean;
   nextBillingDate: string;
   categoryName?: string;
   createdByUsername: string;
@@ -412,6 +413,8 @@ export interface DebtDto {
   interestRate: number;
   minimumPayment: number;
   dueDate: string | null;
+  isPaidThisMonth: boolean;
+  isSettled: boolean;
   createdByUsername: string;
   createdAt: string;
   updatedByUsername: string | null;
@@ -633,4 +636,180 @@ export interface DuplicateTransactionGroupDto {
   description: string;
   amount: number;
   transactions: TransactionDto[];
+}
+
+// Alert Configurations
+export enum AlertType {
+  BudgetWarning = 'BudgetWarning',
+  BillDue = 'BillDue',
+  GoalNearTarget = 'GoalNearTarget',
+  NegativeBalance = 'NegativeBalance',
+  DebtDue = 'DebtDue',
+  LastBusinessDay = 'LastBusinessDay',
+}
+
+export enum AlertChannel {
+  InApp = 'InApp',
+  Telegram = 'Telegram',
+  Both = 'Both',
+}
+
+export interface AlertConfigurationDto {
+  id: string;
+  userId: string | null;
+  type: AlertType;
+  threshold: number | null;
+  isActive: boolean;
+  channel: AlertChannel;
+  cronSchedule: string | null;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
+}
+
+export interface CreateAlertConfigurationRequest {
+  type: AlertType;
+  threshold?: number | null;
+  channel?: AlertChannel;
+  cronSchedule?: string | null;
+}
+
+export interface UpdateAlertConfigurationRequest {
+  type: AlertType;
+  threshold: number | null;
+  isActive: boolean;
+  channel: AlertChannel;
+  cronSchedule: string | null;
+}
+
+// Classification Rules
+export interface ClassificationRuleDto {
+  id: string;
+  keyword: string;
+  categoryId: string;
+  categoryName: string;
+  priority: number;
+  isLearned: boolean;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
+}
+
+export interface CreateClassificationRuleRequest {
+  keyword: string;
+  categoryId: string;
+  priority?: number;
+  isLearned?: boolean;
+}
+
+export interface UpdateClassificationRuleRequest {
+  keyword: string;
+  categoryId: string;
+  priority: number;
+}
+
+export interface CategorySuggestionDto {
+  categoryId: string | null;
+  categoryName: string | null;
+  matchedKeyword: string | null;
+  confidence: number;
+}
+
+// Expense Splits
+export interface ExpenseSplitDto {
+  id: string;
+  transactionId: string | null;
+  totalAmount: number;
+  description: string;
+  items: ExpenseSplitItemDto[];
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
+}
+
+export interface ExpenseSplitItemDto {
+  id: string;
+  userId: string | null;
+  username: string;
+  amount: number;
+  isPaid: boolean;
+  paidAt: string | null;
+}
+
+export interface CreateExpenseSplitRequest {
+  transactionId?: string | null;
+  totalAmount: number;
+  description: string;
+  items: CreateExpenseSplitItemRequest[];
+}
+
+export interface CreateExpenseSplitItemRequest {
+  userId?: string | null;
+  username: string;
+  amount: number;
+}
+
+// Reminders
+export interface ReminderDto {
+  id: string;
+  name: string;
+  description: string | null;
+  month: number;
+  day: number;
+  isRecurring: boolean;
+  daysInAdvance: number;
+  isActive: boolean;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
+}
+
+export interface CreateReminderRequest {
+  name: string;
+  description?: string | null;
+  month: number;
+  day: number;
+  isRecurring?: boolean;
+  daysInAdvance?: number;
+}
+
+export interface UpdateReminderRequest {
+  name: string;
+  description: string | null;
+  month: number;
+  day: number;
+  isRecurring: boolean;
+  daysInAdvance: number;
+  isActive: boolean;
+}
+
+// Todos
+export interface TodoItemDto {
+  id: string;
+  title: string;
+  description: string | null;
+  dueDate: string | null;
+  isCompleted: boolean;
+  completedAt: string | null;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
+}
+
+export interface CreateTodoRequest {
+  title: string;
+  description?: string | null;
+  dueDate?: string | null;
+}
+
+export interface UpdateTodoRequest {
+  title: string;
+  description: string | null;
+  dueDate: string | null;
+  isCompleted: boolean;
 }

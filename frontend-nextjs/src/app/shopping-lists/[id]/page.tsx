@@ -156,7 +156,7 @@ export default function ShoppingListDetailPage() {
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3">
             <div
-              className="bg-blue-600 h-3 rounded-full transition-all"
+              className="bg-emerald-600 h-3 rounded-full transition-all"
               style={{ width: `${list.completionPercentage}%` }}
             />
           </div>

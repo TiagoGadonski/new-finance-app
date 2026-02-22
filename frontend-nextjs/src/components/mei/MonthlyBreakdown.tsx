@@ -44,7 +44,7 @@ export function MonthlyBreakdown({ months }: MonthlyBreakdownProps) {
                 return (
                   <tr
                     key={month.month}
-                    className={isCurrentMonth ? 'bg-blue-50' : ''}
+                    className={isCurrentMonth ? 'bg-emerald-50' : ''}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">

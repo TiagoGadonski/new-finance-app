@@ -6,15 +6,18 @@ import { PageContainer } from '@/components/layout/PageContainer';
 import { debtsApi } from '@/lib/api';
 import { Card, Button, Modal, Input, Select, EmptyState, ListSkeleton, Alert } from '@/components/ui';
 import { EditDebtModal } from '@/components/debts/EditDebtModal';
-import { Plus, Trash2, Edit2, CreditCard, Calculator, TrendingDown } from 'lucide-react';
+import { Plus, Trash2, Edit2, CreditCard, Calculator, TrendingDown, CheckCircle, Clock, CircleDollarSign } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/currency';
+import { Tabs, Badge } from '@/components/ui';
 import { CreateDebtRequest, DebtSimulationRequest, PaymentStrategy, DebtSimulationResult, DebtDto } from '@/types';
+import toast from 'react-hot-toast';
 
 export default function DebtsPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const [simulationResult, setSimulationResult] = useState<DebtSimulationResult | null>(null);
   const [editingDebt, setEditingDebt] = useState<DebtDto | null>(null);
+  const [debtTab, setDebtTab] = useState('active');
   const queryClient = useQueryClient();
 
   const { data: debts, isLoading: debtsLoading } = useQuery({
@@ -41,6 +44,17 @@ export default function DebtsPage() {
     mutationFn: debtsApi.simulate,
     onSuccess: (data) => {
       setSimulationResult(data);
+    },
+  });
+
+  const markPaidMutation = useMutation({
+    mutationFn: debtsApi.markPaid,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['debts'] });
+      toast.success('Parcela marcada como paga!');
+    },
+    onError: () => {
+      toast.error('Erro ao marcar parcela como paga');
     },
   });
 
@@ -185,10 +199,24 @@ export default function DebtsPage() {
           </div>
         )}
 
+        {/* Tabs */}
+        {debts && debts.length > 0 && (
+          <Tabs
+            tabs={[
+              { key: 'active', label: `Ativas (${debts.filter(d => !d.isSettled).length})` },
+              { key: 'settled', label: `Quitadas (${debts.filter(d => d.isSettled).length})` },
+            ]}
+            activeTab={debtTab}
+            onChange={setDebtTab}
+          />
+        )}
+
         {/* Debts List */}
         <div className="space-y-4">
           {debts && debts.length > 0 ? (
-            debts.map((debt) => {
+            debts
+              .filter(d => debtTab === 'active' ? !d.isSettled : d.isSettled)
+              .map((debt) => {
               const hasTotalAmount = debt.totalAmount != null && debt.totalAmount > 0;
               const percentagePaid = hasTotalAmount
                 ? ((debt.totalAmount! - debt.remainingAmount) / debt.totalAmount!) * 100
@@ -199,23 +227,49 @@ export default function DebtsPage() {
                   <div className="space-y-4 p-6">
                     <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-lg font-semibold text-slate-900">{debt.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-lg font-semibold text-slate-900">{debt.name}</h3>
+                          {debt.isSettled ? (
+                            <Badge variant="success">Quitada</Badge>
+                          ) : (
+                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                              debt.isPaidThisMonth
+                                ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                                : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+                            }`}>
+                              {debt.isPaidThisMonth ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                              {debt.isPaidThisMonth ? 'Pago este mês' : 'Pendente'}
+                            </span>
+                          )}
+                        </div>
                         <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-sm text-slate-600">
                           {debt.interestRate > 0 && <span>Taxa: {debt.interestRate}% a.m.</span>}
                           {debt.interestRate > 0 && <span>•</span>}
                           <span>Parcela: {formatCurrency(debt.minimumPayment)}/mês</span>
                           {!hasTotalAmount && (
-                            <span className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-700">Valor indeterminado</span>
+                            <span className="px-2 py-0.5 text-xs rounded-full bg-emerald-50 text-emerald-700">Valor indeterminado</span>
                           )}
                         </div>
                       </div>
                       <div className="flex gap-1 self-end sm:self-auto">
+                        {!debt.isSettled && !debt.isPaidThisMonth && (
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => markPaidMutation.mutate(debt.id)}
+                            disabled={markPaidMutation.isPending}
+                            title="Marcar Parcela Paga"
+                          >
+                            <CircleDollarSign className="w-4 h-4 mr-1 text-emerald-600" />
+                            <span className="text-xs">Pagar</span>
+                          </Button>
+                        )}
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setEditingDebt(debt)}
                         >
-                          <Edit2 className="w-4 h-4 text-blue-600" />
+                          <Edit2 className="w-4 h-4 text-emerald-600" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -420,10 +474,10 @@ export default function DebtsPage() {
               <h3 className="font-semibold text-lg text-slate-900">Resultado da Simulação</h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Card className="bg-blue-50 hover:shadow-lg transition-shadow">
+                <Card className="bg-emerald-50 hover:shadow-lg transition-shadow">
                   <div className="p-4">
                     <p className="text-sm text-slate-600">Tempo para quitar</p>
-                    <p className="text-2xl font-bold text-blue-700">
+                    <p className="text-2xl font-bold text-emerald-700">
                       {simulationResult.totalMonths} meses
                     </p>
                     <p className="text-xs text-slate-500 mt-1">

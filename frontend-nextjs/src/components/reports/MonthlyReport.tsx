@@ -64,7 +64,7 @@ export function MonthlyReport() {
             </Card>
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-1">
-                <DollarSign className="w-4 h-4 text-blue-500" />
+                <DollarSign className="w-4 h-4 text-emerald-500" />
                 <span className="text-xs font-medium" style={{ color: 'var(--muted-foreground)' }}>Saldo</span>
               </div>
               <p className={`text-lg font-bold ${report.balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>

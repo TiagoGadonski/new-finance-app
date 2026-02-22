@@ -25,8 +25,8 @@ export function MeiDashboard({ dashboard }: MeiDashboardProps) {
                   {formatCurrency(dashboard.currentRevenue)}
                 </p>
               </div>
-              <div className="bg-blue-100 p-3 rounded-lg">
-                <DollarSign className="w-6 h-6 text-blue-600" />
+              <div className="bg-emerald-100 p-3 rounded-lg">
+                <DollarSign className="w-6 h-6 text-emerald-600" />
               </div>
             </div>
           </CardContent>

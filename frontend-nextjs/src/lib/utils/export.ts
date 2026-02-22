@@ -162,7 +162,7 @@ export function printTransactions(transactions: TransactionDto[]) {
   printWindow.document.write(`
     <html>
       <head>
-        <title>Transações - FinanceApp</title>
+        <title>Transações - Orbit</title>
         <style>
           body {
             font-family: Arial, sans-serif;

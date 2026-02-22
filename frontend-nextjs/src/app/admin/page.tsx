@@ -124,8 +124,8 @@ export default function AdminPage() {
                   <tr key={user.id} className="hover:opacity-80 transition-opacity">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                          <UserIcon className="w-5 h-5 text-blue-600" />
+                        <div className="flex-shrink-0 h-10 w-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
+                          <UserIcon className="w-5 h-5 text-emerald-600" />
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>

@@ -35,7 +35,7 @@ export function CashFlowChart() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card className="p-4">
               <div className="flex items-center gap-2 mb-1">
-                <DollarSign className="w-4 h-4 text-blue-500" />
+                <DollarSign className="w-4 h-4 text-emerald-500" />
                 <span className="text-xs font-medium" style={{ color: 'var(--muted-foreground)' }}>Saldo Projetado</span>
               </div>
               <p className={`text-lg font-bold ${forecast.projectedBalance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
@@ -73,7 +73,7 @@ export function CashFlowChart() {
                 <XAxis dataKey="label" tick={{ fontSize: 12 }} />
                 <YAxis tickFormatter={(v) => formatCurrency(v)} tick={{ fontSize: 10 }} />
                 <Tooltip formatter={(value: any) => formatCurrency(Number(value))} />
-                <Line type="monotone" dataKey="balance" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} />
+                <Line type="monotone" dataKey="balance" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} />
               </LineChart>
             </ResponsiveContainer>
           </Card>

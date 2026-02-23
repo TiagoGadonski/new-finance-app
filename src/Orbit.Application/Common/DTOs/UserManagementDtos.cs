@@ -11,22 +11,26 @@ public record AdminUserDto(
     Guid FamilyId,
     string FamilyName,
     DateTime CreatedAt,
-    DateTime? UpdatedAt
+    DateTime? UpdatedAt,
+    bool IsMeiEnabled = false
 );
 
 // Request to create a new user (admin only)
+// If NewFamilyName is provided, a new family is created for this user.
+// Otherwise the user is added to the admin's own family.
 public record CreateUserRequest(
     string Name,
     string Username,
     string Password,
-    Guid FamilyId,
-    UserRole Role = UserRole.User
+    UserRole Role = UserRole.User,
+    string? NewFamilyName = null
 );
 
 // Request to update user details (admin only)
 public record UpdateUserRequest(
     string? Name = null,
-    UserRole? Role = null
+    UserRole? Role = null,
+    bool? IsMeiEnabled = null
 );
 
 // Request to change user password (admin only)

@@ -30,14 +30,8 @@ public class AdminUsersController : BaseAuthenticatedController
     {
         var users = await _userRepository.GetAllAsync(u => u.Family);
         var userDtos = users.Select(u => new AdminUserDto(
-            u.Id,
-            u.Name,
-            u.Username,
-            u.Role,
-            u.FamilyId,
-            u.Family.Name,
-            u.CreatedAt,
-            u.UpdatedAt
+            u.Id, u.Name, u.Username, u.Role, u.FamilyId, u.Family.Name,
+            u.CreatedAt, u.UpdatedAt, u.IsMeiEnabled
         ));
 
         return Ok(userDtos);
@@ -51,14 +45,8 @@ public class AdminUsersController : BaseAuthenticatedController
             return NotFound();
 
         return Ok(new AdminUserDto(
-            user.Id,
-            user.Name,
-            user.Username,
-            user.Role,
-            user.FamilyId,
-            user.Family.Name,
-            user.CreatedAt,
-            user.UpdatedAt
+            user.Id, user.Name, user.Username, user.Role, user.FamilyId,
+            user.Family.Name, user.CreatedAt, user.UpdatedAt, user.IsMeiEnabled
         ));
     }
 
@@ -89,15 +77,38 @@ public class AdminUsersController : BaseAuthenticatedController
         if (existingUser != null)
             return BadRequest(new { message = "Username already in use" });
 
-        // Use the admin's family
-        var family = await _familyRepository.GetByIdAsync(FamilyId);
-        if (family == null)
-            return BadRequest(new { message = "Family not found" });
+        Guid targetFamilyId;
+        string familyName;
+
+        if (!string.IsNullOrWhiteSpace(request.NewFamilyName))
+        {
+            // Create a new separate family for this user
+            var newFamily = new Orbit.Domain.Entities.Family
+            {
+                Id = Guid.NewGuid(),
+                Name = request.NewFamilyName.Trim(),
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _familyRepository.AddAsync(newFamily);
+            await _familyRepository.SaveChangesAsync();
+            targetFamilyId = newFamily.Id;
+            familyName = newFamily.Name;
+        }
+        else
+        {
+            // Add to admin's own family
+            var family = await _familyRepository.GetByIdAsync(FamilyId);
+            if (family == null)
+                return BadRequest(new { message = "Family not found" });
+            targetFamilyId = FamilyId;
+            familyName = family.Name;
+        }
 
         var user = new User
         {
             Id = Guid.NewGuid(),
-            FamilyId = FamilyId,
+            FamilyId = targetFamilyId,
             Name = request.Name,
             Username = request.Username,
             PasswordHash = _authService.HashPassword(request.Password),
@@ -111,7 +122,7 @@ public class AdminUsersController : BaseAuthenticatedController
         return CreatedAtAction(
             nameof(GetUserById),
             new { id = user.Id },
-            new AdminUserDto(user.Id, user.Name, user.Username, user.Role, user.FamilyId, family.Name, user.CreatedAt, user.UpdatedAt)
+            new AdminUserDto(user.Id, user.Name, user.Username, user.Role, user.FamilyId, familyName, user.CreatedAt, user.UpdatedAt)
         );
     }
 
@@ -134,13 +145,15 @@ public class AdminUsersController : BaseAuthenticatedController
             user.Name = request.Name;
         if (request.Role.HasValue)
             user.Role = request.Role.Value;
+        if (request.IsMeiEnabled.HasValue)
+            user.IsMeiEnabled = request.IsMeiEnabled.Value;
 
         user.UpdatedAt = DateTime.UtcNow;
 
         await _userRepository.UpdateAsync(user);
         await _userRepository.SaveChangesAsync();
 
-        return Ok(new AdminUserDto(user.Id, user.Name, user.Username, user.Role, user.FamilyId, user.Family.Name, user.CreatedAt, user.UpdatedAt));
+        return Ok(new AdminUserDto(user.Id, user.Name, user.Username, user.Role, user.FamilyId, user.Family.Name, user.CreatedAt, user.UpdatedAt, user.IsMeiEnabled));
     }
 
     [HttpDelete("{id}")]
@@ -219,14 +232,8 @@ public class AdminUsersController : BaseAuthenticatedController
             return NotFound();
 
         var userDtos = family.Users.Select(u => new AdminUserDto(
-            u.Id,
-            u.Name,
-            u.Username,
-            u.Role,
-            u.FamilyId,
-            family.Name,
-            u.CreatedAt,
-            u.UpdatedAt
+            u.Id, u.Name, u.Username, u.Role, u.FamilyId, family.Name,
+            u.CreatedAt, u.UpdatedAt, u.IsMeiEnabled
         )).ToList();
 
         return Ok(new FamilyDetailDto(

@@ -5,6 +5,7 @@ export interface AdminUserDto {
   familyId: string;
   familyName: string;
   role: 'User' | 'Admin';
+  isMeiEnabled: boolean;
   createdAt: string;
   updatedAt?: string;
 }
@@ -14,13 +15,13 @@ export interface CreateUserRequest {
   username: string;
   password: string;
   role: 'User' | 'Admin';
-  familyId?: string;
+  newFamilyName?: string; // if provided, creates a new family for this user
 }
 
 export interface UpdateUserRequest {
-  name: string;
-  username: string;
-  role: 'User' | 'Admin';
+  name?: string;
+  role?: 'User' | 'Admin';
+  isMeiEnabled?: boolean;
 }
 
 export interface ChangeUserPasswordRequest {

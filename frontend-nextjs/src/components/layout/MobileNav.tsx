@@ -37,7 +37,6 @@ const drawerSections = [
       { href: '/todos', label: 'Tarefas', icon: ListTodo },
       { href: '/alerts', label: 'Alertas', icon: Bell },
       { href: '/splits', label: 'Divisoes', icon: Scissors },
-      { href: '/trabalho', label: 'Trabalho', icon: Briefcase },
     ],
   },
   {
@@ -221,6 +220,28 @@ export function MobileNav() {
                   </div>
                 </div>
               ))}
+
+              {/* Trabalho — only for MEI-enabled users */}
+              {user?.isMeiEnabled && (
+                <div>
+                  <p className="px-3 mb-1.5 text-[11px] font-semibold uppercase tracking-wider opacity-50" style={{ color: 'var(--foreground)' }}>
+                    PJ / Trabalho
+                  </p>
+                  <Link
+                    href="/trabalho"
+                    className={clsx(
+                      'flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-all',
+                      pathname === '/trabalho'
+                        ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                        : 'hover:bg-emerald-50 dark:hover:bg-emerald-900/20'
+                    )}
+                    style={pathname !== '/trabalho' ? { color: 'var(--foreground)' } : undefined}
+                  >
+                    <Briefcase className="w-5 h-5 flex-shrink-0" />
+                    <span className="text-sm">Trabalho</span>
+                  </Link>
+                </div>
+              )}
 
               {/* Admin */}
               {user?.role === 'Admin' && (

@@ -15,4 +15,4 @@ public record AuthResponse(
     UserDto User
 );
 
-public record UserDto(Guid Id, string Name, string Username, UserRole Role, Guid FamilyId, string FamilyName);
+public record UserDto(Guid Id, string Name, string Username, UserRole Role, Guid FamilyId, string FamilyName, bool IsMeiEnabled = false);

@@ -33,6 +33,11 @@ public class User : BaseEntity
     /// </summary>
     public string? TelegramChatId { get; set; }
 
+    /// <summary>
+    /// Whether this user has access to the MEI (Microempreendedor Individual) module
+    /// </summary>
+    public bool IsMeiEnabled { get; set; } = false;
+
     // Navigation properties
     public Family Family { get; set; } = null!;
     // Note: All financial data navigation properties (Accounts, Transactions, etc.)

@@ -40,6 +40,7 @@ public static class DataSeeder
             Username = "tiago",
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
             Role = UserRole.Admin,
+            IsMeiEnabled = true,
             CreatedAt = DateTime.UtcNow
         };
         await context.Users.AddAsync(adminUser);

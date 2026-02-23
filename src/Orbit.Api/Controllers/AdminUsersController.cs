@@ -80,7 +80,16 @@ public class AdminUsersController : BaseAuthenticatedController
         Guid targetFamilyId;
         string familyName;
 
-        if (!string.IsNullOrWhiteSpace(request.NewFamilyName))
+        if (request.ExistingFamilyId.HasValue)
+        {
+            // Add to an existing family chosen by the admin
+            var existingFamily = await _familyRepository.GetByIdAsync(request.ExistingFamilyId.Value);
+            if (existingFamily == null)
+                return BadRequest(new { message = "Family not found" });
+            targetFamilyId = existingFamily.Id;
+            familyName = existingFamily.Name;
+        }
+        else if (!string.IsNullOrWhiteSpace(request.NewFamilyName))
         {
             // Create a new separate family for this user
             var newFamily = new Orbit.Domain.Entities.Family

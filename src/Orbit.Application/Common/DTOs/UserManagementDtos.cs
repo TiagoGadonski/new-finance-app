@@ -16,14 +16,14 @@ public record AdminUserDto(
 );
 
 // Request to create a new user (admin only)
-// If NewFamilyName is provided, a new family is created for this user.
-// Otherwise the user is added to the admin's own family.
+// Priority: ExistingFamilyId > NewFamilyName > admin's own family.
 public record CreateUserRequest(
     string Name,
     string Username,
     string Password,
     UserRole Role = UserRole.User,
-    string? NewFamilyName = null
+    string? NewFamilyName = null,
+    Guid? ExistingFamilyId = null
 );
 
 // Request to update user details (admin only)

@@ -15,7 +15,16 @@ export interface CreateUserRequest {
   username: string;
   password: string;
   role: 'User' | 'Admin';
-  newFamilyName?: string; // if provided, creates a new family for this user
+  newFamilyName?: string;    // creates a new family for this user
+  existingFamilyId?: string; // adds user to an existing family (takes priority over newFamilyName)
+}
+
+export interface FamilyDto {
+  id: string;
+  name: string;
+  isActive: boolean;
+  userCount: number;
+  createdAt: string;
 }
 
 export interface UpdateUserRequest {

@@ -3,7 +3,8 @@ import type {
   AdminUserDto,
   CreateUserRequest,
   UpdateUserRequest,
-  ChangeUserPasswordRequest
+  ChangeUserPasswordRequest,
+  FamilyDto,
 } from '@/types/admin';
 
 export const adminApi = {
@@ -39,5 +40,11 @@ export const adminApi = {
   // Change user password
   changeUserPassword: async (id: string, data: ChangeUserPasswordRequest): Promise<void> => {
     await apiClient.post(`/admin/users/${id}/change-password`, data);
+  },
+
+  // Get all families (for admin user creation)
+  getFamilies: async (): Promise<FamilyDto[]> => {
+    const response = await apiClient.get<FamilyDto[]>('/admin/users/families');
+    return response.data;
   },
 };

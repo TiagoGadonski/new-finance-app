@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Modal, Input, Select, Button, Alert } from '@/components/ui';
 import { adminApi, authApi } from '@/lib/api';
 import { Users } from 'lucide-react';
 import type { CreateUserRequest } from '@/types/admin';
 
 interface FormValues extends CreateUserRequest {
-  familyMode: 'mine' | 'new';
+  familyMode: 'mine' | 'new' | 'existing';
 }
 
 interface CreateUserModalProps {
@@ -26,6 +26,12 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
     const user = authApi.getUser();
     if (user?.familyName) setAdminFamilyName(user.familyName);
   }, []);
+
+  const { data: families = [] } = useQuery({
+    queryKey: ['admin', 'families'],
+    queryFn: () => adminApi.getFamilies(),
+    enabled: isOpen,
+  });
 
   const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<FormValues>({
     defaultValues: { role: 'User', familyMode: 'mine' },
@@ -47,10 +53,11 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
 
   const onSubmit = (data: FormValues) => {
     setError(null);
-    const { familyMode: _, newFamilyName, ...rest } = data;
+    const { familyMode: _, newFamilyName, existingFamilyId, ...rest } = data;
     createMutation.mutate({
       ...rest,
       newFamilyName: familyMode === 'new' ? newFamilyName : undefined,
+      existingFamilyId: familyMode === 'existing' ? existingFamilyId : undefined,
     });
   };
 
@@ -141,6 +148,38 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
                     })}
                     error={errors.newFamilyName?.message}
                   />
+                )}
+              </div>
+            </label>
+
+            <label className="flex items-start gap-3 p-3 rounded-lg cursor-pointer border transition-colors"
+              style={{
+                borderColor: familyMode === 'existing' ? 'var(--emerald-600, #059669)' : 'var(--border-color)',
+                backgroundColor: familyMode === 'existing' ? 'var(--background-secondary)' : 'transparent',
+              }}>
+              <input type="radio" value="existing" {...register('familyMode')} className="mt-0.5 accent-emerald-600" />
+              <div className="flex-1">
+                <p className="text-sm font-medium" style={{ color: 'var(--foreground)' }}>
+                  Família existente
+                </p>
+                <p className="text-xs opacity-60 mt-0.5" style={{ color: 'var(--foreground)' }}>
+                  Adicionar a uma família já cadastrada no sistema.
+                </p>
+                {familyMode === 'existing' && (
+                  <Select
+                    className="mt-2"
+                    {...register('existingFamilyId', {
+                      required: familyMode === 'existing' ? 'Selecione uma família' : false,
+                    })}
+                    error={errors.existingFamilyId?.message}
+                  >
+                    <option value="">Selecione uma família...</option>
+                    {families.map(f => (
+                      <option key={f.id} value={f.id}>
+                        {f.name} ({f.userCount} {f.userCount === 1 ? 'membro' : 'membros'})
+                      </option>
+                    ))}
+                  </Select>
                 )}
               </div>
             </label>

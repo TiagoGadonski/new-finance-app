@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Modal, Input, Select, Button, Alert } from '@/components/ui';
-import { adminApi } from '@/lib/api';
+import { adminApi, authApi } from '@/lib/api';
+import { Users } from 'lucide-react';
 import type { CreateUserRequest } from '@/types/admin';
 
 interface CreateUserModalProps {
@@ -15,6 +16,12 @@ interface CreateUserModalProps {
 export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
+  const [familyName, setFamilyName] = useState<string>('');
+
+  useEffect(() => {
+    const user = authApi.getUser();
+    if (user?.familyName) setFamilyName(user.familyName);
+  }, []);
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<CreateUserRequest>({
     defaultValues: {
@@ -42,6 +49,17 @@ export function CreateUserModal({ isOpen, onClose }: CreateUserModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Criar Novo Usuário" size="md">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* Family info banner */}
+        <div className="flex items-start gap-3 rounded-lg p-3 text-sm" style={{ backgroundColor: 'var(--background-secondary)' }}>
+          <Users className="w-4 h-4 mt-0.5 text-emerald-600 flex-shrink-0" />
+          <div style={{ color: 'var(--foreground)' }}>
+            <span className="font-medium">Família: {familyName || '—'}</span>
+            <p className="opacity-70 mt-0.5">
+              Este usuário será adicionado à sua família e terá acesso a todos os dados compartilhados (contas, transações, metas, etc).
+            </p>
+          </div>
+        </div>
+
         {error && <Alert variant="danger">{error}</Alert>}
 
         <Input

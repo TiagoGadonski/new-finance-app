@@ -28,6 +28,11 @@ public class User : BaseEntity
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpiry { get; set; }
 
+    /// <summary>
+    /// Telegram chat ID for personal notifications (e.g. family transaction alerts)
+    /// </summary>
+    public string? TelegramChatId { get; set; }
+
     // Navigation properties
     public Family Family { get; set; } = null!;
     // Note: All financial data navigation properties (Accounts, Transactions, etc.)

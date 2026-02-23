@@ -1,19 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PageContainer } from '@/components/layout/PageContainer';
-import { accountsApi, categoriesApi } from '@/lib/api';
+import { accountsApi, categoriesApi, userApi } from '@/lib/api';
 import { Card, Button, Modal, Input, Select, EmptyState, Alert } from '@/components/ui';
 import { EditAccountModal } from '@/components/settings/EditAccountModal';
 import { EditCategoryModal } from '@/components/settings/EditCategoryModal';
 import { ClassificationRulesTab } from '@/components/settings/ClassificationRulesTab';
-import { Plus, Trash2, Edit2, Wallet, Tag, Circle } from 'lucide-react';
+import { Plus, Trash2, Edit2, Wallet, Tag, Circle, MessageCircle, ExternalLink } from 'lucide-react';
 import { CreateCategoryRequest, CreateAccountRequest, AccountType, TransactionType, AccountDto, CategoryDto } from '@/types';
 import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
-  const [activeTab, setActiveTab] = useState<'accounts' | 'categories' | 'rules'>('accounts');
+  const [activeTab, setActiveTab] = useState<'accounts' | 'categories' | 'rules' | 'profile'>('accounts');
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<AccountDto | null>(null);
@@ -68,6 +68,27 @@ export default function SettingsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
     },
+  });
+
+  const [telegramInput, setTelegramInput] = useState('');
+  const { data: telegramData } = useQuery({
+    queryKey: ['user', 'telegram'],
+    queryFn: userApi.getTelegramChatId,
+  });
+
+  useEffect(() => {
+    if (telegramData?.telegramChatId !== undefined) {
+      setTelegramInput(telegramData.telegramChatId ?? '');
+    }
+  }, [telegramData]);
+
+  const setTelegramMutation = useMutation({
+    mutationFn: (chatId: string | null) => userApi.setTelegramChatId(chatId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user', 'telegram'] });
+      toast.success('Telegram configurado com sucesso!');
+    },
+    onError: () => toast.error('Erro ao salvar configuração do Telegram'),
   });
 
   const handleCreateAccount = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -165,6 +186,16 @@ export default function SettingsPage() {
             }`}
           >
             Regras
+          </button>
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`px-4 py-2 font-medium transition-colors ${
+              activeTab === 'profile'
+                ? 'text-emerald-600 border-b-2 border-emerald-600'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Perfil
           </button>
         </div>
 
@@ -342,6 +373,80 @@ export default function SettingsPage() {
         {/* Rules Tab */}
         {activeTab === 'rules' && (
           <ClassificationRulesTab />
+        )}
+
+        {/* Profile Tab */}
+        {activeTab === 'profile' && (
+          <div className="space-y-6">
+            <Card>
+              <div className="p-6 space-y-5">
+                <div className="flex items-center gap-3 mb-2">
+                  <MessageCircle className="w-5 h-5 text-emerald-600" />
+                  <h3 className="text-lg font-semibold" style={{ color: 'var(--foreground)' }}>
+                    Notificações via Telegram
+                  </h3>
+                </div>
+
+                <p className="text-sm" style={{ color: 'var(--foreground)', opacity: 0.7 }}>
+                  Configure seu Chat ID do Telegram para receber notificações quando membros da família registrarem transações, e para alertas e lembretes personalizados.
+                </p>
+
+                <div className="rounded-lg p-4 space-y-2 text-sm" style={{ backgroundColor: 'var(--background-secondary)', color: 'var(--foreground)' }}>
+                  <p className="font-medium">Como obter seu Chat ID:</p>
+                  <ol className="list-decimal list-inside space-y-1 opacity-80">
+                    <li>Abra o Telegram e busque por <strong>@userinfobot</strong></li>
+                    <li>Envie qualquer mensagem para o bot</li>
+                    <li>Copie o número em <strong>Id:</strong> e cole abaixo</li>
+                  </ol>
+                  <a
+                    href="https://t.me/userinfobot"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 mt-1 text-emerald-600 hover:underline"
+                  >
+                    Abrir @userinfobot <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+
+                {telegramData?.telegramChatId && (
+                  <Alert variant="success">
+                    Telegram configurado! Você receberá notificações neste chat.
+                  </Alert>
+                )}
+
+                <div className="flex gap-3 items-end">
+                  <div className="flex-1">
+                    <Input
+                      label="Telegram Chat ID"
+                      placeholder="Ex: 123456789"
+                      value={telegramInput}
+                      onChange={(e) => setTelegramInput(e.target.value)}
+                    />
+                  </div>
+                  <Button
+                    onClick={() => setTelegramMutation.mutate(telegramInput || null)}
+                    disabled={setTelegramMutation.isPending}
+                    className="mb-0.5"
+                  >
+                    {setTelegramMutation.isPending ? 'Salvando...' : 'Salvar'}
+                  </Button>
+                  {telegramData?.telegramChatId && (
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        setTelegramInput('');
+                        setTelegramMutation.mutate(null);
+                      }}
+                      disabled={setTelegramMutation.isPending}
+                      className="mb-0.5 text-red-500"
+                    >
+                      Remover
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </div>
         )}
       </div>
 

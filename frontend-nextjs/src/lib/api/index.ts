@@ -15,3 +15,4 @@ export * from './classificationRulesApi';
 export * from './expenseSplitsApi';
 export * from './remindersApi';
 export * from './todosApi';
+export * from './userApi';

@@ -2,6 +2,7 @@
 using Orbit.Application.Common.DTOs;
 using Orbit.Domain.Interfaces;
 using Orbit.Domain.Entities;
+using Orbit.Domain.Enums;
 using Orbit.Domain.Exceptions;
 
 namespace Orbit.Application.Features.Transactions.Commands;
@@ -17,20 +18,26 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
     private readonly IRepository<Transaction> _transactionRepository;
     private readonly IRepository<Account> _accountRepository;
     private readonly IRepository<Category> _categoryRepository;
+    private readonly IRepository<User> _userRepository;
     private readonly IClassificationService _classificationService;
+    private readonly ITelegramService _telegramService;
     private readonly IUnitOfWork _unitOfWork;
 
     public CreateTransactionCommandHandler(
         IRepository<Transaction> transactionRepository,
         IRepository<Account> accountRepository,
         IRepository<Category> categoryRepository,
+        IRepository<User> userRepository,
         IClassificationService classificationService,
+        ITelegramService telegramService,
         IUnitOfWork unitOfWork)
     {
         _transactionRepository = transactionRepository;
         _accountRepository = accountRepository;
         _categoryRepository = categoryRepository;
+        _userRepository = userRepository;
         _classificationService = classificationService;
+        _telegramService = telegramService;
         _unitOfWork = unitOfWork;
     }
 
@@ -98,6 +105,9 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
                     request.Request.Description,
                     request.Request.CategoryId);
 
+                // Notificar demais membros da família
+                await NotifyFamilyMembersAsync(request.FamilyId, request.Username, request.Request.Amount, request.Request.Type, request.Request.Description, category.Name, request.Request.InstallmentCount);
+
                 // Retornar a primeira parcela
                 return new TransactionDto(
                     parentId,
@@ -160,6 +170,9 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
                     request.Request.Description,
                     request.Request.CategoryId);
 
+                // Notificar demais membros da família
+                await NotifyFamilyMembersAsync(request.FamilyId, request.Username, transaction.Amount, transaction.Type, transaction.Description, category.Name, null);
+
                 return new TransactionDto(
                     transaction.Id,
                     transaction.AccountId,
@@ -186,6 +199,37 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         {
             await _unitOfWork.RollbackTransactionAsync(cancellationToken);
             throw;
+        }
+    }
+
+    private async Task NotifyFamilyMembersAsync(Guid familyId, string creatorUsername, decimal amount, TransactionType type, string description, string categoryName, int? installmentCount)
+    {
+        try
+        {
+            var familyMembers = await _userRepository.FindAsync(
+                u => u.FamilyId == familyId && u.Username != creatorUsername && u.TelegramChatId != null);
+
+            if (!familyMembers.Any()) return;
+
+            var typeLabel = type == TransactionType.Income ? "💰 Receita" : "💸 Despesa";
+            var amountStr = $"R$ {amount:N2}";
+            var installmentInfo = installmentCount.HasValue && installmentCount.Value > 1
+                ? $" (parcelado em {installmentCount}x)"
+                : "";
+
+            var message = $"{typeLabel} registrada por <b>@{creatorUsername}</b>\n" +
+                          $"📋 {description}\n" +
+                          $"🏷️ {categoryName}\n" +
+                          $"💵 {amountStr}{installmentInfo}";
+
+            foreach (var member in familyMembers)
+            {
+                await _telegramService.SendToAsync(message, member.TelegramChatId!);
+            }
+        }
+        catch
+        {
+            // Notificação é best-effort — não falha a transação
         }
     }
 }

@@ -34,6 +34,17 @@ public class TelegramService : ITelegramService
             return;
         }
 
+        await SendToAsync(message, _chatId!);
+    }
+
+    public async Task SendToAsync(string message, string chatId)
+    {
+        if (string.IsNullOrEmpty(_botToken))
+        {
+            _logger.LogWarning("Telegram bot token not configured.");
+            return;
+        }
+
         try
         {
             var client = _httpClientFactory.CreateClient("TelegramApi");
@@ -41,7 +52,7 @@ public class TelegramService : ITelegramService
 
             var payload = new
             {
-                chat_id = _chatId,
+                chat_id = chatId,
                 text = message,
                 parse_mode = "HTML"
             };
@@ -61,7 +72,7 @@ public class TelegramService : ITelegramService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send Telegram message");
+            _logger.LogError(ex, "Failed to send Telegram message to chat {ChatId}", chatId);
         }
     }
 }

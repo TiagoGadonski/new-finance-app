@@ -89,15 +89,15 @@ public class AdminUsersController : BaseAuthenticatedController
         if (existingUser != null)
             return BadRequest(new { message = "Username already in use" });
 
-        // Verify family exists
-        var family = await _familyRepository.GetByIdAsync(request.FamilyId);
+        // Use the admin's family
+        var family = await _familyRepository.GetByIdAsync(FamilyId);
         if (family == null)
             return BadRequest(new { message = "Family not found" });
 
         var user = new User
         {
             Id = Guid.NewGuid(),
-            FamilyId = request.FamilyId,
+            FamilyId = FamilyId,
             Name = request.Name,
             Username = request.Username,
             PasswordHash = _authService.HashPassword(request.Password),

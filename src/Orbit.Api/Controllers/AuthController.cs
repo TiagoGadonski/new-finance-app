@@ -41,4 +41,12 @@ public class AuthController : ControllerBase
         var result = await _mediator.Send(command);
         return Ok(result);
     }
+
+    [HttpPost("telegram")]
+    public async Task<ActionResult<AuthResponse>> TelegramAuth([FromBody] TelegramAuthRequest request)
+    {
+        var command = new TelegramAuthCommand(request.TelegramChatId, request.BotSecret);
+        var result = await _mediator.Send(command);
+        return Ok(result);
+    }
 }

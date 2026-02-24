@@ -4,6 +4,8 @@ namespace Orbit.Application.Common.DTOs;
 
 public record SignUpRequest(string Name, string Username, string Password, Guid? FamilyId = null);
 
+public record TelegramAuthRequest(string TelegramChatId, string BotSecret);
+
 public record LoginRequest(string Username, string Password);
 
 public record RefreshTokenRequest(string RefreshToken);

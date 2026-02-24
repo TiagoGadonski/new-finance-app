@@ -27,4 +27,11 @@ public class UserRepository : Repository<User>, IUserRepository
             .Include(u => u.Family)
             .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
     }
+
+    public async Task<User?> GetByTelegramChatIdAsync(string telegramChatId)
+    {
+        return await _dbSet
+            .Include(u => u.Family)
+            .FirstOrDefaultAsync(u => u.TelegramChatId == telegramChatId);
+    }
 }

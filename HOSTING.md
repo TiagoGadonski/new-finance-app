@@ -96,13 +96,22 @@ JWT_SECRET_KEY=sua-chave-secreta-unica-com-pelo-menos-32-caracteres-aqui
 # Senha do admin inicial
 SEED_ADMIN_PASSWORD=SuaSenhaAdmin123!
 
-# Telegram (opcional - para alertas proativos)
+# Telegram (para alertas proativos do backend)
 TELEGRAM_BOT_TOKEN=seu-bot-token
 TELEGRAM_CHAT_ID=seu-chat-id
 
 # Intervalo de avaliacao de alertas (horas)
 ALERT_EVAL_INTERVAL=6
+
+# StarBot - segredo compartilhado para autenticacao multi-usuario via bot
+# Gere com: openssl rand -hex 32
+# Deve ser o MESMO valor usado em FINANCE_BOT_SECRET no .env do StarBot
+BOT_SECRET=$(openssl rand -hex 32)
 EOF
+
+# Exibir o BOT_SECRET gerado (copie para o .env do StarBot!)
+echo "BOT_SECRET gerado:"
+grep BOT_SECRET .env
 ```
 
 ### Passo 7: Ajustar docker-compose para Producao
@@ -308,7 +317,7 @@ E rebuild: `docker compose up -d --build`
 
 ## Opcional: Deploy do StarBot na Mesma VPS
 
-Se quiser que o Telegram Bot tambem rode 24/7:
+Se quiser que o Telegram Bot tambem rode 24/7 com acesso multi-usuario ao Orbit:
 
 ```bash
 # Clonar StarBot
@@ -323,13 +332,23 @@ sudo apt install -y nodejs
 npm install
 npm run build
 
-# Configurar variaveis
+# Configurar variaveis (use o mesmo BOT_SECRET do .env do Orbit!)
 cat > .env << 'EOF'
 TELEGRAM_BOT_TOKEN=seu-bot-token
 ANTHROPIC_API_KEY=sua-api-key
+AI_MODEL=claude-sonnet-4-20250514
+
+# Integracao com Orbit - modo multi-usuario (recomendado)
+# Cada usuario do Telegram autentica automaticamente com sua propria conta Orbit
 FINANCE_API_URL=http://localhost:5000
-FINANCE_USERNAME=seu-usuario
-FINANCE_PASSWORD=sua-senha
+FINANCE_BOT_SECRET=mesmo-valor-do-BOT_SECRET-no-orbit-env
+
+# Opcional: modo single-user (fallback se nao usar multi-usuario)
+# FINANCE_USERNAME=seu-usuario
+# FINANCE_PASSWORD=sua-senha
+
+# TELEGRAM_ALLOWED_USERS nao e necessario quando FINANCE_BOT_SECRET esta configurado
+# O controle de acesso e feito automaticamente pelo Orbit (so entra quem tem ID cadastrado)
 EOF
 
 # Instalar PM2 para manter rodando
@@ -337,19 +356,39 @@ sudo npm install -g pm2
 
 # Iniciar com PM2
 pm2 start dist/cli/index.js --name starbot -- start
-
-# Configurar auto-start
-pm2 startup
 pm2 save
+
+# Configurar auto-start na reinicializacao do servidor
+pm2 startup
+# Execute o comando que o PM2 exibir (começa com "sudo env PATH=...")
 ```
+
+### Como adicionar um novo usuario ao bot
+
+1. O admin cria o usuario no painel **Configuracoes > Administracao**
+2. O usuario acessa o app e vai em **Perfil > Configuracoes**
+3. O usuario copia seu ID do Telegram (encontrado falando com @userinfobot no Telegram)
+4. O usuario cola o ID no campo **"ID do Telegram"** e salva
+5. Pronto — na proxima mensagem ao bot, ele ja estara autenticado automaticamente
 
 ### Comandos uteis do PM2
 
 ```bash
-pm2 status          # Ver status
-pm2 logs starbot    # Ver logs
-pm2 restart starbot # Reiniciar
-pm2 stop starbot    # Parar
+pm2 status                    # Ver status de todos os processos
+pm2 logs starbot              # Ver logs em tempo real
+pm2 logs starbot --lines 50   # Ver ultimas 50 linhas
+pm2 restart starbot           # Reiniciar o bot
+pm2 restart starbot --update-env  # Reiniciar e recarregar variaveis de ambiente
+pm2 stop starbot              # Parar o bot
+```
+
+### Atualizar o StarBot
+
+```bash
+cd ~/starbot
+git pull
+npm run build
+pm2 restart starbot
 ```
 
 ---

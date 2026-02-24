@@ -45,6 +45,9 @@ Orbit e uma plataforma pessoal que unifica financas, planejamento de trabalho, t
 
 ### Integracao
 - **StarBot** (Telegram Bot separado) - permite interagir com o Orbit via mensagens no Telegram
+  - Autenticacao multi-usuario: cada usuario ve apenas os dados da sua propria familia
+  - 15 ferramentas de IA: transacoes, contas, categorias, metas, dividas, orcamentos, tarefas, lembretes
+  - Veja [GUIA_BOT.md](GUIA_BOT.md) para o guia completo de uso
 
 ## Arquitetura
 
@@ -120,12 +123,16 @@ DB_NAME=orbit
 JWT_SECRET_KEY=sua-chave-secreta-com-pelo-menos-32-caracteres
 SEED_ADMIN_PASSWORD=Admin@123456
 
-# Telegram (para alertas proativos)
+# Telegram (para alertas proativos do backend)
 TELEGRAM_BOT_TOKEN=seu-bot-token
 TELEGRAM_CHAT_ID=seu-chat-id
 
 # Intervalo de avaliacao de alertas (horas)
 ALERT_EVAL_INTERVAL=6
+
+# StarBot - segredo compartilhado para autenticacao multi-usuario via Telegram
+# Deve ser o mesmo valor definido em FINANCE_BOT_SECRET no .env do StarBot
+BOT_SECRET=segredo-aleatorio-com-pelo-menos-32-caracteres
 ```
 
 ## Funcionalidades Detalhadas
@@ -183,6 +190,9 @@ Entrega: notificacao in-app e/ou Telegram (configuravel por alerta).
 - Todos os dados sao scoped por familia
 - Audit trail: quem criou/atualizou cada registro
 - Painel administrativo para gestao de usuarios
+- Cada usuario pode registrar seu **ID do Telegram** nas configuracoes de perfil
+- Autenticacao automatica no StarBot: basta ter o ID salvo (sem precisar de senha)
+- Admin pode criar usuarios em qualquer familia existente ou criar uma familia nova
 
 ### Outras Funcionalidades
 - **Dark mode** completo
@@ -198,7 +208,7 @@ A API possui **25 controllers** com os seguintes grupos:
 
 | Grupo | Prefixo | Operacoes |
 |-------|---------|-----------|
-| Auth | `/api/auth` | login, signup, refresh |
+| Auth | `/api/auth` | login, signup, refresh, **telegram** (auth via ID do Telegram) |
 | User | `/api/user` | profile |
 | Admin | `/api/admin/users` | list, create, update, delete users |
 | Accounts | `/api/accounts` | CRUD |

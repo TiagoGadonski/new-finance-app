@@ -269,8 +269,6 @@ orbit/
 
 ## Screenshots
 
-> Replace the placeholders below with actual screenshots.
-
 | Dashboard | Transactions |
 |---|---|
 | ![Dashboard](docs/screenshots/dashboard.png) | ![Transactions](docs/screenshots/transactions.png) |

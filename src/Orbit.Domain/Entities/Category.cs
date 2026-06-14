@@ -11,7 +11,6 @@ public class Category : AuditableEntity
     public string? Color { get; set; }
     public bool IsDefault { get; set; }
 
-    // Navigation properties
     public Family? Family { get; set; }
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     public ICollection<Budget> Budgets { get; set; } = new List<Budget>();

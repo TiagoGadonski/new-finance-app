@@ -82,7 +82,7 @@ export default function LoginPage() {
               <Input
                 label="Usuario"
                 type="text"
-                autoComplete="username"
+                autoComplete="off"
                 {...register('username', {
                   required: 'Usuario e obrigatorio',
                   minLength: {

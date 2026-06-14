@@ -32,6 +32,7 @@ public class DebtsController : BaseAuthenticatedController
             InterestRate = request.InterestRate,
             MinimumPayment = request.MinimumPayment,
             DueDate = request.DueDate,
+            InstallmentsRemaining = request.InstallmentsRemaining,
             CreatedAt = DateTime.UtcNow,
             CreatedByUsername = Username
         };
@@ -80,6 +81,7 @@ public class DebtsController : BaseAuthenticatedController
         debt.InterestRate = request.InterestRate;
         debt.MinimumPayment = request.MinimumPayment;
         debt.DueDate = request.DueDate;
+        debt.InstallmentsRemaining = request.InstallmentsRemaining;
         debt.UpdatedAt = DateTime.UtcNow;
         debt.UpdatedByUsername = Username;
 
@@ -126,7 +128,7 @@ public class DebtsController : BaseAuthenticatedController
         var isPaid = d.LastPaidAt.HasValue && d.LastPaidAt.Value.Month == now.Month && d.LastPaidAt.Value.Year == now.Year;
         return new DebtDto(
             d.Id, d.Name, d.TotalAmount, d.RemainingAmount, d.InterestRate,
-            d.MinimumPayment, d.DueDate,
+            d.MinimumPayment, d.DueDate, d.InstallmentsRemaining,
             isPaid, d.IsSettled,
             d.CreatedByUsername, d.CreatedAt, d.UpdatedByUsername, d.UpdatedAt
         );

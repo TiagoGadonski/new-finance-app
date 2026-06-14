@@ -9,7 +9,6 @@ public class ExpenseSplitItem : BaseEntity
     public bool IsPaid { get; set; }
     public DateTime? PaidAt { get; set; }
 
-    // Navigation properties
     public ExpenseSplit ExpenseSplit { get; set; } = null!;
     public User? User { get; set; }
 }

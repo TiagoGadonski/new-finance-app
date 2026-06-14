@@ -12,7 +12,6 @@ public class Notification : BaseEntity
     public bool IsRead { get; set; }
     public string? Link { get; set; }
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
     public User? User { get; set; }
 }

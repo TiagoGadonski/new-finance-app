@@ -38,6 +38,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<ExpenseSplitItem> ExpenseSplitItems => Set<ExpenseSplitItem>();
     public DbSet<Reminder> Reminders => Set<Reminder>();
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
+    public DbSet<RecurringIncome> RecurringIncomes => Set<RecurringIncome>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

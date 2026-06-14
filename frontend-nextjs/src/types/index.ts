@@ -813,3 +813,42 @@ export interface UpdateTodoRequest {
   dueDate: string | null;
   isCompleted: boolean;
 }
+
+export interface RecurringIncomeDto {
+  id: string;
+  description: string;
+  amount: number;
+  isActive: boolean;
+  createdByUsername: string | null;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
+}
+
+export interface CreateRecurringIncomeRequest {
+  description: string;
+  amount: number;
+}
+
+export interface UpdateRecurringIncomeRequest {
+  description: string;
+  amount: number;
+  isActive: boolean;
+}
+
+export interface MonthForecastDto {
+  month: string;
+  income: number;
+  fixedExpenses: number;
+  debtInstallments: number;
+  total: number;
+  surplus: number;
+  accumulatedBalance: number;
+  endingThisMonth: string[];
+}
+
+export interface BudgetForecastResultDto {
+  monthlyIncome: number;
+  recurringFixedTotal: number;
+  months: MonthForecastDto[];
+}

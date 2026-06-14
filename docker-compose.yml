@@ -71,7 +71,7 @@ services:
       context: ./frontend-nextjs
       dockerfile: Dockerfile
       args:
-        - NEXT_PUBLIC_API_URL=http://localhost:5000/api
+        - NEXT_PUBLIC_API_URL=http://177.71.243.236/api
     container_name: orbit-frontend
     ports:
       - "3000:3000"

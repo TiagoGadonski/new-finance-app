@@ -12,7 +12,6 @@ public class Account : AuditableEntity
     public string Currency { get; set; } = "BRL";
     public bool IsActive { get; set; } = true;
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }

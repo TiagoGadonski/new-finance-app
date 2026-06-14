@@ -9,7 +9,7 @@ public class Family : BaseEntity
     public string Name { get; set; } = string.Empty;
     public bool IsActive { get; set; } = true;
 
-    // Navigation properties - All financial data belongs to the family
+    // All financial data belongs to the family
     public ICollection<User> Users { get; set; } = new List<User>();
     public ICollection<Account> Accounts { get; set; } = new List<Account>();
     public ICollection<Category> Categories { get; set; } = new List<Category>();

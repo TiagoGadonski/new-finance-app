@@ -43,3 +43,4 @@ Thumbs.db
 # Docker
 docker-compose.override.yml
 nul
+scripts/seed-pessoal.http

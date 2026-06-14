@@ -10,6 +10,7 @@ public record DebtDto(
     decimal InterestRate,
     decimal MinimumPayment,
     DateTime? DueDate,
+    int? InstallmentsRemaining,
     bool IsPaidThisMonth,
     bool IsSettled,
     string CreatedByUsername,
@@ -24,7 +25,8 @@ public record CreateDebtRequest(
     decimal RemainingAmount,
     decimal InterestRate,
     decimal MinimumPayment,
-    DateTime? DueDate
+    DateTime? DueDate,
+    int? InstallmentsRemaining = null
 );
 
 public record UpdateDebtRequest(
@@ -33,7 +35,8 @@ public record UpdateDebtRequest(
     decimal RemainingAmount,
     decimal InterestRate,
     decimal MinimumPayment,
-    DateTime? DueDate
+    DateTime? DueDate,
+    int? InstallmentsRemaining = null
 );
 
 public record DebtSimulationRequest(

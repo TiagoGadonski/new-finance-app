@@ -11,7 +11,6 @@ public class Goal : AuditableEntity
     public DateTime TargetDate { get; set; }
     public GoalStatus Status { get; set; }
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
 
     public decimal PercentageAchieved => TargetAmount > 0 ? (CurrentAmount / TargetAmount) * 100 : 0;

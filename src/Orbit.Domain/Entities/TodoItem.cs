@@ -9,6 +9,5 @@ public class TodoItem : AuditableEntity
     public bool IsCompleted { get; set; }
     public DateTime? CompletedAt { get; set; }
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
 }

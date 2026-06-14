@@ -18,7 +18,10 @@ public static class DataSeeder
             // Table doesn't exist yet, continue with seeding
         }
 
-        var adminPassword = Environment.GetEnvironmentVariable("SEED_ADMIN_PASSWORD") ?? "Admin@123456";
+        var adminPassword = Environment.GetEnvironmentVariable("SEED_ADMIN_PASSWORD")
+            ?? throw new InvalidOperationException(
+                "SEED_ADMIN_PASSWORD environment variable is required. " +
+                "Set it before running the application for the first time.");
 
         // 1. Criar Family
         var defaultFamily = new Family

@@ -14,7 +14,6 @@ public class Investment : AuditableEntity
     public string Currency { get; set; } = "BRL";
     public Guid? AccountId { get; set; }
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
     public Account? Account { get; set; }
     public ICollection<InvestmentTransaction> InvestmentTransactions { get; set; } = new List<InvestmentTransaction>();

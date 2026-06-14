@@ -1,6 +1,5 @@
 namespace Orbit.Application.Common.DTOs;
 
-// Settings
 public record WorkCalendarSettingsDto(
     Guid Id,
     decimal HourlyRate,
@@ -12,7 +11,6 @@ public record CreateOrUpdateSettingsRequest(
     decimal HoursPerDay
 );
 
-// WorkDay
 public record WorkDayDto(
     Guid Id,
     DateTime Date,
@@ -23,7 +21,6 @@ public record ToggleWorkDayRequest(
     DateTime Date
 );
 
-// Holiday
 public record HolidayDto(
     Guid Id,
     string Name,
@@ -49,7 +46,6 @@ public record UpdateHolidayRequest(
     int? EasterOffset
 );
 
-// Month Summary
 public record MonthSummaryDto(
     int Year,
     int Month,

@@ -16,7 +16,6 @@ public class Subscription : AuditableEntity
     public DateTime? LastUsedAt { get; set; }
     public DateTime? LastPaidAt { get; set; }
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
     public Category Category { get; set; } = null!;
     public Account Account { get; set; } = null!;

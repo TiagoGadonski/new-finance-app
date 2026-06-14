@@ -2,7 +2,6 @@ using Orbit.Domain.Enums;
 
 namespace Orbit.Application.Common.DTOs;
 
-// Full user details for admin view
 public record AdminUserDto(
     Guid Id,
     string Name,
@@ -15,7 +14,6 @@ public record AdminUserDto(
     bool IsMeiEnabled = false
 );
 
-// Request to create a new user (admin only)
 // Priority: ExistingFamilyId > NewFamilyName > admin's own family.
 public record CreateUserRequest(
     string Name,
@@ -26,14 +24,12 @@ public record CreateUserRequest(
     Guid? ExistingFamilyId = null
 );
 
-// Request to update user details (admin only)
 public record UpdateUserRequest(
     string? Name = null,
     UserRole? Role = null,
     bool? IsMeiEnabled = null
 );
 
-// Request to change user password (admin only)
 public record ChangeUserPasswordRequest(string NewPassword);
 
 public record FamilyDto(

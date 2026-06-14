@@ -10,7 +10,6 @@ public class Budget : AuditableEntity
     public decimal Spent { get; set; }
     public bool AlertSent { get; set; }
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
     public Category Category { get; set; } = null!;
 

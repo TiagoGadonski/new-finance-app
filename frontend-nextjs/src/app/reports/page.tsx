@@ -6,11 +6,13 @@ import { Tabs } from '@/components/ui';
 import { MonthlyReport } from '@/components/reports/MonthlyReport';
 import { CashFlowChart } from '@/components/reports/CashFlowChart';
 import { PeriodComparison } from '@/components/reports/PeriodComparison';
+import { BudgetForecast } from '@/components/reports/BudgetForecast';
 
 const tabs = [
   { key: 'monthly', label: 'Mensal' },
   { key: 'cashflow', label: 'Cash Flow' },
   { key: 'comparison', label: 'Comparação' },
+  { key: 'forecast', label: 'Previsão' },
 ];
 
 export default function ReportsPage() {
@@ -23,6 +25,7 @@ export default function ReportsPage() {
         {activeTab === 'monthly' && <MonthlyReport />}
         {activeTab === 'cashflow' && <CashFlowChart />}
         {activeTab === 'comparison' && <PeriodComparison />}
+        {activeTab === 'forecast' && <BudgetForecast />}
       </div>
     </PageContainer>
   );

@@ -12,7 +12,6 @@ public class AlertConfiguration : AuditableEntity
     public AlertChannel Channel { get; set; } = AlertChannel.InApp;
     public string? CronSchedule { get; set; }
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
     public User? User { get; set; }
 }

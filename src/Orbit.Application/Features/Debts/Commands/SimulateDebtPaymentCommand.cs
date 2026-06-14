@@ -23,7 +23,7 @@ public class SimulateDebtPaymentCommandHandler : IRequestHandler<SimulateDebtPay
     public async Task<DebtSimulationDto> Handle(SimulateDebtPaymentCommand request, CancellationToken cancellationToken)
     {
         var debts = (await _debtRepository.FindAsync(d => d.FamilyId == request.FamilyId))
-            .Where(d => d.RemainingAmount > 0 && d.TotalAmount.HasValue)
+            .Where(d => d.RemainingAmount > 0)
             .ToList();
 
         if (!debts.Any())

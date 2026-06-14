@@ -1,284 +1,290 @@
-# Orbit
+# Orbit — Personal Finance Platform
 
-Sistema completo de gestao financeira pessoal, produtividade e automacao, com backend em **.NET 8**, frontend em **Next.js** e integracao com **Telegram Bot**.
+A full-stack personal finance management platform built for multi-user households. Orbit covers the entire financial lifecycle — from daily transactions and recurring bills to investment tracking, debt payoff planning, and multi-month budget forecasting.
 
-## Visao Geral
+---
 
-Orbit e uma plataforma pessoal que unifica financas, planejamento de trabalho, tarefas e alertas inteligentes em uma unica aplicacao. O sistema roda em containers Docker e oferece notificacoes proativas via Telegram.
+## Badges
 
-### Principais Modulos
+![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)
+![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql)
+![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)
+![TailwindCSS](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss)
+![xUnit](https://img.shields.io/badge/Tests-xUnit-green)
 
-| Modulo | Descricao |
-|--------|-----------|
-| **Financas** | Contas, transacoes, categorias, orcamentos, assinaturas, dividas, metas |
-| **Investimentos** | Portfolio com tracking de acoes/FIIs/crypto, grafico de alocacao |
-| **Trabalho PJ** | Calendario de dias uteis, feriados, calculo de impostos MEI |
-| **Alertas Proativos** | Monitoramento automatico de orcamento, vencimentos, ultimo dia util |
-| **Lembretes** | Aniversarios, datas importantes com notificacao antecipada |
-| **Tarefas** | To-do list com integracao Telegram (criar/listar/completar via bot) |
-| **Relatorios** | Relatorio mensal, fluxo de caixa, comparacao de periodos |
-| **Multi-usuario** | Sistema de familias com roles (admin/user) e audit trail |
+---
 
-## Stack Tecnica
+## Features
 
-### Backend (.NET 8 - Clean Architecture)
-- **ASP.NET Core** Web API
-- **Entity Framework Core** com PostgreSQL
-- **Redis** para cache
-- **MediatR** para CQRS pattern
-- **JWT** com refresh tokens
-- **BackgroundService** para avaliacao periodica de alertas
-- **Serilog** para logging estruturado
+### Accounts & Transactions
+- Multi-currency accounts (per-account currency field + live exchange rates via open.er-api.com, cached in Redis)
+- Installment tracking (`InstallmentCount` / `CurrentInstallment`) and recurring transaction flag
+- CSV import with duplicate detection
+- Reusable transaction templates (apply a template to create a pre-filled transaction in one click)
+- Automatic transaction classification via configurable keyword-matching rules
 
-### Frontend (Next.js 15)
-- **TypeScript**
-- **TanStack Query** para data fetching e cache
-- **Tailwind CSS** com dark mode
-- **Recharts** para graficos
-- **Lucide Icons**
+### Budgets, Goals & Debts
+- Monthly budget envelopes with consolidated spend tracking
+- Savings goals with progress tracking
+- Debt management with installment countdown and payoff simulation (Snowball and Avalanche strategies)
 
-### Infraestrutura
-- **Docker** & **Docker Compose** (4 containers)
-- **PostgreSQL 16** (banco de dados)
-- **Redis 7** (cache)
-- **Telegram Bot API** (notificacoes proativas)
+### Subscriptions & Forecast
+- Active/cancelled subscription tracking with upcoming billing calendar
+- **Budget Forecast**: projects monthly surplus/deficit for 1–12 months ahead, combining recurring income, fixed expense templates, active subscriptions, and debt installments — installment contributions automatically decrease as debts are paid off
 
-### Integracao
-- **StarBot** (Telegram Bot separado) - permite interagir com o Orbit via mensagens no Telegram
-  - Autenticacao multi-usuario: cada usuario ve apenas os dados da sua propria familia
-  - 15 ferramentas de IA: transacoes, contas, categorias, metas, dividas, orcamentos, tarefas, lembretes
-  - Veja [GUIA_BOT.md](GUIA_BOT.md) para o guia completo de uso
+### Investments
+- Portfolio tracking (stocks, FIIs, crypto, etc.) with average cost basis
+- Investment transaction history (buy/sell/dividend)
+- Allocation chart by asset type
 
-## Arquitetura
+### Reports
+- Monthly report (income vs. expense by category)
+- Cash flow projection
+- Period comparison (any two date ranges)
+
+### Freelance / MEI Tools
+- Work calendar: define working days, public holidays, and calculate monthly billable hours
+- MEI DAS tax estimator with annual revenue limit tracking
+
+### Alerts & Reminders
+- Configurable alert rules: budget threshold, bill due, debt due, negative balance, goal near target, last business day of month
+- Background evaluation service (configurable interval, default 6 h) runs as a .NET `BackgroundService`
+- Calendar-based reminders (birthdays, recurring dates) with configurable advance notice in days
+- In-app notification center + optional Telegram message delivery
+
+### Multi-user & Audit
+- All data scoped by `FamilyId` extracted from JWT claims — complete tenant isolation at the query level
+- Multiple users per family, each with their own credentials and role (`Admin` / `User`)
+- Full audit trail: `CreatedByUsername`, `UpdatedByUsername`, `CreatedAt`, `UpdatedAt` on every record
+
+### Telegram Bot Integration *(separate repo)*
+- [StarBot](https://github.com/tiagogadonski/starbot) — a Node.js bot using Claude (Anthropic) as the AI layer
+- Authenticated per-user via a shared `BOT_SECRET`; each Telegram user maps to an Orbit account
+- Supports natural-language commands: *"lancei R$120 no mercado hoje"*, *"qual minha sobra esse mês?"*, and more via Claude tool-use loop
+
+### Additional Modules
+- Expense splitting between family members
+- Shopping lists
+- Todo items
+- Roundup rules (round up transactions and sweep the difference to a savings goal)
+
+---
+
+## Tech Stack
+
+### Backend
+| Layer | Technology |
+|---|---|
+| Runtime | .NET 8 |
+| Architecture | Clean Architecture (Domain → Application → Infrastructure → Api) |
+| CQRS / Mediator | MediatR 12 |
+| ORM | Entity Framework Core 8 (Npgsql) |
+| Validation | FluentValidation 11 |
+| Auth | JWT Bearer + refresh tokens (BCrypt password hashing) |
+| Caching | Redis via `IDistributedCache` |
+| CSV parsing | CsvHelper 30 |
+| Logging | Serilog (console + rotating file sinks) |
+| API docs | Swagger / Swashbuckle |
+| Background jobs | `BackgroundService` (alert evaluation) |
+
+### Frontend
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript 5 |
+| Data fetching | TanStack Query v5 |
+| State | Redux Toolkit (auth slice) |
+| Forms | React Hook Form 7 |
+| Charts | Recharts 3 |
+| Styling | Tailwind CSS 4 |
+| HTTP client | Axios (with JWT refresh interceptor) |
+| Icons | Lucide React |
+| Toasts | React Hot Toast |
+
+### Telegram Bot *(separate repo)*
+| | |
+|---|---|
+| Runtime | Node.js |
+| Framework | grammY |
+| AI | Anthropic SDK (Claude) with tool-use loop |
+| Build | tsup |
+
+### Infrastructure
+| | |
+|---|---|
+| Database | PostgreSQL 16 |
+| Cache | Redis 7 |
+| Containerization | Docker Compose |
+| Tests | xUnit + Moq + FluentAssertions |
+
+---
+
+## Architecture
+
+The backend follows **Clean Architecture** with strict unidirectional dependencies — outer layers depend on inner layers, never the reverse.
 
 ```
-Orbit/
+┌─────────────────────────────────────────────────────┐
+│                      Api Layer                      │
+│         Controllers → MediatR → Handlers            │
+│         JWT auth · Swagger · Serilog                │
+├─────────────────────────────────────────────────────┤
+│                  Application Layer                  │
+│   Commands · Queries · Handlers · Validators        │
+│   CurrencyService · ClassificationService           │
+│   BudgetForecastService · NotificationService       │
+├─────────────────────────────────────────────────────┤
+│                 Infrastructure Layer                │
+│   EF Core + Npgsql · Generic Repository<T>          │
+│   AlertEvaluationService (BackgroundService)        │
+│   TelegramService · Migrations (auto-applied)       │
+│   DataSeeder · Redis cache (IDistributedCache)      │
+├─────────────────────────────────────────────────────┤
+│                   Domain Layer                      │
+│   Entities · Enums · IRepository<T> interface       │
+│   BaseEntity (Id, CreatedAt, UpdatedAt)             │
+│   AuditableEntity (+ CreatedByUsername, Updated*)   │
+└─────────────────────────────────────────────────────┘
+```
+
+**Request flow example — create transaction:**
+
+```
+POST /api/transactions
+  → TransactionsController (extracts FamilyId, UserId from JWT)
+  → MediatR.Send(CreateTransactionCommand)
+  → CreateTransactionCommandHandler
+      → IRepository<Transaction>.AddAsync()
+      → ClassificationService.ClassifyAsync()   // auto-categorise
+      → NotificationService (if alert triggered)
+  → 201 Created + TransactionDto
+```
+
+**Multi-tenancy**: every handler receives `FamilyId` from the JWT claim and applies it as a filter predicate to all repository queries. There is no shared mutable state between families at the ORM level.
+
+**Token refresh**: the frontend Axios interceptor automatically retries failed 401 requests after exchanging the stored refresh token, with a queued-request mechanism to handle concurrent calls during refresh.
+
+---
+
+## Getting Started
+
+### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) and Docker Compose v2
+- (For local development without Docker) .NET 8 SDK · Node.js 20+
+
+### Environment Variables
+
+Copy `.env.example` to `.env` and fill in the required values:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Required | Description |
+|---|---|---|
+| `DB_PASSWORD` | ✅ | PostgreSQL password |
+| `DB_USER` | optional | PostgreSQL user (default: `postgres`) |
+| `DB_NAME` | optional | Database name (default: `orbit`) |
+| `JWT_SECRET_KEY` | ✅ | HS256 signing key — minimum 32 characters |
+| `JWT_ISSUER` | optional | JWT issuer claim (default: `Orbit`) |
+| `JWT_AUDIENCE` | optional | JWT audience claim (default: `OrbitUsers`) |
+| `SEED_ADMIN_PASSWORD` | ✅ | Password for the admin user created on first run |
+| `TELEGRAM_BOT_TOKEN` | optional | Telegram Bot API token (alert delivery) |
+| `TELEGRAM_CHAT_ID` | optional | Telegram chat ID to receive alert messages |
+| `BOT_SECRET` | optional | Shared secret for StarBot ↔ API authentication |
+| `ALERT_EVAL_INTERVAL` | optional | Alert evaluation interval in hours (default: `6`) |
+
+Before building the frontend image, update `NEXT_PUBLIC_API_URL` in `docker-compose.yml` to match your host's public address — this value is baked into the Next.js bundle at build time.
+
+### Running with Docker Compose
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/orbit.git
+cd orbit
+
+# 2. Configure environment
+cp .env.example .env
+# Edit .env — set DB_PASSWORD, JWT_SECRET_KEY, SEED_ADMIN_PASSWORD at minimum
+
+# 3. Build services (build separately to avoid memory pressure on constrained hosts)
+docker compose build api
+docker compose build frontend
+
+# 4. Start all services
+docker compose up -d
+
+# 5. Verify
+docker compose ps
+```
+
+| Service | Default port |
+|---|---|
+| API | `http://localhost:5000` |
+| Swagger UI | `http://localhost:5000/swagger` |
+| Frontend | `http://localhost:3000` |
+| PostgreSQL | `5432` |
+| Redis | `6379` |
+
+> **First run**: EF Core migrations are applied automatically at startup. The API then seeds a default admin user using the `SEED_ADMIN_PASSWORD` value if no users exist.
+
+### Running Tests
+
+```bash
+docker run --rm \
+  -v $(pwd):/app \
+  -w /app/tests/Orbit.Tests \
+  mcr.microsoft.com/dotnet/sdk:8.0 \
+  dotnet test
+```
+
+---
+
+## Project Structure
+
+```
+orbit/
 ├── src/
-│   ├── Orbit.Domain/           # Entidades, enums, interfaces
-│   │   ├── Entities/ (29)      # Account, Transaction, Budget, Investment, TodoItem, etc.
-│   │   ├── Enums/ (13)         # AccountType, TransactionType, AlertType, etc.
-│   │   └── Interfaces/         # IRepository<T>, ITelegramService
-│   │
-│   ├── Orbit.Application/      # DTOs, CQRS handlers, services
-│   │   ├── Common/DTOs/        # Records para request/response
-│   │   ├── Features/           # Commands e queries (MediatR)
-│   │   └── Services/           # ClassificationService
-│   │
-│   ├── Orbit.Infrastructure/   # Implementacoes de infraestrutura
-│   │   ├── Data/               # DbContext, migrations, seeder
-│   │   ├── Repositories/       # Repository pattern generico
-│   │   └── Services/           # AuthService, TelegramService, AlertEvaluationService
-│   │
-│   └── Orbit.Api/              # Camada de apresentacao
-│       ├── Controllers/ (25)   # REST endpoints
-│       ├── Middleware/          # Exception handling
-│       └── Program.cs          # Configuracao e DI
-│
+│   ├── Orbit.Domain/          # Entities, enums, IRepository<T> interface
+│   ├── Orbit.Application/     # MediatR handlers, validators, services, DTOs
+│   ├── Orbit.Infrastructure/  # EF Core context, migrations, background services
+│   └── Orbit.Api/             # Controllers, middleware, DI composition root
 ├── frontend-nextjs/
 │   └── src/
-│       ├── app/ (20 paginas)   # Next.js App Router pages
-│       ├── components/         # UI components, modals, charts
-│       ├── lib/api/ (18)       # Modulos de API client
-│       └── types/              # TypeScript interfaces
-│
+│       ├── app/               # Next.js App Router pages (one folder per route)
+│       ├── components/        # Shared UI + feature-specific components
+│       ├── lib/api/           # Axios API client modules (one file per domain)
+│       └── types/             # TypeScript interfaces mirroring backend DTOs
 ├── tests/
-│   └── Orbit.Tests/            # xUnit + Moq + FluentAssertions
-│
-├── docker-compose.yml          # Orquestracao (postgres, redis, api, frontend)
-└── Dockerfile                  # Multi-stage build da API
+│   └── Orbit.Tests/           # xUnit unit tests — handlers and services
+├── docker-compose.yml
+├── .env.example
+└── .editorconfig
 ```
 
-## Requisitos
+---
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows, Mac ou Linux)
-- Git
+## Screenshots
 
-## Instalacao
+> Replace the placeholders below with actual screenshots.
 
-```bash
-# Clone o repositorio
-git clone <repo-url>
-cd Orbit
+| Dashboard | Transactions |
+|---|---|
+| ![Dashboard](docs/screenshots/dashboard.png) | ![Transactions](docs/screenshots/transactions.png) |
 
-# Suba todos os servicos
-docker compose up -d --build
-```
+| Budget Forecast | Investments |
+|---|---|
+| ![Forecast](docs/screenshots/forecast.png) | ![Investments](docs/screenshots/investments.png) |
 
-Acesse:
-- **Frontend**: http://localhost:3000
-- **API**: http://localhost:5000
-- **Swagger**: http://localhost:5000/swagger
+| Debt Simulator | Reports |
+|---|---|
+| ![Debts](docs/screenshots/debts.png) | ![Reports](docs/screenshots/reports.png) |
 
-### Variaveis de Ambiente (opcionais)
+---
 
-Crie um arquivo `.env` na raiz para customizar:
+## License
 
-```env
-# Banco de dados
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=orbit
-
-# Seguranca
-JWT_SECRET_KEY=sua-chave-secreta-com-pelo-menos-32-caracteres
-SEED_ADMIN_PASSWORD=Admin@123456
-
-# Telegram (para alertas proativos do backend)
-TELEGRAM_BOT_TOKEN=seu-bot-token
-TELEGRAM_CHAT_ID=seu-chat-id
-
-# Intervalo de avaliacao de alertas (horas)
-ALERT_EVAL_INTERVAL=6
-
-# StarBot - segredo compartilhado para autenticacao multi-usuario via Telegram
-# Deve ser o mesmo valor definido em FINANCE_BOT_SECRET no .env do StarBot
-BOT_SECRET=segredo-aleatorio-com-pelo-menos-32-caracteres
-```
-
-## Funcionalidades Detalhadas
-
-### Gestao Financeira
-- **Contas**: Corrente, poupanca, cartao, investimentos, carteira, negocios - com suporte multi-moeda
-- **Transacoes**: Registro manual, importacao CSV, templates reutilizaveis, deteccao de duplicatas
-- **Categorias**: Personalizaveis com icones/cores, classificacao automatica por regras aprendidas
-- **Orcamentos**: Limites mensais por categoria com acompanhamento em tempo real
-- **Assinaturas**: Gerenciamento com alertas de vencimento e projecao de gastos
-- **Metas**: Definicao de objetivos com tracking de progresso
-- **Dividas**: Registro com simulacao de quitacao (estrategias Snowball e Avalanche)
-
-### Investimentos
-- Portfolio com acoes, FIIs, cripto, renda fixa, ETFs
-- Registro de compras/vendas com preco medio
-- Grafico de alocacao por tipo de ativo
-- Resumo com total investido, valor atual e rentabilidade
-
-### Trabalho PJ / MEI
-- Calendario de dias trabalhados com feriados nacionais e municipais
-- Calculo automatico de Pascoa e feriados moveis
-- Estimativa de DAS (imposto MEI) com tracking do limite anual
-- Configuracao de hora/dia de trabalho
-
-### Sistema de Alertas Proativos
-O `AlertEvaluationService` roda em background a cada 6h e avalia:
-
-| Alerta | Condicao |
-|--------|----------|
-| Orcamento estourando | >= 80% do limite da categoria |
-| Conta a vencer | Assinatura vence em 3 dias |
-| Divida vencendo | Divida com vencimento em 3 dias |
-| Saldo negativo | Conta com saldo < 0 |
-| Meta quase atingida | >= 90% do objetivo |
-| Ultimo dia util | Hoje e o ultimo dia util do mes |
-
-Entrega: notificacao in-app e/ou Telegram (configuravel por alerta).
-
-### Lembretes
-- Aniversarios, datas comemorativas, eventos recorrentes
-- Notificacao X dias antes (configuravel)
-- CRUD completo na pagina /alerts (tab Lembretes)
-
-### Tarefas (To-Do)
-- Criar, listar, completar, deletar tarefas
-- Filtro por pendentes/concluidas
-- Integracao com Telegram Bot (via StarBot):
-  - "Anota pra mim: comprar leite" → cria tarefa no Orbit
-  - "Quais minhas tarefas?" → lista tarefas pendentes
-  - "Conclui a tarefa X" → marca como feita
-
-### Multi-usuario
-- Sistema de familias: um admin convida membros
-- Todos os dados sao scoped por familia
-- Audit trail: quem criou/atualizou cada registro
-- Painel administrativo para gestao de usuarios
-- Cada usuario pode registrar seu **ID do Telegram** nas configuracoes de perfil
-- Autenticacao automatica no StarBot: basta ter o ID salvo (sem precisar de senha)
-- Admin pode criar usuarios em qualquer familia existente ou criar uma familia nova
-
-### Outras Funcionalidades
-- **Dark mode** completo
-- **Listas de compras** colaborativas
-- **Split de despesas** entre membros da familia
-- **Conversao de moeda** com taxas atualizadas
-- **Microinvestimentos** (arredondamento automatico)
-- **Notificacoes in-app** com badge no navbar
-
-## Endpoints da API
-
-A API possui **25 controllers** com os seguintes grupos:
-
-| Grupo | Prefixo | Operacoes |
-|-------|---------|-----------|
-| Auth | `/api/auth` | login, signup, refresh, **telegram** (auth via ID do Telegram) |
-| User | `/api/user` | profile |
-| Admin | `/api/admin/users` | list, create, update, delete users |
-| Accounts | `/api/accounts` | CRUD |
-| Categories | `/api/categories` | CRUD |
-| Transactions | `/api/transactions` | CRUD, import CSV, summary, duplicates |
-| Templates | `/api/transaction-templates` | CRUD, apply |
-| Budgets | `/api/budgets` | CRUD, consolidated view |
-| Subscriptions | `/api/subscriptions` | CRUD, forecast, generate transactions |
-| Goals | `/api/goals` | CRUD, contribute |
-| Debts | `/api/debts` | CRUD, simulate |
-| Investments | `/api/investments` | CRUD, transactions, summary |
-| Notifications | `/api/notifications` | list, mark-read, unread-count |
-| Alerts | `/api/alert-configurations` | CRUD |
-| Reminders | `/api/reminders` | CRUD, toggle |
-| Todos | `/api/todos` | CRUD, toggle |
-| Reports | `/api/reports` | monthly, cashflow, comparison |
-| Currency | `/api/currency` | rates, convert, refresh |
-| Work Calendar | `/api/work-calendar` | settings, workdays, holidays CRUD |
-| MEI | `/api/mei` | settings, DAS calculation |
-| Shopping Lists | `/api/shopping-lists` | CRUD, items, toggle |
-| Splits | `/api/expense-splits` | CRUD, items |
-| Roundups | `/api/roundups` | CRUD, simulate |
-| Classification | `/api/classification-rules` | CRUD |
-
-Documentacao interativa disponivel em `/swagger`.
-
-## Desenvolvimento Local (sem Docker)
-
-```bash
-# Requisitos: .NET 8 SDK, Node.js 18+, PostgreSQL, Redis
-
-# Backend
-dotnet restore
-dotnet ef database update --project src/Orbit.Infrastructure --startup-project src/Orbit.Api
-dotnet run --project src/Orbit.Api
-
-# Frontend
-cd frontend-nextjs
-npm install
-npm run dev
-```
-
-## Migrations
-
-```bash
-# Criar nova migration
-dotnet ef migrations add NomeDaMigration \
-  --project src/Orbit.Infrastructure \
-  --startup-project src/Orbit.Api
-
-# Aplicar (automatico no startup)
-dotnet ef database update \
-  --project src/Orbit.Infrastructure \
-  --startup-project src/Orbit.Api
-```
-
-## Testes
-
-```bash
-dotnet test tests/Orbit.Tests/Orbit.Tests.csproj --verbosity normal
-```
-
-Cobertura: classificacao automatica, orcamento, assinaturas, simulacao de dividas, autenticacao.
-
-## Codigo
-
-- **166 arquivos C#** no backend
-- **107 arquivos TypeScript/TSX** no frontend
-- **29 entidades** de dominio
-- **13 enums**
-- **25 controllers**
-- **20 paginas** no frontend
-- **18 modulos de API** no frontend
+MIT

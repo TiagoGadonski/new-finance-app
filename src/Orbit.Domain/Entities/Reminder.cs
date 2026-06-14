@@ -11,6 +11,5 @@ public class Reminder : AuditableEntity
     public int DaysInAdvance { get; set; } = 0;
     public bool IsActive { get; set; } = true;
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
 }

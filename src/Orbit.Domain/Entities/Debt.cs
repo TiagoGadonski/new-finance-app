@@ -10,8 +10,8 @@ public class Debt : AuditableEntity
     public decimal MinimumPayment { get; set; }
     public DateTime? DueDate { get; set; }
     public DateTime? LastPaidAt { get; set; }
+    public int? InstallmentsRemaining { get; set; }
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
 
     public decimal? TotalInterest => TotalAmount.HasValue ? TotalAmount.Value - RemainingAmount : null;

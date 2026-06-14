@@ -2,7 +2,6 @@
 
 namespace Orbit.Application.Common.DTOs;
 
-// DTO de visualização completa
 public record ShoppingListDto(
     Guid Id,
     string Name,
@@ -19,7 +18,6 @@ public record ShoppingListDto(
     DateTime CreatedAt
 );
 
-// DTO de item
 public record ShoppingItemDto(
     Guid Id,
     string Name,
@@ -35,14 +33,12 @@ public record ShoppingItemDto(
     DateTime? PurchasedDate
 );
 
-// Request para criar lista
 public record CreateShoppingListRequest(
     string Name,
     string? Description,
     DateTime? TargetDate
 );
 
-// Request para atualizar lista
 public record UpdateShoppingListRequest(
     string Name,
     string? Description,
@@ -50,7 +46,6 @@ public record UpdateShoppingListRequest(
     ShoppingListStatus Status
 );
 
-// Request para criar item
 public record CreateShoppingItemRequest(
     string Name,
     int Quantity,
@@ -59,7 +54,6 @@ public record CreateShoppingItemRequest(
     ItemPriority Priority
 );
 
-// Request para atualizar item
 public record UpdateShoppingItemRequest(
     string Name,
     int Quantity,
@@ -70,7 +64,6 @@ public record UpdateShoppingItemRequest(
     bool IsPurchased
 );
 
-// Request para marcar item como comprado
 public record MarkItemPurchasedRequest(
     bool CreateTransaction,
     decimal? ActualPrice,

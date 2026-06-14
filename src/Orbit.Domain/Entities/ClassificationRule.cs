@@ -8,7 +8,6 @@ public class ClassificationRule : AuditableEntity
     public int Priority { get; set; } // Maior prioridade = aplicada primeiro
     public bool IsLearned { get; set; } // True se foi aprendida das edições do usuário
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
     public Category Category { get; set; } = null!;
 }

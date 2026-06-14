@@ -11,6 +11,5 @@ public class InvestmentTransaction : BaseEntity
     public DateTime Date { get; set; }
     public decimal Fees { get; set; }
 
-    // Navigation properties
     public Investment Investment { get; set; } = null!;
 }

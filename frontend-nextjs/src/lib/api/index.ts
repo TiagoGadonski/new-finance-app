@@ -16,3 +16,5 @@ export * from './expenseSplitsApi';
 export * from './remindersApi';
 export * from './todosApi';
 export * from './userApi';
+
+export { budgetForecastApi } from './budgetForecastApi';

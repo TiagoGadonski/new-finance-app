@@ -38,7 +38,6 @@ public class User : BaseEntity
     /// </summary>
     public bool IsMeiEnabled { get; set; } = false;
 
-    // Navigation properties
     public Family Family { get; set; } = null!;
     // Note: All financial data navigation properties (Accounts, Transactions, etc.)
     // have been moved to Family entity since data is now family-scoped, not user-scoped

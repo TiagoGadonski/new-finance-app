@@ -825,7 +825,6 @@ export interface RecurringIncomeDto {
   updatedAt: string | null;
 }
 
-<<<<<<< HEAD
 export interface CreateRecurringIncomeRequest {
   description: string;
   amount: number;

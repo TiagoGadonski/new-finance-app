@@ -3,18 +3,23 @@ using Orbit.Application.Common.DTOs;
 using Orbit.Domain.Entities;
 using Orbit.Domain.Enums;
 using Orbit.Domain.Interfaces;
+using Orbit.Application.Common.Interfaces;
 
 namespace Orbit.Api.Controllers;
+
+public record AnalyzeJobRequest(string JobText);
 
 [Route("api/[controller]")]
 public class JobApplicationsController : BaseAuthenticatedController
 {
     private readonly IRepository<JobApplication> _repo;
+    private readonly IJobAnalysisService _analysisService;
     private const int WeeklyGoal = 5;
 
-    public JobApplicationsController(IRepository<JobApplication> repo)
+    public JobApplicationsController(IRepository<JobApplication> repo, IJobAnalysisService analysisService)
     {
         _repo = repo;
+        _analysisService = analysisService;
     }
 
     [HttpGet]
@@ -143,6 +148,19 @@ public class JobApplicationsController : BaseAuthenticatedController
         await _repo.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    [HttpPost("analyze")]
+    public async Task<IActionResult> Analyze([FromBody] AnalyzeJobRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.JobText))
+            return BadRequest("jobText is required");
+
+        var result = await _analysisService.AnalyzeJobTextAsync(request.JobText);
+        if (result is null)
+            return StatusCode(422, new { error = "Não consegui analisar a vaga. Tente colar o texto novamente ou cadastre manualmente." });
+
+        return Ok(result);
     }
 
     private static JobApplicationDto MapToDto(JobApplication j) => new(

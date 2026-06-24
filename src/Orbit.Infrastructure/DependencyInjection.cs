@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Orbit.Domain.Interfaces;
+using Orbit.Application.Common.Interfaces;
 using Orbit.Infrastructure.Data;
 using Orbit.Infrastructure.Repositories;
 using Orbit.Infrastructure.Services;
@@ -44,6 +45,10 @@ public static class DependencyInjection
 
         // HttpClient for CurrencyService
         services.AddHttpClient("CurrencyApi");
+
+        // HttpClient for Anthropic API (job analysis)
+        services.AddHttpClient("AnthropicApi");
+        services.AddScoped<IJobAnalysisService, JobAnalysisService>();
 
         // Telegram
         services.AddHttpClient("TelegramApi");

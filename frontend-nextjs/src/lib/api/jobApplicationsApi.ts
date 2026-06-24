@@ -4,6 +4,7 @@ import {
   CreateJobApplicationRequest,
   UpdateJobApplicationRequest,
   JobApplicationStatsDto,
+  JobAnalysisResultDto,
   ApplicationStatus,
 } from '@/types';
 
@@ -35,5 +36,10 @@ export const jobApplicationsApi = {
 
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/JobApplications/${id}`);
+  },
+
+  analyze: async (jobText: string): Promise<JobAnalysisResultDto> => {
+    const response = await apiClient.post<JobAnalysisResultDto>('/JobApplications/analyze', { jobText });
+    return response.data;
   },
 };

@@ -949,3 +949,16 @@ export interface JobApplicationStatsDto {
   noResponseCount: number;
   conversionBySource: SourceConversionDto[];
 }
+
+export interface JobAnalysisResultDto {
+  company: string | null;
+  jobTitle: string | null;
+  stack: string | null;
+  salary: string | null;
+  workModel: string | null;
+  acceptsLatam: boolean | null;
+  suggestedFit: 'High' | 'Medium' | 'Low';
+  verdict: string;
+  pros: string[];
+  cons: string[];
+}

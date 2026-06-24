@@ -12,11 +12,13 @@ import { KanbanBoard } from '@/components/applications/KanbanBoard';
 import { UpcomingSteps } from '@/components/applications/UpcomingSteps';
 import { ChecklistPanel } from '@/components/applications/ChecklistPanel';
 import { ApplicationDetailModal } from '@/components/applications/ApplicationDetailModal';
-import { Briefcase, AlertCircle } from 'lucide-react';
+import JobAnalysisModal from '@/components/applications/JobAnalysisModal';
+import { Briefcase, Sparkles } from 'lucide-react';
 
 export default function ApplicationsPage() {
   const qc = useQueryClient();
   const [editApp, setEditApp] = useState<JobApplicationDto | null>(null);
+  const [showAnalysis, setShowAnalysis] = useState(false);
 
   const { data: applications = [], isLoading } = useQuery({
     queryKey: ['jobApplications'],
@@ -69,14 +71,23 @@ export default function ApplicationsPage() {
 
   return (
     <PageContainer>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center">
-          <Briefcase className="w-5 h-5 text-white" />
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center">
+            <Briefcase className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold">Candidaturas</h1>
+            <p className="text-sm text-muted-foreground">Acompanhe suas vagas internacionais</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-xl font-bold">Candidaturas</h1>
-          <p className="text-sm text-muted-foreground">Acompanhe suas vagas internacionais</p>
-        </div>
+        <button
+          onClick={() => setShowAnalysis(true)}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-medium hover:from-emerald-700 hover:to-teal-700 transition-all shadow-sm"
+        >
+          <Sparkles className="w-4 h-4" />
+          Analisar com IA
+        </button>
       </div>
 
       <div className="space-y-4">
@@ -127,6 +138,14 @@ export default function ApplicationsPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de análise com IA */}
+      {showAnalysis && (
+        <JobAnalysisModal
+          onClose={() => setShowAnalysis(false)}
+          onSave={async data => { await createMutation.mutateAsync(data); }}
+        />
+      )}
 
       {/* Modal de edição */}
       {editApp && (

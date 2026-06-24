@@ -72,3 +72,16 @@ public record SourceConversionDto(
     int Total,
     int GotResponse
 );
+
+public record JobAnalysisResultDto(
+    string? Company,
+    string? JobTitle,
+    string? Stack,
+    string? Salary,
+    string? WorkModel,
+    bool? AcceptsLatam,
+    string SuggestedFit,
+    string Verdict,
+    IReadOnlyList<string> Pros,
+    IReadOnlyList<string> Cons
+);

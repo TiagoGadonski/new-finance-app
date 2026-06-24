@@ -56,6 +56,7 @@ services:
       - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
       - AlertEvaluation__IntervalHours=${ALERT_EVAL_INTERVAL:-6}
       - BotSecret=${BOT_SECRET:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
     depends_on:
       postgres:
         condition: service_healthy

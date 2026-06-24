@@ -825,6 +825,7 @@ export interface RecurringIncomeDto {
   updatedAt: string | null;
 }
 
+<<<<<<< HEAD
 export interface CreateRecurringIncomeRequest {
   description: string;
   amount: number;
@@ -851,4 +852,101 @@ export interface BudgetForecastResultDto {
   monthlyIncome: number;
   recurringFixedTotal: number;
   months: MonthForecastDto[];
+}
+
+// Job Applications
+export enum ApplicationStatus {
+  Applied = 0,
+  InProcess = 1,
+  Interview = 2,
+  TechnicalTest = 3,
+  Offer = 4,
+  Rejected = 5,
+  NoResponse = 6
+}
+
+export enum ApplicationSource {
+  LinkedInEasyApply = 0,
+  LinkedInExternal = 1,
+  Strider = 2,
+  WeWorkRemotely = 3,
+  WorkingNomads = 4,
+  Jobgether = 5,
+  CompanyWebsite = 6,
+  Other = 7
+}
+
+export enum ApplicationFit {
+  High = 0,
+  Medium = 1,
+  Low = 2
+}
+
+export interface JobApplicationDto {
+  id: string;
+  company: string;
+  jobUrl: string;
+  source: ApplicationSource;
+  jobTitle: string | null;
+  stack: string | null;
+  salary: string | null;
+  fit: ApplicationFit | null;
+  status: ApplicationStatus;
+  nextStep: string | null;
+  nextStepDate: string | null;
+  notes: string | null;
+  appliedDate: string;
+  createdByUsername: string;
+  createdAt: string;
+  updatedByUsername: string | null;
+  updatedAt: string | null;
+}
+
+export interface CreateJobApplicationRequest {
+  company: string;
+  jobUrl: string;
+  source: ApplicationSource;
+  jobTitle?: string | null;
+  stack?: string | null;
+  salary?: string | null;
+  fit?: ApplicationFit | null;
+  nextStep?: string | null;
+  nextStepDate?: string | null;
+  notes?: string | null;
+  appliedDate?: string | null;
+}
+
+export interface UpdateJobApplicationRequest {
+  company: string;
+  jobUrl: string;
+  source: ApplicationSource;
+  jobTitle?: string | null;
+  stack?: string | null;
+  salary?: string | null;
+  fit?: ApplicationFit | null;
+  status: ApplicationStatus;
+  nextStep?: string | null;
+  nextStepDate?: string | null;
+  notes?: string | null;
+  appliedDate: string;
+}
+
+export interface SourceConversionDto {
+  source: ApplicationSource;
+  total: number;
+  gotResponse: number;
+}
+
+export interface JobApplicationStatsDto {
+  total: number;
+  appliedThisWeek: number;
+  weeklyGoal: number;
+  activeCount: number;
+  inProcessCount: number;
+  interviewCount: number;
+  technicalTestCount: number;
+  offerCount: number;
+  rejectedCount: number;
+  noResponseCount: number;
+  conversionBySource: SourceConversionDto[];
 }

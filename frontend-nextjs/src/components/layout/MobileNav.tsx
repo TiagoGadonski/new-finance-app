@@ -8,7 +8,7 @@ import {
   Home, ArrowLeftRight, PiggyBank, Target, Menu, X,
   ShoppingCart, CalendarCheck, Briefcase, BarChart3,
   TrendingUp, Bell, Scissors, ListTodo, Shield, Settings,
-  Moon, Sun, LogOut, User,
+  Moon, Sun, LogOut, User, Send,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { authApi } from '@/lib/api';
@@ -35,6 +35,7 @@ const drawerSections = [
     items: [
       { href: '/shopping-lists', label: 'Compras', icon: ShoppingCart },
       { href: '/todos', label: 'Tarefas', icon: ListTodo },
+      { href: '/applications', label: 'Vagas', icon: Send },
       { href: '/alerts', label: 'Alertas', icon: Bell },
       { href: '/splits', label: 'Divisoes', icon: Scissors },
     ],

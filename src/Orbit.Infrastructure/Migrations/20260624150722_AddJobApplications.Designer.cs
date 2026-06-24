@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Orbit.Infrastructure.Data;
@@ -11,9 +12,11 @@ using Orbit.Infrastructure.Data;
 namespace Orbit.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260624150722_AddJobApplications")]
+    partial class AddJobApplications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -493,9 +496,7 @@ namespace Orbit.Infrastructure.Migrations
                     b.Property<decimal>("InterestRate")
                         .HasColumnType("decimal(5,2)");
 
-                    b.Property<int?>("InstallmentsRemaining");
-
-                b.Property<DateTime?>("LastPaidAt")
+                    b.Property<DateTime?>("LastPaidAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<decimal>("MinimumPayment")
@@ -1244,9 +1245,7 @@ namespace Orbit.Infrastructure.Migrations
                     b.Property<Guid>("FamilyId")
                         .HasColumnType("uuid");
 
-                    b.Property<int?>("InstallmentsRemaining");
-
-                b.Property<DateTime?>("LastPaidAt")
+                    b.Property<DateTime?>("LastPaidAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime?>("LastUsedAt")
@@ -1284,48 +1283,7 @@ namespace Orbit.Infrastructure.Migrations
                     b.ToTable("Subscriptions");
                 });
 
-            modelBuilder.Entity("Orbit.Domain.Entities.RecurringIncome", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("CreatedByUsername")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("FamilyId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("UpdatedByUsername")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FamilyId");
-
-                    b.ToTable("RecurringIncomes");
-                });
-
-                        modelBuilder.Entity("Orbit.Domain.Entities.TodoItem", b =>
+            modelBuilder.Entity("Orbit.Domain.Entities.TodoItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -1933,48 +1891,7 @@ namespace Orbit.Infrastructure.Migrations
                     b.Navigation("Family");
                 });
 
-            modelBuilder.Entity("Orbit.Domain.Entities.RecurringIncome", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("CreatedByUsername")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("FamilyId")
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("UpdatedByUsername")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FamilyId");
-
-                    b.ToTable("RecurringIncomes");
-                });
-
-                        modelBuilder.Entity("Orbit.Domain.Entities.TodoItem", b =>
+            modelBuilder.Entity("Orbit.Domain.Entities.TodoItem", b =>
                 {
                     b.HasOne("Orbit.Domain.Entities.Family", "Family")
                         .WithMany("TodoItems")

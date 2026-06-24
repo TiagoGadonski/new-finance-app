@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   Home, ShoppingCart, LogOut, User, ArrowLeftRight, PiggyBank, Target,
   Shield, Moon, Sun, Settings, CalendarCheck, Briefcase, BarChart3,
-  TrendingUp, Bell, Scissors, ListTodo, ChevronLeft, ChevronRight,
+  TrendingUp, Bell, Scissors, ListTodo, ChevronLeft, ChevronRight, Send,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { authApi } from '@/lib/api';
@@ -41,6 +41,7 @@ const navSections = [
     items: [
       { href: '/shopping-lists', label: 'Compras', icon: ShoppingCart, matchPaths: ['/shopping-lists'] },
       { href: '/todos', label: 'Tarefas', icon: ListTodo, matchPaths: ['/todos'] },
+      { href: '/applications', label: 'Vagas', icon: Send, matchPaths: ['/applications'] },
       { href: '/alerts', label: 'Alertas', icon: Bell, matchPaths: ['/alerts'] },
       { href: '/splits', label: 'Divisoes', icon: Scissors, matchPaths: ['/splits'] },
     ],

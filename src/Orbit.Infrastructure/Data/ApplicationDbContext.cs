@@ -39,6 +39,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Reminder> Reminders => Set<Reminder>();
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
     public DbSet<RecurringIncome> RecurringIncomes => Set<RecurringIncome>();
+    public DbSet<JobApplication> JobApplications => Set<JobApplication>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -583,6 +584,29 @@ public class ApplicationDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasIndex(e => new { e.FamilyId, e.IsCompleted });
+
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
+            entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
+        });
+
+        // JobApplication
+        modelBuilder.Entity<JobApplication>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Company).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.JobUrl).IsRequired().HasMaxLength(2000);
+            entity.Property(e => e.JobTitle).HasMaxLength(200);
+            entity.Property(e => e.Stack).HasMaxLength(200);
+            entity.Property(e => e.Salary).HasMaxLength(200);
+            entity.Property(e => e.NextStep).HasMaxLength(500);
+            entity.Property(e => e.Notes).HasMaxLength(5000);
+
+            entity.HasOne(e => e.Family)
+                .WithMany()
+                .HasForeignKey(e => e.FamilyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => new { e.FamilyId, e.AppliedDate });
 
             entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
             entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);

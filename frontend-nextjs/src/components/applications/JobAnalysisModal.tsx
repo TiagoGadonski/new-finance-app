@@ -53,11 +53,13 @@ export default function JobAnalysisModal({ onClose, onSave }: Props) {
     onSuccess: () => onClose(),
   });
 
+  const hasContent = [company, jobUrl, jobTitle, stack, notes].some(v => v?.trim());
+
   const handleSave = () => {
-    if (!company.trim() || !jobUrl.trim()) return;
+    if (!hasContent) return;
     saveMutation.mutate({
-      company: company.trim(),
-      jobUrl: jobUrl.trim(),
+      company: company.trim() || null,
+      jobUrl: jobUrl.trim() || null,
       source,
       jobTitle: jobTitle.trim() || undefined,
       stack: stack.trim() || undefined,
@@ -236,7 +238,7 @@ export default function JobAnalysisModal({ onClose, onSave }: Props) {
                 </button>
                 <button
                   onClick={handleSave}
-                  disabled={!company.trim() || !jobUrl.trim() || saveMutation.isPending}
+                  disabled={!hasContent || saveMutation.isPending}
                   className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-medium hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saveMutation.isPending ? 'Salvando...' : 'Salvar candidatura'}

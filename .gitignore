@@ -44,3 +44,4 @@ Thumbs.db
 docker-compose.override.yml
 nul
 scripts/seed-pessoal.http
+GUIA_BOT.pdf

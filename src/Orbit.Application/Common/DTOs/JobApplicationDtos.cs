@@ -4,8 +4,8 @@ namespace Orbit.Application.Common.DTOs;
 
 public record JobApplicationDto(
     Guid Id,
-    string Company,
-    string JobUrl,
+    string? Company,
+    string? JobUrl,
     ApplicationSource Source,
     string? JobTitle,
     string? Stack,
@@ -23,8 +23,8 @@ public record JobApplicationDto(
 );
 
 public record CreateJobApplicationRequest(
-    string Company,
-    string JobUrl,
+    string? Company,
+    string? JobUrl,
     ApplicationSource Source,
     string? JobTitle,
     string? Stack,
@@ -37,8 +37,8 @@ public record CreateJobApplicationRequest(
 );
 
 public record UpdateJobApplicationRequest(
-    string Company,
-    string JobUrl,
+    string? Company,
+    string? JobUrl,
     ApplicationSource Source,
     string? JobTitle,
     string? Stack,

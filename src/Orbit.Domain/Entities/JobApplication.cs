@@ -5,8 +5,8 @@ namespace Orbit.Domain.Entities;
 public class JobApplication : AuditableEntity
 {
     public Guid FamilyId { get; set; }
-    public string Company { get; set; } = string.Empty;
-    public string JobUrl { get; set; } = string.Empty;
+    public string? Company { get; set; }
+    public string? JobUrl { get; set; }
     public ApplicationSource Source { get; set; } = ApplicationSource.Other;
     public string? JobTitle { get; set; }
     public string? Stack { get; set; }

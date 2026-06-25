@@ -883,8 +883,8 @@ export enum ApplicationFit {
 
 export interface JobApplicationDto {
   id: string;
-  company: string;
-  jobUrl: string;
+  company: string | null;
+  jobUrl: string | null;
   source: ApplicationSource;
   jobTitle: string | null;
   stack: string | null;
@@ -902,8 +902,8 @@ export interface JobApplicationDto {
 }
 
 export interface CreateJobApplicationRequest {
-  company: string;
-  jobUrl: string;
+  company?: string | null;
+  jobUrl?: string | null;
   source: ApplicationSource;
   jobTitle?: string | null;
   stack?: string | null;
@@ -916,8 +916,8 @@ export interface CreateJobApplicationRequest {
 }
 
 export interface UpdateJobApplicationRequest {
-  company: string;
-  jobUrl: string;
+  company?: string | null;
+  jobUrl?: string | null;
   source: ApplicationSource;
   jobTitle?: string | null;
   stack?: string | null;

@@ -75,9 +75,11 @@ export function ApplicationDetailModal({ app, onClose, onSave, onDelete, loading
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="font-semibold">Editar candidatura</h2>
           <div className="flex items-center gap-2">
-            <a href={app.jobUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-emerald-600">
-              <ExternalLink className="w-4 h-4" />
-            </a>
+            {app.jobUrl && (
+              <a href={app.jobUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-emerald-600">
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            )}
             <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
               <X className="w-5 h-5" />
             </button>
@@ -87,12 +89,12 @@ export function ApplicationDetailModal({ app, onClose, onSave, onDelete, loading
         <div className="p-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2">
-              <label className="text-xs font-medium text-muted-foreground">Empresa *</label>
-              <input value={form.company} onChange={e => set('company', e.target.value)} className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              <label className="text-xs font-medium text-muted-foreground">Empresa</label>
+              <input value={form.company ?? ''} onChange={e => set('company', e.target.value || null)} className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             </div>
             <div className="col-span-2">
-              <label className="text-xs font-medium text-muted-foreground">URL da vaga *</label>
-              <input type="url" value={form.jobUrl} onChange={e => set('jobUrl', e.target.value)} className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+              <label className="text-xs font-medium text-muted-foreground">URL da vaga</label>
+              <input type="text" value={form.jobUrl ?? ''} onChange={e => set('jobUrl', e.target.value || null)} className="mt-1 w-full px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             </div>
             <div>
               <label className="text-xs font-medium text-muted-foreground">Status</label>
@@ -163,7 +165,7 @@ export function ApplicationDetailModal({ app, onClose, onSave, onDelete, loading
             )}
             <div className="flex gap-2">
               <button onClick={onClose} className="px-4 py-2 rounded-lg border border-border text-sm hover:bg-muted">Cancelar</button>
-              <button onClick={handleSave} disabled={loading || !form.company.trim() || !form.jobUrl.trim()} className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-medium hover:opacity-90 disabled:opacity-50">
+              <button onClick={handleSave} disabled={loading || ![form.company, form.jobUrl, form.jobTitle, form.stack, form.notes].some(v => v?.trim())} className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-medium hover:opacity-90 disabled:opacity-50">
                 Salvar
               </button>
             </div>

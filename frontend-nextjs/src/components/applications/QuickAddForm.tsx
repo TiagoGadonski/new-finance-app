@@ -27,8 +27,8 @@ interface Props {
 }
 
 const EMPTY: CreateJobApplicationRequest = {
-  company: '',
-  jobUrl: '',
+  company: null,
+  jobUrl: null,
   source: ApplicationSource.Other,
   jobTitle: null,
   stack: null,
@@ -46,9 +46,11 @@ export function QuickAddForm({ onAdd, loading }: Props) {
   const set = (field: keyof CreateJobApplicationRequest, value: unknown) =>
     setForm(prev => ({ ...prev, [field]: value }));
 
+  const hasContent = [form.company, form.jobUrl, form.jobTitle, form.stack, form.notes].some(v => v?.trim());
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.company.trim() || !form.jobUrl.trim()) return;
+    if (!hasContent) return;
     await onAdd(form);
     setForm(EMPTY);
     setShowExtra(false);
@@ -59,18 +61,16 @@ export function QuickAddForm({ onAdd, loading }: Props) {
       <div className="flex gap-2">
         <input
           type="text"
-          placeholder="Empresa *"
-          value={form.company}
-          onChange={e => set('company', e.target.value)}
-          required
+          placeholder="Empresa"
+          value={form.company ?? ''}
+          onChange={e => set('company', e.target.value || null)}
           className="flex-1 min-w-0 px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
         <input
-          type="url"
-          placeholder="URL da vaga *"
-          value={form.jobUrl}
-          onChange={e => set('jobUrl', e.target.value)}
-          required
+          type="text"
+          placeholder="URL da vaga"
+          value={form.jobUrl ?? ''}
+          onChange={e => set('jobUrl', e.target.value || null)}
           className="flex-[2] min-w-0 px-3 py-2 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
         <select
@@ -86,7 +86,7 @@ export function QuickAddForm({ onAdd, loading }: Props) {
         </select>
         <button
           type="submit"
-          disabled={loading || !form.company.trim() || !form.jobUrl.trim()}
+          disabled={loading || !hasContent}
           className="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-medium hover:opacity-90 disabled:opacity-50 flex items-center gap-1 whitespace-nowrap"
         >
           <Plus className="w-4 h-4" />

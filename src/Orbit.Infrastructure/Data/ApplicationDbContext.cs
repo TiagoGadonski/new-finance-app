@@ -593,8 +593,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<JobApplication>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Company).IsRequired().HasMaxLength(200);
-            entity.Property(e => e.JobUrl).IsRequired().HasMaxLength(2000);
+            entity.Property(e => e.Company).HasMaxLength(200);
+            entity.Property(e => e.JobUrl).HasMaxLength(2000);
             entity.Property(e => e.JobTitle).HasMaxLength(200);
             entity.Property(e => e.Stack).HasMaxLength(200);
             entity.Property(e => e.Salary).HasMaxLength(200);

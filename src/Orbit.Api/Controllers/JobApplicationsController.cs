@@ -69,6 +69,12 @@ public class JobApplicationsController : BaseAuthenticatedController
     [HttpPost]
     public async Task<ActionResult<JobApplicationDto>> Create([FromBody] CreateJobApplicationRequest request)
     {
+        var hasContent = !string.IsNullOrWhiteSpace(request.Company) || !string.IsNullOrWhiteSpace(request.JobUrl)
+            || !string.IsNullOrWhiteSpace(request.JobTitle) || !string.IsNullOrWhiteSpace(request.Stack)
+            || !string.IsNullOrWhiteSpace(request.Notes);
+        if (!hasContent)
+            return BadRequest("Preencha pelo menos um campo.");
+
         var entity = new JobApplication
         {
             Id = Guid.NewGuid(),

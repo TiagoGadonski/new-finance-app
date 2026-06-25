@@ -67,18 +67,22 @@ export function ApplicationCard({ app, onStatusChange, onEdit, onDelete }: Props
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="font-semibold text-sm truncate">{app.company}</p>
-          {app.jobTitle && <p className="text-xs text-muted-foreground truncate">{app.jobTitle}</p>}
+          <p className="font-semibold text-sm truncate">
+            {app.company || app.jobTitle || <span className="text-muted-foreground font-normal italic">(sem nome)</span>}
+          </p>
+          {app.company && app.jobTitle && <p className="text-xs text-muted-foreground truncate">{app.jobTitle}</p>}
         </div>
-        <a
-          href={app.jobUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={e => e.stopPropagation()}
-          className="shrink-0 text-muted-foreground hover:text-emerald-600 transition-colors"
-        >
-          <ExternalLink className="w-3.5 h-3.5" />
-        </a>
+        {app.jobUrl && (
+          <a
+            href={app.jobUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={e => e.stopPropagation()}
+            className="shrink-0 text-muted-foreground hover:text-emerald-600 transition-colors"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-1.5 items-center">

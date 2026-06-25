@@ -11,6 +11,7 @@ import { ConversionPanel } from '@/components/applications/ConversionPanel';
 import { KanbanBoard } from '@/components/applications/KanbanBoard';
 import { UpcomingSteps } from '@/components/applications/UpcomingSteps';
 import { ChecklistPanel } from '@/components/applications/ChecklistPanel';
+import { JobSitesPanel } from '@/components/applications/JobSitesPanel';
 import { ApplicationDetailModal } from '@/components/applications/ApplicationDetailModal';
 import JobAnalysisModal from '@/components/applications/JobAnalysisModal';
 import { Briefcase, Sparkles } from 'lucide-react';
@@ -132,8 +133,9 @@ export default function ApplicationsPage() {
             )}
           </div>
 
-          {/* Coluna lateral — checklist fixo */}
-          <div className="w-56 shrink-0 hidden lg:block">
+          {/* Coluna lateral */}
+          <div className="w-56 shrink-0 hidden lg:flex lg:flex-col gap-4">
+            <JobSitesPanel conversionData={stats?.conversionBySource} />
             <ChecklistPanel />
           </div>
         </div>

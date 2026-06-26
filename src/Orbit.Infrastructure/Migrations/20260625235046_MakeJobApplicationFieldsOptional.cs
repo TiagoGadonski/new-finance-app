@@ -11,10 +11,6 @@ namespace Orbit.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "InstallmentsRemaining",
-                table: "Subscriptions");
-
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedAt",
                 table: "RecurringIncomes",
@@ -174,12 +170,6 @@ namespace Orbit.Infrastructure.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_RecurringIncomes_Families_FamilyId",
                 table: "RecurringIncomes");
-
-            migrationBuilder.AddColumn<int>(
-                name: "InstallmentsRemaining",
-                table: "Subscriptions",
-                type: "integer",
-                nullable: true);
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedAt",

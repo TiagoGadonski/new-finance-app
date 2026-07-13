@@ -74,24 +74,24 @@ export default function ApplicationsPage() {
     <PageContainer>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-600 flex items-center justify-center shadow-sm">
             <Briefcase className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold">Candidaturas</h1>
-            <p className="text-sm text-muted-foreground">Acompanhe suas vagas internacionais</p>
+            <h1 className="text-2xl font-bold tracking-tight">Candidaturas</h1>
+            <p className="text-sm text-muted-foreground/70">Acompanhe suas vagas internacionais</p>
           </div>
         </div>
         <button
           onClick={() => setShowAnalysis(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-medium hover:from-emerald-700 hover:to-teal-700 transition-all shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-sm font-medium hover:opacity-90 transition-opacity shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/60"
         >
           <Sparkles className="w-4 h-4" />
           Analisar com IA
         </button>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         {/* Quick add — sempre visível */}
         <QuickAddForm
           onAdd={async data => { await createMutation.mutateAsync(data); }}

@@ -4,13 +4,13 @@ import { SourceConversionDto, ApplicationSource } from '@/types';
 
 const SOURCE_LABELS: Record<ApplicationSource, string> = {
   [ApplicationSource.LinkedInEasyApply]: 'LI Easy Apply',
-  [ApplicationSource.LinkedInExternal]: 'LI → Site',
-  [ApplicationSource.Strider]: 'Strider',
-  [ApplicationSource.WeWorkRemotely]: 'WWR',
-  [ApplicationSource.WorkingNomads]: 'WN',
-  [ApplicationSource.Jobgether]: 'Jobgether',
-  [ApplicationSource.CompanyWebsite]: 'Site Empresa',
-  [ApplicationSource.Other]: 'Outro',
+  [ApplicationSource.LinkedInExternal]:  'LinkedIn → Site',
+  [ApplicationSource.Strider]:           'Strider',
+  [ApplicationSource.WeWorkRemotely]:    'WWR',
+  [ApplicationSource.WorkingNomads]:     'WN',
+  [ApplicationSource.Jobgether]:         'Jobgether',
+  [ApplicationSource.CompanyWebsite]:    'Site Empresa',
+  [ApplicationSource.Other]:            'Outro',
 };
 
 interface Props {
@@ -22,21 +22,23 @@ export function ConversionPanel({ data }: Props) {
   if (relevant.length === 0) return null;
 
   return (
-    <div className="bg-card border border-border rounded-xl p-4">
-      <h3 className="text-sm font-semibold mb-3 text-muted-foreground">Conversão por fonte</h3>
-      <div className="space-y-2">
+    <div className="bg-card border border-border/60 rounded-2xl p-4 shadow-sm">
+      <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-4">
+        Conversão por fonte
+      </h3>
+      <div className="space-y-3">
         {relevant.map(item => {
           const pct = item.total > 0 ? Math.round((item.gotResponse / item.total) * 100) : 0;
           return (
             <div key={item.source} className="flex items-center gap-3">
-              <span className="text-xs font-medium w-28 shrink-0">{SOURCE_LABELS[item.source]}</span>
-              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+              <span className="text-xs font-medium text-muted-foreground w-28 shrink-0">{SOURCE_LABELS[item.source]}</span>
+              <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-600 to-teal-600 rounded-full"
+                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500"
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              <span className="text-xs text-muted-foreground shrink-0 w-20 text-right">
+              <span className="text-xs text-muted-foreground/70 tabular-nums shrink-0 w-20 text-right">
                 {item.gotResponse}/{item.total} ({pct}%)
               </span>
             </div>
@@ -44,7 +46,7 @@ export function ConversionPanel({ data }: Props) {
         })}
       </div>
       {relevant.length < 3 && (
-        <p className="text-xs text-muted-foreground mt-3 italic">Dados mais úteis com mais candidaturas.</p>
+        <p className="text-xs text-muted-foreground/50 mt-4 italic">Dados mais úteis com mais candidaturas.</p>
       )}
     </div>
   );

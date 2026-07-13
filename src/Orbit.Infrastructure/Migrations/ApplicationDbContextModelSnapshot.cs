@@ -232,7 +232,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             Color = "#10b981",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7864),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3139),
                             CreatedByUsername = "system",
                             Icon = "💰",
                             IsDefault = true,
@@ -243,7 +243,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111112"),
                             Color = "#3b82f6",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7870),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3144),
                             CreatedByUsername = "system",
                             Icon = "💼",
                             IsDefault = true,
@@ -254,7 +254,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111113"),
                             Color = "#8b5cf6",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7875),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3147),
                             CreatedByUsername = "system",
                             Icon = "📈",
                             IsDefault = true,
@@ -265,7 +265,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111114"),
                             Color = "#06b6d4",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7879),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3150),
                             CreatedByUsername = "system",
                             Icon = "💵",
                             IsDefault = true,
@@ -276,7 +276,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222221"),
                             Color = "#f97316",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7881),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3152),
                             CreatedByUsername = "system",
                             Icon = "🍔",
                             IsDefault = true,
@@ -287,7 +287,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222222"),
                             Color = "#eab308",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7884),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3155),
                             CreatedByUsername = "system",
                             Icon = "🚗",
                             IsDefault = true,
@@ -298,7 +298,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222223"),
                             Color = "#a855f7",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7886),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3157),
                             CreatedByUsername = "system",
                             Icon = "🏠",
                             IsDefault = true,
@@ -309,7 +309,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222224"),
                             Color = "#ec4899",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7889),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3160),
                             CreatedByUsername = "system",
                             Icon = "🏥",
                             IsDefault = true,
@@ -320,7 +320,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222225"),
                             Color = "#6366f1",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7891),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3162),
                             CreatedByUsername = "system",
                             Icon = "📚",
                             IsDefault = true,
@@ -331,7 +331,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222226"),
                             Color = "#14b8a6",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7898),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3165),
                             CreatedByUsername = "system",
                             Icon = "🎮",
                             IsDefault = true,
@@ -342,7 +342,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222227"),
                             Color = "#f43f5e",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7900),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3167),
                             CreatedByUsername = "system",
                             Icon = "🛍️",
                             IsDefault = true,
@@ -353,7 +353,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222228"),
                             Color = "#ef4444",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7903),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3170),
                             CreatedByUsername = "system",
                             Icon = "📄",
                             IsDefault = true,
@@ -364,7 +364,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222229"),
                             Color = "#84cc16",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7906),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3172),
                             CreatedByUsername = "system",
                             Icon = "📱",
                             IsDefault = true,
@@ -375,7 +375,7 @@ namespace Orbit.Infrastructure.Migrations
                         {
                             Id = new Guid("22222222-2222-2222-2222-222222222230"),
                             Color = "#64748b",
-                            CreatedAt = new DateTime(2026, 6, 25, 23, 50, 43, 836, DateTimeKind.Utc).AddTicks(7908),
+                            CreatedAt = new DateTime(2026, 7, 13, 0, 10, 13, 705, DateTimeKind.Utc).AddTicks(3175),
                             CreatedByUsername = "system",
                             Icon = "💸",
                             IsDefault = true,
@@ -1320,11 +1320,46 @@ namespace Orbit.Infrastructure.Migrations
                     b.ToTable("Subscriptions");
                 });
 
+            modelBuilder.Entity("Orbit.Domain.Entities.TodoComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("CreatedByUsername")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<Guid>("TodoItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TodoItemId");
+
+                    b.ToTable("TodoComments");
+                });
+
             modelBuilder.Entity("Orbit.Domain.Entities.TodoItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<int?>("Category")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("CompletedAt")
                         .HasColumnType("timestamp without time zone");
@@ -1341,14 +1376,17 @@ namespace Orbit.Infrastructure.Migrations
                         .HasMaxLength(2000)
                         .HasColumnType("character varying(2000)");
 
-                    b.Property<DateTime?>("DueDate")
-                        .HasColumnType("timestamp without time zone");
+                    b.Property<DateOnly?>("DueDate")
+                        .HasColumnType("date");
 
                     b.Property<Guid>("FamilyId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
+
+                    b.Property<int?>("Priority")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -1939,6 +1977,17 @@ namespace Orbit.Infrastructure.Migrations
                     b.Navigation("Family");
                 });
 
+            modelBuilder.Entity("Orbit.Domain.Entities.TodoComment", b =>
+                {
+                    b.HasOne("Orbit.Domain.Entities.TodoItem", "TodoItem")
+                        .WithMany("Comments")
+                        .HasForeignKey("TodoItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TodoItem");
+                });
+
             modelBuilder.Entity("Orbit.Domain.Entities.TodoItem", b =>
                 {
                     b.HasOne("Orbit.Domain.Entities.Family", "Family")
@@ -2109,6 +2158,11 @@ namespace Orbit.Infrastructure.Migrations
             modelBuilder.Entity("Orbit.Domain.Entities.ShoppingList", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Orbit.Domain.Entities.TodoItem", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

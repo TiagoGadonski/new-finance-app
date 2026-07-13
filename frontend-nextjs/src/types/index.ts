@@ -788,30 +788,59 @@ export interface UpdateReminderRequest {
 }
 
 // Todos
+export type TodoPriority = 0 | 1 | 2; // Low=0, Medium=1, High=2
+export type TodoCategory = 0 | 1 | 2 | 3 | 4; // Job=0, Personal=1, Studies=2, Business=3, Other=4
+
+export interface TodoCommentDto {
+  id: string;
+  text: string;
+  createdAt: string;
+  createdByUsername: string;
+}
+
 export interface TodoItemDto {
   id: string;
   title: string;
   description: string | null;
   dueDate: string | null;
+  priority: TodoPriority | null;
+  category: TodoCategory | null;
   isCompleted: boolean;
   completedAt: string | null;
   createdByUsername: string;
   createdAt: string;
   updatedByUsername: string | null;
   updatedAt: string | null;
+  comments: TodoCommentDto[];
+}
+
+export interface TodoStatsDto {
+  pending: number;
+  overdue: number;
+  dueToday: number;
+  dueSoon: number;
+  completedThisWeek: number;
 }
 
 export interface CreateTodoRequest {
   title: string;
   description?: string | null;
   dueDate?: string | null;
+  priority?: TodoPriority | null;
+  category?: TodoCategory | null;
 }
 
 export interface UpdateTodoRequest {
   title: string;
   description: string | null;
   dueDate: string | null;
+  priority: TodoPriority | null;
+  category: TodoCategory | null;
   isCompleted: boolean;
+}
+
+export interface AddTodoCommentRequest {
+  text: string;
 }
 
 export interface RecurringIncomeDto {

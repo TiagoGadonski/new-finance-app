@@ -56,6 +56,10 @@ public static class DependencyInjection
 
         // Alert Evaluation Background Service
         services.AddHostedService<AlertEvaluationService>();
+
+        // Daily Briefing
+        services.AddScoped<IBriefingService, BriefingService>();
+        services.AddHostedService<BriefingBackgroundService>();
         services.AddScoped<Orbit.Application.Common.Interfaces.IBudgetForecastService, Orbit.Application.Features.BudgetForecast.BudgetForecastService>();
 
         return services;

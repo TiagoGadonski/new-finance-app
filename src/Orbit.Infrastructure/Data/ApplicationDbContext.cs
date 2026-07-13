@@ -38,6 +38,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<ExpenseSplitItem> ExpenseSplitItems => Set<ExpenseSplitItem>();
     public DbSet<Reminder> Reminders => Set<Reminder>();
     public DbSet<TodoItem> TodoItems => Set<TodoItem>();
+    public DbSet<TodoComment> TodoComments => Set<TodoComment>();
     public DbSet<RecurringIncome> RecurringIncomes => Set<RecurringIncome>();
     public DbSet<JobApplication> JobApplications => Set<JobApplication>();
 
@@ -587,6 +588,19 @@ public class ApplicationDbContext : DbContext
 
             entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
             entity.Property(e => e.UpdatedByUsername).HasMaxLength(20);
+
+            entity.HasMany(e => e.Comments)
+                .WithOne(c => c.TodoItem)
+                .HasForeignKey(c => c.TodoItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // TodoComment
+        modelBuilder.Entity<TodoComment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Text).IsRequired().HasMaxLength(2000);
+            entity.Property(e => e.CreatedByUsername).IsRequired().HasMaxLength(20);
         });
 
         // JobApplication

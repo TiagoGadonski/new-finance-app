@@ -46,9 +46,19 @@ public class BriefingService : IBriefingService
     {
         if (string.IsNullOrEmpty(_defaultChatId)) return;
 
-        var families = await _context.Families.Select(f => f.Id).ToListAsync(ct);
-        foreach (var familyId in families)
-            await SendBriefingAsync(familyId, _defaultChatId, ct);
+        // Send only to the family of the user with matching TelegramChatId
+        var user = await _context.Users
+            .Where(u => u.TelegramChatId == _defaultChatId)
+            .FirstOrDefaultAsync(ct);
+
+        if (user is not null)
+        {
+            await SendBriefingAsync(user.FamilyId, _defaultChatId, ct);
+        }
+        else
+        {
+            _logger.LogWarning("No user found with TelegramChatId {ChatId}, skipping briefing", _defaultChatId);
+        }
     }
 
     private async Task<string> BuildBriefingAsync(Guid familyId, CancellationToken ct)
